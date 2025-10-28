@@ -1,20 +1,18 @@
-import { toNumber, formatINR, formatNum, formatDate } from './util.js';
+import { toNumber, formatINR, formatNum } from './util.js';
 import { buildPrepayInstances } from './finance.js';
 
 export function collectInputs() {
   const P = toNumber(document.getElementById('loanAmount').value);
   const rate = toNumber(document.getElementById('annualRate').value);
   const tenure = toNumber(document.getElementById('tenureMonths').value);
-  const startDateInput = document.getElementById('startDate').value;
-  const startDate = startDateInput ? new Date(startDateInput) : new Date();
-  const emiDay = toNumber(document.getElementById('emiDay').value) || 1;
+  const startDate = null;
+  const emiDay = 1;
   const strategy = document.getElementById('strategy').value;
-  const recalcOnPrepay = document.getElementById('recalcOnPrepay').value === 'yes';
 
   const prepayConfigs = readPrepayConfigs();
-  const prepayInstances = buildPrepayInstances(prepayConfigs, startDate, emiDay);
+  const prepayInstances = buildPrepayInstances(prepayConfigs);
 
-  return { P, rate, tenure, startDate, emiDay, strategy, recalcOnPrepay, prepayInstances };
+  return { P, rate, tenure, startDate, emiDay, strategy, prepayInstances };
 }
 
 export function validateInputs(P, rate, tenure) {
@@ -45,7 +43,7 @@ export function renderSchedule(schedule) {
   for (const row of schedule) {
     const tr = document.createElement('tr');
     appendCell(tr, row.index, true);
-    appendCell(tr, formatDate(row.date), true);
+    appendCell(tr, row.monthLabel || `Month ${row.index}`, true);
     appendCell(tr, formatINR(row.opening));
     appendCell(tr, formatINR(row.emi));
     appendCell(tr, formatINR(row.interest));
@@ -70,9 +68,7 @@ export function readPrepayConfigs() {
   return items.map(el => {
     return {
       amount: el.querySelector('[data-prepay="amount"]').value,
-      frequency: el.querySelector('[data-prepay="frequency"]').value,
-      startDate: el.querySelector('[data-prepay="start"]').value,
-      endDate: el.querySelector('[data-prepay="end"]').value
+      frequency: el.querySelector('[data-prepay="frequency"]').value
     };
   });
 }
@@ -95,16 +91,8 @@ export function addPrepaymentUI(defaults) {
           <option value="yearly">Yearly</option>
         </select>
       </div>
-      <div>
-        <label>Start Date</label>
-        <input type="date" data-prepay="start">
-      </div>
     </div>
     <div class="row row-2">
-      <div>
-        <label>End Date <span class="help">(for recurring)</span></label>
-        <input type="date" data-prepay="end">
-      </div>
       <div class="actions">
         <button type="button" class="ghost" data-prepay="remove">Remove</button>
       </div>
@@ -113,20 +101,18 @@ export function addPrepaymentUI(defaults) {
   if (defaults) {
     wrap.querySelector('[data-prepay="amount"]').value = defaults.amount || '';
     wrap.querySelector('[data-prepay="frequency"]').value = defaults.frequency || 'once';
-    wrap.querySelector('[data-prepay="start"]').value = defaults.startDate || '';
-    wrap.querySelector('[data-prepay="end"]').value = defaults.endDate || '';
   }
   wrap.querySelector('[data-prepay="remove"]').addEventListener('click', () => { wrap.remove(); });
   container.appendChild(wrap);
 }
 
 export function exportCsv(schedule) {
-  const header = ['Index','Date','Opening','EMI','Interest','Principal','Prepayment','Closing'];
+  const header = ['Index','Month','Opening','EMI','Interest','Principal','Prepayment','Closing'];
   const lines = [header.join(',')];
   for (const r of schedule) {
     const row = [
       r.index,
-      formatDate(r.date),
+      (r.monthLabel || `Month ${r.index}`),
       r.opening.toFixed(2),
       r.emi.toFixed(2),
       r.interest.toFixed(2),

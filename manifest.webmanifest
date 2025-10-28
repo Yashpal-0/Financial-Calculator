@@ -1,6 +1,6 @@
 {
-  "name": "Home Loan Calculators",
-  "short_name": "Loan Tools",
+  "name": "Financial Calculator",
+  "short_name": "Financial Calc",
   "start_url": "index.html",
   "scope": "./",
   "display": "standalone",

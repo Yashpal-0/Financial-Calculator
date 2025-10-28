@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Prepayment Calculator</title>
-<meta name="description" content="Home loan prepayment calculator with reduce tenure or reduce EMI strategies, recurring options, and CSV export.">
+<title>Education Loan Calculator</title>
+<meta name="description" content="Education loan calculator with moratorium period, optional payments during moratorium, and prepayment options.">
 <meta name="theme-color" content="#0ea5e9">
 <link rel="manifest" href="../manifest.webmanifest">
 <link rel="icon" href="../favicon.svg" type="image/svg+xml">
@@ -22,40 +22,47 @@
       <ul class="nav-links">
         <li><a href="../index.html">Home</a></li>
         <li><a href="./emi.html">EMI</a></li>
-        <li><a href="./prepayment.html" aria-current="page">Prepayment</a></li>
+        <li><a href="./prepayment.html">Prepayment</a></li>
         <li><a href="./affordability.html">Affordability</a></li>
         <li><a href="./balance-transfer.html">Balance Transfer</a></li>
-        <li><a href="./education.html">Education</a></li>
+        <li><a href="./education.html" aria-current="page">Education</a></li>
       </ul>
     </div>
   </nav>
 
   <header>
     <div class="container">
-      <h1>Prepayment Calculator</h1>
-      <p>Model one-time or recurring prepayments and choose between reduce tenure or reduce EMI strategies.</p>
+      <h1>🎓 Education Loan Calculator</h1>
+      <p>Calculate education loan EMI with moratorium period, optional payments during study, and prepayment strategies.</p>
     </div>
   </header>
 
   <main>
     <section class="grid grid-2 container">
       <div class="card" aria-labelledby="loan-inputs-heading">
-        <h2 id="loan-inputs-heading">Loan Inputs</h2>
-        <div class="row row-3">
+        <h2 id="loan-inputs-heading">Loan Details</h2>
+        <div class="row row-2">
           <div>
             <label for="loanAmount">Loan Amount</label>
-            <input id="loanAmount" type="number" inputmode="decimal" min="0" step="1000" placeholder="e.g. 5,000,000">
+            <input id="loanAmount" type="number" inputmode="decimal" min="0" step="1000" placeholder="e.g. 10,00,000">
           </div>
           <div>
             <label for="annualRate">Annual Interest % (APR)</label>
             <input id="annualRate" type="number" inputmode="decimal" min="0" step="0.01" placeholder="e.g. 8.5">
           </div>
+        </div>
+        <div class="row row-2">
           <div>
-            <label for="tenureMonths">Tenure (months)</label>
-            <input id="tenureMonths" type="number" inputmode="numeric" min="1" step="1" placeholder="e.g. 240">
+            <label for="moratoriumMonths">Moratorium Period (months)</label>
+            <input id="moratoriumMonths" type="number" inputmode="numeric" min="0" step="1" placeholder="e.g. 24">
+            <div class="help">Study period + 6 months grace period</div>
+          </div>
+          <div>
+            <label for="repaymentMonths">Repayment Period (months)</label>
+            <input id="repaymentMonths" type="number" inputmode="numeric" min="1" step="1" placeholder="e.g. 120">
+            <div class="help">After moratorium ends</div>
           </div>
         </div>
-
         <div class="row">
           <div class="actions">
             <button id="calcBtn">Calculate</button>
@@ -65,14 +72,20 @@
       </div>
 
       <div class="card">
-        <h2>Prepayment Options</h2>
-        <div class="row row-1">
+        <h2>Moratorium Options</h2>
+        <div class="row row-2">
           <div>
-            <label for="strategy">Strategy</label>
-            <select id="strategy">
-              <option value="reduce_tenure" selected>Reduce Tenure</option>
-              <option value="reduce_emi">Reduce EMI</option>
+            <label for="moratoriumInterest">Interest during moratorium</label>
+            <select id="moratoriumInterest">
+              <option value="capitalize" selected>Capitalize (add to principal)</option>
+              <option value="pay">Pay monthly</option>
+              <option value="partial">Pay partial (50%)</option>
             </select>
+          </div>
+          <div>
+            <label for="moratoriumPayment">Monthly payment during moratorium</label>
+            <input id="moratoriumPayment" type="number" inputmode="decimal" min="0" step="100" placeholder="e.g. 5000" disabled>
+            <div class="help">Only if paying interest</div>
           </div>
         </div>
         <div class="prepay-list" id="prepayList" aria-live="polite"></div>
@@ -86,21 +99,18 @@
     <section class="card container" aria-labelledby="summary-heading">
       <h2 id="summary-heading">Summary</h2>
       <div class="summary" id="summary">
-        <div class="kpi"><div class="label">Base EMI</div><div class="value" id="baseEmi">-</div></div>
-        <div class="kpi"><div class="label">Total Interest (No Prepay)</div><div class="value" id="baseInterest">-</div></div>
-        <div class="kpi"><div class="label">Total Payment (No Prepay)</div><div class="value" id="baseTotal">-</div></div>
-        <div class="kpi"><div class="label">Strategy EMI</div><div class="value" id="stratEmi">-</div></div>
-        <div class="kpi"><div class="label">Total Interest (With Prepay)</div><div class="value" id="stratInterest">-</div></div>
-        <div class="kpi"><div class="label">Interest Saved</div><div class="value" id="interestSaved">-</div></div>
-        <div class="kpi"><div class="label">Original Tenure</div><div class="value" id="baseTenure">-</div></div>
-        <div class="kpi"><div class="label">New Tenure</div><div class="value" id="newTenure">-</div></div>
-        <div class="kpi"><div class="label">Months Saved</div><div class="value" id="monthsSaved">-</div></div>
+        <div class="kpi"><div class="label">EMI (After Moratorium)</div><div class="value" id="emiOut">-</div></div>
+        <div class="kpi"><div class="label">Total Interest</div><div class="value" id="totalInterestOut">-</div></div>
+        <div class="kpi"><div class="label">Total Payment</div><div class="value" id="totalPaymentOut">-</div></div>
+        <div class="kpi"><div class="label">Moratorium Interest</div><div class="value" id="moratoriumInterestOut">-</div></div>
+        <div class="kpi"><div class="label">Principal at Start</div><div class="value" id="principalAtStartOut">-</div></div>
+        <div class="kpi"><div class="label">Total Tenure</div><div class="value" id="totalTenureOut">-</div></div>
       </div>
     </section>
 
     <section class="card container" aria-labelledby="schedule-heading">
       <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;">
-        <h2 id="schedule-heading" style="margin:0;">Amortization Schedule</h2>
+        <h2 id="schedule-heading" style="margin:0;">Payment Schedule</h2>
         <div class="actions">
           <button id="exportCsvBtn" class="ghost">Export CSV</button>
           <button id="printBtn" class="ghost">Print</button>
@@ -111,9 +121,9 @@
           <thead>
             <tr>
               <th class="left">#</th>
-              <th class="left">Month</th>
+              <th class="left">Period</th>
               <th>Opening</th>
-              <th>EMI</th>
+              <th>Payment</th>
               <th>Interest</th>
               <th>Principal</th>
               <th>Prepayment</th>
@@ -132,10 +142,8 @@
 
   <script type="module">
     import { initApp } from '../scripts/app.js';
-    import '../scripts/main.js';
+    import '../scripts/education.js';
     initApp();
   </script>
 </body>
 </html>
-
-
