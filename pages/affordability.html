@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Affordability Calculator</title>
+<meta name="description" content="Estimate eligible home loan using FOIR/DTI with income and liabilities.">
+<meta name="theme-color" content="#0ea5e9">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <div class="container" style="display:flex;justify-content:flex-end;gap:8px;padding-top:8px;">
+    <button id="installBtn" class="ghost" style="display:none;">Install App</button>
+    <button id="themeToggle" class="ghost" title="Toggle dark mode">🌓</button>
+  </div>
+  <nav class="navbar">
+    <div class="container nav-wrap">
+      <div class="brand">Loan Tools</div>
+      <button class="nav-toggle" aria-label="Toggle menu" onclick="document.body.classList.toggle('nav-open')">☰</button>
+      <ul class="nav-links">
+        <li><a href="../index.html">Home</a></li>
+        <li><a href="./emi.html">EMI</a></li>
+        <li><a href="./prepayment.html">Prepayment</a></li>
+        <li><a href="./affordability.html" aria-current="page">Affordability</a></li>
+        <li><a href="./balance-transfer.html">Balance Transfer</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <header>
+    <div class="container">
+      <h1>Affordability Calculator</h1>
+      <p>Estimate eligible loan amount based on income, liabilities, and target FOIR/DTI.</p>
+    </div>
+  </header>
+
+  <main>
+    <section class="card container">
+      <div class="row row-3">
+        <div>
+          <label for="netIncome">Monthly Net Income</label>
+          <input id="netIncome" type="number" inputmode="decimal" min="0" step="1000" placeholder="e.g. 150,000">
+        </div>
+        <div>
+          <label for="otherEmi">Existing Monthly EMIs</label>
+          <input id="otherEmi" type="number" inputmode="decimal" min="0" step="100" placeholder="e.g. 10,000">
+        </div>
+        <div>
+          <label for="foir">Target FOIR %</label>
+          <input id="foir" type="number" inputmode="decimal" min="10" max="70" step="1" value="40">
+        </div>
+      </div>
+      <div class="row row-3">
+        <div>
+          <label for="annualRate">Annual Interest % (APR)</label>
+          <input id="annualRate" type="number" inputmode="decimal" min="0" step="0.01" value="8.5">
+        </div>
+        <div>
+          <label for="tenureMonths">Tenure (months)</label>
+          <input id="tenureMonths" type="number" inputmode="numeric" min="12" step="12" value="240">
+        </div>
+        <div>
+          <label for="downPayment">Down Payment</label>
+          <input id="downPayment" type="number" inputmode="decimal" min="0" step="1000" placeholder="e.g. 1,000,000">
+        </div>
+      </div>
+      <div class="actions">
+        <button id="calcBtn">Calculate</button>
+        <button id="resetBtn" class="ghost">Reset</button>
+      </div>
+    </section>
+
+    <section class="card container" aria-labelledby="aff-summary-heading">
+      <h2 id="aff-summary-heading">Results</h2>
+      <div class="summary" id="summary">
+        <div class="kpi"><div class="label">Max Affordable EMI</div><div class="value" id="maxEmi">-</div></div>
+        <div class="kpi"><div class="label">Eligible Loan Amount</div><div class="value" id="eligibleLoan">-</div></div>
+        <div class="kpi"><div class="label">Approx Property Budget</div><div class="value" id="propertyBudget">-</div></div>
+      </div>
+    </section>
+  </main>
+
+  <script type="module">
+    import { initApp } from '../scripts/app.js';
+    import '../scripts/affordability.js';
+    initApp();
+  </script>
+</body>
+</html>
+
+

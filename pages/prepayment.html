@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prepayment Calculator</title>
+<meta name="description" content="Home loan prepayment calculator with reduce tenure or reduce EMI strategies, recurring options, and CSV export.">
+<meta name="theme-color" content="#0ea5e9">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <div class="container" style="display:flex;justify-content:flex-end;gap:8px;padding-top:8px;">
+    <button id="installBtn" class="ghost" style="display:none;">Install App</button>
+    <button id="themeToggle" class="ghost" title="Toggle dark mode">🌓</button>
+  </div>
+  <nav class="navbar">
+    <div class="container nav-wrap">
+      <div class="brand">Loan Tools</div>
+      <button class="nav-toggle" aria-label="Toggle menu" onclick="document.body.classList.toggle('nav-open')">☰</button>
+      <ul class="nav-links">
+        <li><a href="../index.html">Home</a></li>
+        <li><a href="./emi.html">EMI</a></li>
+        <li><a href="./prepayment.html" aria-current="page">Prepayment</a></li>
+        <li><a href="./affordability.html">Affordability</a></li>
+        <li><a href="./balance-transfer.html">Balance Transfer</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <header>
+    <div class="container">
+      <h1>Prepayment Calculator</h1>
+      <p>Model one-time or recurring prepayments and choose between reduce tenure or reduce EMI strategies.</p>
+    </div>
+  </header>
+
+  <main>
+    <section class="grid grid-2 container">
+      <div class="card" aria-labelledby="loan-inputs-heading">
+        <h2 id="loan-inputs-heading">Loan Inputs</h2>
+        <div class="row row-3">
+          <div>
+            <label for="loanAmount">Loan Amount</label>
+            <input id="loanAmount" type="number" inputmode="decimal" min="0" step="1000" placeholder="e.g. 5,000,000">
+          </div>
+          <div>
+            <label for="annualRate">Annual Interest % (APR)</label>
+            <input id="annualRate" type="number" inputmode="decimal" min="0" step="0.01" placeholder="e.g. 8.5">
+          </div>
+          <div>
+            <label for="tenureMonths">Tenure (months)</label>
+            <input id="tenureMonths" type="number" inputmode="numeric" min="1" step="1" placeholder="e.g. 240">
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="actions">
+            <button id="calcBtn">Calculate</button>
+            <button id="resetBtn" class="ghost">Reset</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Prepayment Options</h2>
+        <div class="row row-1">
+          <div>
+            <label for="strategy">Strategy</label>
+            <select id="strategy">
+              <option value="reduce_tenure" selected>Reduce Tenure</option>
+              <option value="reduce_emi">Reduce EMI</option>
+            </select>
+          </div>
+        </div>
+        <div class="prepay-list" id="prepayList" aria-live="polite"></div>
+        <div class="actions">
+          <button id="addPrepayBtn" class="secondary">Add Prepayment</button>
+          <button id="clearPrepayBtn" class="ghost">Clear Prepayments</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="card container" aria-labelledby="summary-heading">
+      <h2 id="summary-heading">Summary</h2>
+      <div class="summary" id="summary">
+        <div class="kpi"><div class="label">Base EMI</div><div class="value" id="baseEmi">-</div></div>
+        <div class="kpi"><div class="label">Total Interest (No Prepay)</div><div class="value" id="baseInterest">-</div></div>
+        <div class="kpi"><div class="label">Total Payment (No Prepay)</div><div class="value" id="baseTotal">-</div></div>
+        <div class="kpi"><div class="label">Strategy EMI</div><div class="value" id="stratEmi">-</div></div>
+        <div class="kpi"><div class="label">Total Interest (With Prepay)</div><div class="value" id="stratInterest">-</div></div>
+        <div class="kpi"><div class="label">Interest Saved</div><div class="value" id="interestSaved">-</div></div>
+        <div class="kpi"><div class="label">Original Tenure</div><div class="value" id="baseTenure">-</div></div>
+        <div class="kpi"><div class="label">New Tenure</div><div class="value" id="newTenure">-</div></div>
+        <div class="kpi"><div class="label">Months Saved</div><div class="value" id="monthsSaved">-</div></div>
+      </div>
+    </section>
+
+    <section class="card container" aria-labelledby="schedule-heading">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;">
+        <h2 id="schedule-heading" style="margin:0;">Amortization Schedule</h2>
+        <div class="actions">
+          <button id="exportCsvBtn" class="ghost">Export CSV</button>
+          <button id="printBtn" class="ghost">Print</button>
+        </div>
+      </div>
+      <div class="scroll-x">
+        <table aria-describedby="summary-heading">
+          <thead>
+            <tr>
+              <th class="left">#</th>
+              <th class="left">Month</th>
+              <th>Opening</th>
+              <th>EMI</th>
+              <th>Interest</th>
+              <th>Principal</th>
+              <th>Prepayment</th>
+              <th>Closing</th>
+            </tr>
+          </thead>
+          <tbody id="scheduleBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <footer class="container">
+      <div>Built for everyone. Works offline in your browser.</div>
+    </footer>
+  </main>
+
+  <script type="module">
+    import { initApp } from '../scripts/app.js';
+    import '../scripts/main.js';
+    initApp();
+  </script>
+</body>
+</html>
+
+

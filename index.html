@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Home Loan Calculator Hub</title>
+<meta name="description" content="Free calculators: EMI, prepayment, affordability, balance transfer. Mobile-friendly and detailed schedules.">
+<meta name="theme-color" content="#0ea5e9">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container" style="display:flex;justify-content:flex-end;gap:8px;padding-top:8px;">
+    <button id="installBtn" class="ghost" style="display:none;">Install App</button>
+    <button id="themeToggle" class="ghost" title="Toggle dark mode">🌓</button>
+  </div>
+  <nav class="navbar">
+    <div class="container nav-wrap">
+      <div class="brand">Loan Tools</div>
+      <button class="nav-toggle" aria-label="Toggle menu" onclick="document.body.classList.toggle('nav-open')">☰</button>
+      <ul class="nav-links">
+        <li><a href="index.html" aria-current="page">Home</a></li>
+        <li><a href="pages/emi.html">EMI</a></li>
+        <li><a href="pages/prepayment.html">Prepayment</a></li>
+        <li><a href="pages/affordability.html">Affordability</a></li>
+        <li><a href="pages/balance-transfer.html">Balance Transfer</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <header>
+    <div class="container">
+      <h1>Home Loan Calculator Hub</h1>
+      <p>Accurate, mobile-friendly calculators: EMI, prepayment strategies, affordability, and balance transfer.</p>
+    </div>
+  </header>
+
+  <main>
+    <section class="cards container">
+      <a class="card card-link" href="pages/emi.html">
+        <h2>EMI Calculator</h2>
+        <p>Compute EMI and full amortization schedule.</p>
+      </a>
+      <a class="card card-link" href="pages/prepayment.html">
+        <h2>Prepayment Calculator</h2>
+        <p>Model reduce tenure or reduce EMI strategies with recurring prepayments.</p>
+      </a>
+      <a class="card card-link" href="pages/affordability.html">
+        <h2>Affordability</h2>
+        <p>Estimate eligible loan using FOIR/DTI based on your income and liabilities.</p>
+      </a>
+      <a class="card card-link" href="pages/balance-transfer.html">
+        <h2>Balance Transfer</h2>
+        <p>Compare current loan vs new lender and find savings and break-even.</p>
+      </a>
+    </section>
+    <footer>
+      <div>Built for everyone. Works offline in your browser.</div>
+    </footer>
+  </main>
+  <script type="module">
+    import { initApp } from './scripts/app.js';
+    initApp();
+  </script>
+</body>
+</html>
+
+

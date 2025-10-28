@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Balance Transfer Calculator</title>
+<meta name="description" content="Compare current loan vs new lender offer. Calculate savings and break-even.">
+<meta name="theme-color" content="#0ea5e9">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <div class="container" style="display:flex;justify-content:flex-end;gap:8px;padding-top:8px;">
+    <button id="installBtn" class="ghost" style="display:none;">Install App</button>
+    <button id="themeToggle" class="ghost" title="Toggle dark mode">🌓</button>
+  </div>
+  <nav class="navbar">
+    <div class="container nav-wrap">
+      <div class="brand">Loan Tools</div>
+      <button class="nav-toggle" aria-label="Toggle menu" onclick="document.body.classList.toggle('nav-open')">☰</button>
+      <ul class="nav-links">
+        <li><a href="../index.html">Home</a></li>
+        <li><a href="./emi.html">EMI</a></li>
+        <li><a href="./prepayment.html">Prepayment</a></li>
+        <li><a href="./affordability.html">Affordability</a></li>
+        <li><a href="./balance-transfer.html" aria-current="page">Balance Transfer</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <header>
+    <div class="container">
+      <h1>Balance Transfer</h1>
+      <p>Compare your existing loan with a new lender and estimate net savings.</p>
+    </div>
+  </header>
+
+  <main>
+    <section class="card container">
+      <h2>Current Loan</h2>
+      <div class="row row-3">
+        <div>
+          <label for="currOutstanding">Outstanding Principal</label>
+          <input id="currOutstanding" type="number" inputmode="decimal" min="0" step="1000">
+        </div>
+        <div>
+          <label for="currRate">Current Rate %</label>
+          <input id="currRate" type="number" inputmode="decimal" min="0" step="0.01" value="9">
+        </div>
+        <div>
+          <label for="currTenure">Remaining Tenure (months)</label>
+          <input id="currTenure" type="number" inputmode="numeric" min="1" step="1" value="180">
+        </div>
+      </div>
+    </section>
+
+    <section class="card container">
+      <h2>New Offer</h2>
+      <div class="row row-3">
+        <div>
+          <label for="newRate">New Rate %</label>
+          <input id="newRate" type="number" inputmode="decimal" min="0" step="0.01" value="8.4">
+        </div>
+        <div>
+          <label for="processingFee">Processing Fee</label>
+          <input id="processingFee" type="number" inputmode="decimal" min="0" step="1000" value="10000">
+        </div>
+        <div>
+          <label for="otherCosts">Other Costs</label>
+          <input id="otherCosts" type="number" inputmode="decimal" min="0" step="1000" value="0">
+        </div>
+      </div>
+      <div class="actions">
+        <button id="calcBtn">Compare</button>
+        <button id="resetBtn" class="ghost">Reset</button>
+      </div>
+    </section>
+
+    <section class="card container" aria-labelledby="bt-summary-heading">
+      <h2 id="bt-summary-heading">Summary</h2>
+      <div class="summary" id="summary">
+        <div class="kpi"><div class="label">Current EMI</div><div class="value" id="currEmi">-</div></div>
+        <div class="kpi"><div class="label">New EMI</div><div class="value" id="newEmi">-</div></div>
+        <div class="kpi"><div class="label">Interest Saved</div><div class="value" id="interestSaved">-</div></div>
+        <div class="kpi"><div class="label">Net Savings (after costs)</div><div class="value" id="netSavings">-</div></div>
+      </div>
+    </section>
+  </main>
+
+  <script type="module">
+    import { initApp } from '../scripts/app.js';
+    import '../scripts/balance-transfer.js';
+    initApp();
+  </script>
+</body>
+</html>
+
+
