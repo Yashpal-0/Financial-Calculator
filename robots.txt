@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Sitemap: https://yashpal-0.github.io/Financial-Calculator/sitemap.xml
+
+
