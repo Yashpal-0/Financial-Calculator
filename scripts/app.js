@@ -14,7 +14,13 @@ export function initApp() {
 
   // Service worker with auto-update
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('./service-worker.js').then(registration => {
+    // Ensure correct path/scope on subpages and GitHub Pages (served under /REPO_NAME/)
+    const currentPath = location.pathname;
+    const basePath = currentPath.includes('/pages/')
+      ? currentPath.split('/pages/')[0] + '/'
+      : (currentPath.endsWith('/') ? currentPath : currentPath.replace(/[^/]+$/, ''));
+    const swUrl = basePath + 'service-worker.js';
+    navigator.serviceWorker.register(swUrl, { scope: basePath }).then(registration => {
       // Check for updates every time the page loads
       registration.update();
       
