@@ -1,57 +1,62 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Prepayment Calculator</title>
-<meta name="description" content="Home loan prepayment calculator with reduce tenure or reduce EMI strategies, recurring options, and CSV export.">
-<meta name="theme-color" content="#0ea5e9">
-<link rel="manifest" href="../manifest.webmanifest">
-<link rel="icon" href="../favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="../styles.css">
-<link rel="canonical" href="https://yashpal-0.github.io/Financial-Calculator/pages/prepayment.html">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Prepayment Calculator">
-<meta property="og:description" content="Home loan prepayment calculator with reduce tenure or reduce EMI strategies, recurring options, and CSV export.">
-<meta property="og:url" content="https://yashpal-0.github.io/Financial-Calculator/pages/prepayment.html">
-<meta property="og:image" content="https://yashpal-0.github.io/Financial-Calculator/favicon.svg">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Prepayment Calculator">
-<meta name="twitter:description" content="Home loan prepayment calculator with reduce tenure or reduce EMI strategies, recurring options, and CSV export.">
-<meta name="twitter:image" content="https://yashpal-0.github.io/Financial-Calculator/favicon.svg">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Prepayment Calculator | FinCalc</title>
+  <meta name="description"
+    content="Home loan prepayment calculator with reduce tenure or reduce EMI strategies, recurring options, and CSV export.">
+  <meta name="theme-color" content="#4f46e5">
+  <link rel="manifest" href="../manifest.webmanifest">
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../styles.css">
+  <link rel="canonical" href="https://yashpal-0.github.io/Financial-Calculator/pages/prepayment.html">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Prepayment Calculator | FinCalc">
+  <meta property="og:description"
+    content="Home loan prepayment calculator with reduce tenure or reduce EMI strategies, recurring options, and CSV export.">
+  <meta property="og:url" content="https://yashpal-0.github.io/Financial-Calculator/pages/prepayment.html">
+  <meta property="og:image" content="https://yashpal-0.github.io/Financial-Calculator/favicon.svg">
 </head>
+
 <body>
-  <div class="container" style="display:flex;justify-content:flex-end;gap:8px;padding-top:8px;">
-    <button id="installBtn" class="ghost" style="display:none;">Install App</button>
-    <button id="themeToggle" class="ghost" title="Toggle dark mode">🌓</button>
+  <!-- Fixed Controls -->
+  <div class="container"
+    style="display:flex;justify-content:flex-end;gap:12px;padding-top:12px;position:relative;z-index:100;">
+    <button id="installBtn" class="ghost"
+      style="display:none;padding:6px 12px;font-size:14px;border-radius:20px;">Install App</button>
+    <button id="themeToggle" class="ghost" title="Toggle dark mode"
+      style="padding:6px 12px;font-size:16px;border-radius:20px;">🌓</button>
   </div>
+
   <nav class="navbar">
     <div class="container nav-wrap">
-      <div class="brand">Financial Calculator</div>
-      <button class="nav-toggle" aria-label="Toggle menu" onclick="document.body.classList.toggle('nav-open')">☰</button>
+      <div class="brand">FinCalc Suite</div>
+      <button class="nav-toggle" aria-label="Toggle menu" onclick="document.body.classList.toggle('nav-open')">☰
+        Menu</button>
       <ul class="nav-links">
         <li><a href="../index.html">Home</a></li>
         <li><a href="./emi.html">EMI</a></li>
-        <li><a href="./prepayment.html" aria-current="page">Prepayment</a></li>
-        <li><a href="./affordability.html">Affordability</a></li>
-        <li><a href="./balance-transfer.html">Balance Transfer</a></li>
-        <li><a href="./education.html">Education</a></li>
+        <li><a href="./prepayment.html" aria-current="page">Prepay</a></li>
+        <li><a href="./sip.html">SIP</a></li>
+        <li><a href="./fd.html">FD</a></li>
+        <li><a href="./rd.html">RD</a></li>
+        <li><a href="./ppf.html">PPF</a></li>
       </ul>
     </div>
   </nav>
 
-  <header>
-    <div class="container">
-      <h1>Prepayment Calculator</h1>
-      <p>Model one-time or recurring prepayments and choose between reduce tenure or reduce EMI strategies.</p>
-    </div>
+  <header class="page-header container">
+    <h1>Prepayment strategy</h1>
+    <p style="color:var(--muted); font-size:18px;">Model one-time or recurring prepayments to save massive interest.</p>
   </header>
 
   <main>
     <section class="grid grid-2 container">
       <div class="card" aria-labelledby="loan-inputs-heading">
         <h2 id="loan-inputs-heading">Loan Inputs</h2>
-        <div class="row row-3">
+        <div class="row row-1" style="gap:16px;">
           <div>
             <label for="loanAmount">Loan Amount</label>
             <input id="loanAmount" type="number" inputmode="decimal" min="0" step="1000" placeholder="e.g. 5,000,000">
@@ -65,12 +70,9 @@
             <input id="tenureMonths" type="number" inputmode="numeric" min="1" step="1" placeholder="e.g. 240">
           </div>
         </div>
-
-        <div class="row">
-          <div class="actions">
-            <button id="calcBtn">Calculate</button>
-            <button id="resetBtn" class="ghost">Reset</button>
-          </div>
+        <div class="actions">
+          <button id="calcBtn">Calculate ✨</button>
+          <button id="resetBtn" class="ghost">Reset</button>
         </div>
       </div>
 
@@ -83,37 +85,55 @@
               <option value="reduce_tenure" selected>Reduce Tenure</option>
               <option value="reduce_emi">Reduce EMI</option>
             </select>
+            <div class="help mt-4">Reducing tenure saves the maximum interest!</div>
           </div>
         </div>
         <div class="prepay-list" id="prepayList" aria-live="polite"></div>
         <div class="actions">
-          <button id="addPrepayBtn" class="secondary">Add Prepayment</button>
-          <button id="clearPrepayBtn" class="ghost">Clear Prepayments</button>
+          <button id="addPrepayBtn" class="secondary">+ Add Prepayment</button>
+          <button id="clearPrepayBtn" class="ghost">Clear</button>
         </div>
       </div>
     </section>
 
-    <section class="card container" aria-labelledby="summary-heading">
-      <h2 id="summary-heading">Summary</h2>
-      <div class="summary" id="summary">
-        <div class="kpi"><div class="label">Base EMI</div><div class="value" id="baseEmi">-</div></div>
-        <div class="kpi"><div class="label">Total Interest (No Prepay)</div><div class="value" id="baseInterest">-</div></div>
-        <div class="kpi"><div class="label">Total Payment (No Prepay)</div><div class="value" id="baseTotal">-</div></div>
-        <div class="kpi"><div class="label">Strategy EMI</div><div class="value" id="stratEmi">-</div></div>
-        <div class="kpi"><div class="label">Total Interest (With Prepay)</div><div class="value" id="stratInterest">-</div></div>
-        <div class="kpi"><div class="label">Interest Saved</div><div class="value" id="interestSaved">-</div></div>
-        <div class="kpi"><div class="label">Original Tenure</div><div class="value" id="baseTenure">-</div></div>
-        <div class="kpi"><div class="label">New Tenure</div><div class="value" id="newTenure">-</div></div>
-        <div class="kpi"><div class="label">Months Saved</div><div class="value" id="monthsSaved">-</div></div>
+    <section class="container" aria-labelledby="summary-heading" style="margin-top: 24px;">
+      <h2 id="summary-heading" style="margin-bottom: 12px;">Prepayment Analysis</h2>
+      <div class="summary" id="summary"
+        style="margin-top: 0; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+        <div class="kpi">
+          <div class="label">Interest Saved</div>
+          <div class="value highlight" id="interestSaved">-</div>
+        </div>
+        <div class="kpi">
+          <div class="label">Months Saved</div>
+          <div class="value highlight" id="monthsSaved">-</div>
+        </div>
+        <div class="kpi">
+          <div class="label">Original EMI</div>
+          <div class="value" id="baseEmi">-</div>
+        </div>
+        <div class="kpi">
+          <div class="label">New Strategy EMI</div>
+          <div class="value" id="stratEmi">-</div>
+        </div>
+        <div class="kpi">
+          <div class="label">Total Paid (No Prepay)</div>
+          <div class="value" id="baseTotal">-</div>
+        </div>
+        <div class="kpi">
+          <div class="label">Total Paid (With Prepay)</div>
+          <div class="value" id="stratInterest">-</div>
+        </div>
       </div>
     </section>
 
-    <section class="card container" aria-labelledby="schedule-heading">
-      <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;">
-        <h2 id="schedule-heading" style="margin:0;">Amortization Schedule</h2>
-        <div class="actions">
-          <button id="exportCsvBtn" class="ghost">Export CSV</button>
-          <button id="printBtn" class="ghost">Print</button>
+    <section class="table-container container" aria-labelledby="schedule-heading" style="margin-top: 32px;">
+      <div
+        style="padding: 24px; display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;border-bottom: 1px solid var(--glass-border);">
+        <h2 id="schedule-heading" style="margin:0; font-size:20px;">Revised Amortization Schedule</h2>
+        <div class="actions" style="margin-top:0;">
+          <button id="exportCsvBtn" class="ghost" style="padding:8px 16px; font-size:14px;">Download CSV ⬇️</button>
+          <button id="printBtn" class="ghost" style="padding:8px 16px; font-size:14px;">Print 🖨️</button>
         </div>
       </div>
       <div class="scroll-x">
@@ -121,24 +141,28 @@
           <thead>
             <tr>
               <th class="left">#</th>
-              <th class="left">Month</th>
-              <th>Opening</th>
-              <th>EMI</th>
+              <th>Opening Bal</th>
+              <th>EMI Paid</th>
               <th>Interest</th>
               <th>Principal</th>
-              <th>Prepayment</th>
-              <th>Closing</th>
+              <th style="color:var(--success);">Prepaid</th>
+              <th>Closing Bal</th>
             </tr>
           </thead>
           <tbody id="scheduleBody"></tbody>
         </table>
       </div>
     </section>
-
-    <footer class="container">
-      <div>Built for everyone. Works offline in your browser. · <a href="https://www.linkedin.com/in/yashpal-yadav-990278221/" target="_blank" rel="me noopener">LinkedIn</a></div>
-    </footer>
   </main>
+
+  <footer>
+    <div class="container">
+      <div>✨ Built for everyone. Works offline in your browser.</div>
+      <div style="margin-top: 12px;">Crafted with passion. Connect on <a
+          href="https://www.linkedin.com/in/yashpal-yadav-990278221/" target="_blank" rel="me noopener">LinkedIn</a>
+      </div>
+    </div>
+  </footer>
 
   <script type="module">
     import { initApp } from '../scripts/app.js';
@@ -146,6 +170,5 @@
     initApp();
   </script>
 </body>
+
 </html>
-
-

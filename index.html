@@ -1,92 +1,135 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Financial Calculator</title>
-<meta name="description" content="Free calculators: EMI, prepayment, affordability, balance transfer. Mobile-friendly and detailed schedules.">
-<meta name="theme-color" content="#0ea5e9">
-<link rel="manifest" href="manifest.webmanifest">
-<link rel="icon" href="favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="styles.css">
-<link rel="canonical" href="https://yashpal-0.github.io/Financial-Calculator/">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Financial Calculator">
-<meta property="og:description" content="Free calculators: EMI, prepayment, affordability, balance transfer. Mobile-friendly and detailed schedules.">
-<meta property="og:url" content="https://yashpal-0.github.io/Financial-Calculator/">
-<meta property="og:image" content="https://yashpal-0.github.io/Financial-Calculator/favicon.svg">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Financial Calculator">
-<meta name="twitter:description" content="Free calculators: EMI, prepayment, affordability, balance transfer. Mobile-friendly and detailed schedules.">
-<meta name="twitter:image" content="https://yashpal-0.github.io/Financial-Calculator/favicon.svg">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Financial Calculator Suite</title>
+  <meta name="description"
+    content="Free premium calculators: EMI, Prepayment, SIP, FD, RD, and more. Mobile-friendly and detailed schedules.">
+  <meta name="theme-color" content="#4f46e5">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="canonical" href="https://yashpal-0.github.io/Financial-Calculator/">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Financial Calculator Suite">
+  <meta property="og:description"
+    content="Free premium calculators: EMI, SIP, FD, RD, and more. Detailed schedules and gorgeous UI.">
+  <meta property="og:url" content="https://yashpal-0.github.io/Financial-Calculator/">
+  <meta property="og:image" content="https://yashpal-0.github.io/Financial-Calculator/favicon.svg">
 </head>
+
 <body>
-  <div class="container" style="display:flex;justify-content:flex-end;gap:8px;padding-top:8px;">
-    <button id="installBtn" class="ghost" style="display:none;">Install App</button>
-    <button id="themeToggle" class="ghost" title="Toggle dark mode">🌓</button>
+  <!-- Fixed Controls -->
+  <div class="container"
+    style="display:flex;justify-content:flex-end;gap:12px;padding-top:12px;position:relative;z-index:100;">
+    <button id="installBtn" class="ghost"
+      style="display:none;padding:6px 12px;font-size:14px;border-radius:20px;">Install App</button>
+    <button id="themeToggle" class="ghost" title="Toggle dark mode"
+      style="padding:6px 12px;font-size:16px;border-radius:20px;">🌓</button>
   </div>
+
   <nav class="navbar">
     <div class="container nav-wrap">
-      <div class="brand">Financial Calculator</div>
-      <button class="nav-toggle" aria-label="Toggle menu" onclick="document.body.classList.toggle('nav-open')">☰</button>
+      <div class="brand">FinCalc Suite</div>
+      <button class="nav-toggle" aria-label="Toggle menu" onclick="document.body.classList.toggle('nav-open')">☰
+        Menu</button>
       <ul class="nav-links">
         <li><a href="index.html" aria-current="page">Home</a></li>
         <li><a href="pages/emi.html">EMI</a></li>
         <li><a href="pages/prepayment.html">Prepayment</a></li>
-        <li><a href="pages/affordability.html">Affordability</a></li>
-        <li><a href="pages/balance-transfer.html">Balance Transfer</a></li>
-        <li><a href="pages/education.html">Education</a></li>
+        <li><a href="pages/sip.html">SIP</a></li>
+        <li><a href="pages/fd.html">FD</a></li>
+        <li><a href="pages/rd.html">RD</a></li>
+        <li><a href="pages/ppf.html">PPF</a></li>
+        <!-- Hidden by default, accessible via a dropdown or more link later if needed, but for now we list them -->
       </ul>
     </div>
   </nav>
 
   <header>
-    <div class="container">
-      <h1>🏠 Financial Calculator</h1>
-      <p>Professional-grade calculators for EMI, prepayment strategies, affordability analysis, and balance transfer comparisons. Built for accuracy and ease of use.</p>
+    <div class="container" style="position:relative;z-index:1;">
+      <h1>Master Your Finances</h1>
+      <p>A beautiful, premium suite of professional-grade tools for EMIs, loans, SIPs, and investments. Calculate with
+        absolute precision.</p>
     </div>
   </header>
 
   <main>
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "WebSite",
-      "name": "Financial Calculator",
-      "url": "https://yashpal-0.github.io/Financial-Calculator/"
-    }
-    </script>
-    <section class="cards container">
-      <a class="card card-link" href="pages/emi.html">
-        <h2>💰 EMI Calculator</h2>
-        <p>Calculate monthly EMI payments and generate detailed amortization schedules with interest breakdowns.</p>
-      </a>
-      <a class="card card-link" href="pages/prepayment.html">
-        <h2>⚡ Prepayment Calculator</h2>
-        <p>Optimize your loan with reduce tenure or reduce EMI strategies using one-time or recurring prepayments.</p>
-      </a>
-      <a class="card card-link" href="pages/affordability.html">
-        <h2>📊 Affordability Calculator</h2>
-        <p>Determine your maximum eligible loan amount based on income, existing EMIs, and FOIR/DTI ratios.</p>
-      </a>
-      <a class="card card-link" href="pages/balance-transfer.html">
-        <h2>🔄 Balance Transfer</h2>
-        <p>Compare your current loan with new lender offers to find potential savings and break-even points.</p>
-      </a>
-      <a class="card card-link" href="pages/education.html">
-        <h2>🎓 Education Loan</h2>
-        <p>Calculate education loan EMI with moratorium period, optional payments during study, and prepayment strategies.</p>
-      </a>
-    </section>
-    <footer>
-      <div>✨ Built for everyone. Works offline in your browser. No data collection, no tracking. · <a href="https://www.linkedin.com/in/yashpal-yadav-990278221/" target="_blank" rel="me noopener">LinkedIn</a></div>
-    </footer>
+    <div class="container">
+      <h2
+        style="margin-bottom:24px; font-size: 28px; background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+        Loan Calculators</h2>
+      <section class="cards mb-4">
+        <a class="card card-link" href="pages/emi.html">
+          <div class="card-icon">🏠</div>
+          <h2>EMI Calculator</h2>
+          <p>Calculate monthly EMI payments and generate detailed amortization schedules with interest breakdowns.</p>
+        </a>
+        <a class="card card-link" href="pages/prepayment.html">
+          <div class="card-icon">⚡</div>
+          <h2>Prepayment</h2>
+          <p>Optimize your loan with reduced tenure or EMI strategies using one-time or recurring prepayments.</p>
+        </a>
+        <a class="card card-link" href="pages/affordability.html">
+          <div class="card-icon">📊</div>
+          <h2>Affordability</h2>
+          <p>Determine your maximum eligible loan amount based on income, current EMIs, and FOIR ratios.</p>
+        </a>
+        <a class="card card-link" href="pages/balance-transfer.html">
+          <div class="card-icon">🔄</div>
+          <h2>Balance Transfer</h2>
+          <p>Compare your current loan with new lender offers to find potential savings and break-even points.</p>
+        </a>
+      </section>
+
+      <h2
+        style="margin-top: 48px; margin-bottom:24px; font-size: 28px; background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+        Investment & Savings</h2>
+      <section class="cards">
+        <a class="card card-link" href="pages/sip.html">
+          <div class="card-icon">📈</div>
+          <h2>SIP Calculator</h2>
+          <p>Calculate the future value of your Systematic Investment Plan and analyze wealth growth over time.</p>
+        </a>
+        <a class="card card-link" href="pages/lumpsum.html">
+          <div class="card-icon">💰</div>
+          <h2>Lumpsum Calculator</h2>
+          <p>Project the compound growth of a one-time investment over your desired time horizon.</p>
+        </a>
+        <a class="card card-link" href="pages/fd.html">
+          <div class="card-icon">🏦</div>
+          <h2>Fixed Deposit (FD)</h2>
+          <p>Plan secure investments with compound interest calculations to maximize your guaranteed returns.</p>
+        </a>
+        <a class="card card-link" href="pages/rd.html">
+          <div class="card-icon">📅</div>
+          <h2>Recurring Deposit (RD)</h2>
+          <p>Calculate maturity value for regular monthly deposits into an RD account.</p>
+        </a>
+        <a class="card card-link" href="pages/ppf.html">
+          <div class="card-icon">🏛️</div>
+          <h2>PPF Calculator</h2>
+          <p>Estimate returns on Public Provident Fund with yearly compounding and tax-free maturity benefits.</p>
+        </a>
+      </section>
+    </div>
   </main>
+
+  <footer>
+    <div class="container">
+      <div>✨ Built for everyone. Works offline in your browser. No data collection, tracking, or ads.</div>
+      <div style="margin-top: 12px;">Crafted with passion. Connect on <a
+          href="https://www.linkedin.com/in/yashpal-yadav-990278221/" target="_blank" rel="me noopener">LinkedIn</a>
+      </div>
+    </div>
+  </footer>
+
   <script type="module">
     import { initApp } from './scripts/app.js';
     initApp();
   </script>
 </body>
+
 </html>
-
-

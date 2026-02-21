@@ -1,50 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Affordability Calculator</title>
-<meta name="description" content="Estimate eligible home loan using FOIR/DTI with income and liabilities.">
-<meta name="theme-color" content="#0ea5e9">
-<link rel="manifest" href="../manifest.webmanifest">
-<link rel="icon" href="../favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="../styles.css">
-<link rel="canonical" href="https://yashpal-0.github.io/Financial-Calculator/pages/affordability.html">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Affordability Calculator">
-<meta property="og:description" content="Estimate eligible home loan using FOIR/DTI with income and liabilities.">
-<meta property="og:url" content="https://yashpal-0.github.io/Financial-Calculator/pages/affordability.html">
-<meta property="og:image" content="https://yashpal-0.github.io/Financial-Calculator/favicon.svg">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Affordability Calculator">
-<meta name="twitter:description" content="Estimate eligible home loan using FOIR/DTI with income and liabilities.">
-<meta name="twitter:image" content="https://yashpal-0.github.io/Financial-Calculator/favicon.svg">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Affordability Calculator | FinCalc</title>
+  <meta name="description" content="Estimate eligible home loan using FOIR/DTI with income and liabilities.">
+  <meta name="theme-color" content="#4f46e5">
+  <link rel="manifest" href="../manifest.webmanifest">
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../styles.css">
+  <link rel="canonical" href="https://yashpal-0.github.io/Financial-Calculator/pages/affordability.html">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Affordability Calculator | FinCalc">
+  <meta property="og:description" content="Estimate eligible home loan using FOIR/DTI with income and liabilities.">
+  <meta property="og:url" content="https://yashpal-0.github.io/Financial-Calculator/pages/affordability.html">
+  <meta property="og:image" content="https://yashpal-0.github.io/Financial-Calculator/favicon.svg">
 </head>
+
 <body>
-  <div class="container" style="display:flex;justify-content:flex-end;gap:8px;padding-top:8px;">
-    <button id="installBtn" class="ghost" style="display:none;">Install App</button>
-    <button id="themeToggle" class="ghost" title="Toggle dark mode">🌓</button>
+  <!-- Fixed Controls -->
+  <div class="container"
+    style="display:flex;justify-content:flex-end;gap:12px;padding-top:12px;position:relative;z-index:100;">
+    <button id="installBtn" class="ghost"
+      style="display:none;padding:6px 12px;font-size:14px;border-radius:20px;">Install App</button>
+    <button id="themeToggle" class="ghost" title="Toggle dark mode"
+      style="padding:6px 12px;font-size:16px;border-radius:20px;">🌓</button>
   </div>
+
   <nav class="navbar">
     <div class="container nav-wrap">
-      <div class="brand">Financial Calculator</div>
-      <button class="nav-toggle" aria-label="Toggle menu" onclick="document.body.classList.toggle('nav-open')">☰</button>
+      <div class="brand">FinCalc Suite</div>
+      <button class="nav-toggle" aria-label="Toggle menu" onclick="document.body.classList.toggle('nav-open')">☰
+        Menu</button>
       <ul class="nav-links">
         <li><a href="../index.html">Home</a></li>
         <li><a href="./emi.html">EMI</a></li>
-        <li><a href="./prepayment.html">Prepayment</a></li>
-        <li><a href="./affordability.html" aria-current="page">Affordability</a></li>
-        <li><a href="./balance-transfer.html">Balance Transfer</a></li>
-        <li><a href="./education.html">Education</a></li>
+        <li><a href="./prepayment.html">Prepay</a></li>
+        <li><a href="./sip.html">SIP</a></li>
+        <li><a href="./fd.html">FD</a></li>
+        <li><a href="./rd.html">RD</a></li>
+        <li><a href="./ppf.html">PPF</a></li>
       </ul>
     </div>
   </nav>
 
-  <header>
-    <div class="container">
-      <h1>Affordability Calculator</h1>
-      <p>Estimate eligible loan amount based on income, liabilities, and target FOIR/DTI.</p>
-    </div>
+  <header class="page-header container">
+    <h1>Affordability Engine</h1>
+    <p style="color:var(--muted); font-size:18px;">Estimate your maximum eligible loan amount based on income and
+      liabilities.</p>
   </header>
 
   <main>
@@ -59,13 +63,13 @@
           <input id="otherEmi" type="number" inputmode="decimal" min="0" step="100" placeholder="e.g. 10,000">
         </div>
         <div>
-          <label for="foir">Target FOIR %</label>
+          <label for="foir">Target FOIR / DTI %</label>
           <input id="foir" type="number" inputmode="decimal" min="10" max="70" step="1" value="40">
         </div>
       </div>
-      <div class="row row-3">
+      <div class="row row-3" style="margin-top: 16px;">
         <div>
-          <label for="annualRate">Annual Interest % (APR)</label>
+          <label for="annualRate">Annual Rate % (APR)</label>
           <input id="annualRate" type="number" inputmode="decimal" min="0" step="0.01" value="8.5">
         </div>
         <div>
@@ -73,28 +77,42 @@
           <input id="tenureMonths" type="number" inputmode="numeric" min="12" step="12" value="240">
         </div>
         <div>
-          <label for="downPayment">Down Payment</label>
+          <label for="downPayment">Down Payment Funds</label>
           <input id="downPayment" type="number" inputmode="decimal" min="0" step="1000" placeholder="e.g. 1,000,000">
         </div>
       </div>
       <div class="actions">
-        <button id="calcBtn">Calculate</button>
+        <button id="calcBtn">Check Eligibility ✨</button>
         <button id="resetBtn" class="ghost">Reset</button>
       </div>
     </section>
 
-    <section class="card container" aria-labelledby="aff-summary-heading">
-      <h2 id="aff-summary-heading">Results</h2>
-      <div class="summary" id="summary">
-        <div class="kpi"><div class="label">Max Affordable EMI</div><div class="value" id="maxEmi">-</div></div>
-        <div class="kpi"><div class="label">Eligible Loan Amount</div><div class="value" id="eligibleLoan">-</div></div>
-        <div class="kpi"><div class="label">Approx Property Budget</div><div class="value" id="propertyBudget">-</div></div>
+    <section class="container" aria-labelledby="aff-summary-heading" style="margin-top: 32px;">
+      <h2 id="aff-summary-heading" style="margin-bottom: 12px;">Your Results</h2>
+      <div class="summary" id="summary" style="margin-top: 0;">
+        <div class="kpi">
+          <div class="label">Max Affordable EMI</div>
+          <div class="value highlight" id="maxEmi">-</div>
+        </div>
+        <div class="kpi">
+          <div class="label">Eligible Loan Amount</div>
+          <div class="value highlight" id="eligibleLoan">-</div>
+        </div>
+        <div class="kpi">
+          <div class="label">Approx Property Budget</div>
+          <div class="value" id="propertyBudget">-</div>
+        </div>
       </div>
     </section>
   </main>
 
-  <footer class="container">
-    <div>Built for everyone. Works offline in your browser. · <a href="https://www.linkedin.com/in/yashpal-yadav-990278221/" target="_blank" rel="me noopener">LinkedIn</a></div>
+  <footer>
+    <div class="container">
+      <div>✨ Built for everyone. Works offline in your browser.</div>
+      <div style="margin-top: 12px;">Crafted with passion. Connect on <a
+          href="https://www.linkedin.com/in/yashpal-yadav-990278221/" target="_blank" rel="me noopener">LinkedIn</a>
+      </div>
+    </div>
   </footer>
 
   <script type="module">
@@ -103,6 +121,5 @@
     initApp();
   </script>
 </body>
+
 </html>
-
-

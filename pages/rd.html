@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Recurring Deposit Calculator | FinCalc</title>
+    <meta name="description" content="Calculate maturity value of Recurring Deposits.">
+    <meta name="theme-color" content="#4f46e5">
+    <link rel="manifest" href="../manifest.webmanifest">
+    <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="../styles.css">
+</head>
+
+<body>
+    <div class="container"
+        style="display:flex;justify-content:flex-end;gap:12px;padding-top:12px;position:relative;z-index:100;">
+        <button id="themeToggle" class="ghost" title="Toggle dark mode"
+            style="padding:6px 12px;font-size:16px;border-radius:20px;">🌓</button>
+    </div>
+
+    <nav class="navbar">
+        <div class="container nav-wrap">
+            <div class="brand">FinCalc Suite</div>
+            <button class="nav-toggle" aria-label="Toggle menu" onclick="document.body.classList.toggle('nav-open')">☰
+                Menu</button>
+            <ul class="nav-links">
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="./emi.html">EMI</a></li>
+                <li><a href="./prepayment.html">Prepay</a></li>
+                <li><a href="./sip.html">SIP</a></li>
+                <li><a href="./fd.html">FD</a></li>
+                <li><a href="./rd.html" aria-current="page">RD</a></li>
+                <li><a href="./ppf.html">PPF</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <header class="page-header container">
+        <h1>Recurring Deposit (RD)</h1>
+        <p style="color:var(--muted); font-size:18px;">Estimate the maturity value of your regular monthly deposits.</p>
+    </header>
+
+    <main>
+        <section class="card container">
+            <div class="row row-3">
+                <div>
+                    <label for="monthlyDeposit">Monthly Deposit</label>
+                    <input id="monthlyDeposit" type="number" inputmode="decimal" min="500" step="100"
+                        placeholder="e.g. 5000">
+                </div>
+                <div>
+                    <label for="annualRate">Interest Rate (p.a) %</label>
+                    <input id="annualRate" type="number" inputmode="decimal" min="1" step="0.1" placeholder="e.g. 6.5">
+                </div>
+                <div>
+                    <label for="tenureMonths">Tenure (Months)</label>
+                    <input id="tenureMonths" type="number" inputmode="numeric" min="6" step="1" placeholder="e.g. 60">
+                </div>
+            </div>
+            <div class="actions">
+                <button id="calcBtn">Calculate Maturity ✨</button>
+                <button id="resetBtn" class="ghost">Reset</button>
+            </div>
+        </section>
+
+        <section class="container" aria-labelledby="summary-heading" style="margin-top: 32px;">
+            <h2 id="summary-heading" style="margin-bottom: 12px;">Deposit Summary</h2>
+            <div class="summary" id="summary" style="margin-top: 0;">
+                <div class="kpi">
+                    <div class="label">Total Amount Deposited</div>
+                    <div class="value" id="principalOut">-</div>
+                </div>
+                <div class="kpi">
+                    <div class="label">Total Interest Earned</div>
+                    <div class="value" id="interestOut" style="color:var(--success);">-</div>
+                </div>
+                <div class="kpi">
+                    <div class="label">Maturity Value</div>
+                    <div class="value highlight" id="maturityOut">-</div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div>✨ Built for everyone. Works offline in your browser.</div>
+        </div>
+    </footer>
+
+    <script type="module">
+        import { initApp } from '../scripts/app.js';
+        import '../scripts/rd.js';
+        initApp();
+    </script>
+</body>
+
+</html>
