@@ -15,6 +15,40 @@ export function calculateLumpsum(principal, annualRatePercent, years, compoundsP
 }
 
 /**
+ * CAGR (Compound Annual Growth Rate) for lumpsum: (FV/PV)^(1/years) - 1
+ * @param {number} startValue - Initial investment
+ * @param {number} endValue - Final value
+ * @param {number} years - Holding period in years
+ * @returns {number} CAGR as decimal (e.g. 0.12 for 12%)
+ */
+export function calculateCAGR(startValue, endValue, years) {
+  if (!startValue || startValue <= 0 || years <= 0) return 0;
+  return Math.pow(endValue / startValue, 1 / years) - 1;
+}
+
+/**
+ * LTCG tax for equity mutual funds (India): 10% on gains above ₹1L per year.
+ * STCG: 15% for equity held < 1 year.
+ * @param {number} gain - Capital gains amount
+ * @param {number} holdingYears - Years held
+ * @param {number} exemptionLimit - Annual exemption (default 1,00,000)
+ * @returns {number} Tax amount in INR
+ */
+export function equityLTCGTax(gain, holdingYears, exemptionLimit = 100000) {
+  if (gain <= 0 || holdingYears < 1) return 0;
+  const taxableGain = Math.max(0, gain - exemptionLimit);
+  return taxableGain * 0.1;
+}
+
+/**
+ * STCG tax for equity (< 1 year): 15%
+ */
+export function equitySTCGTax(gain) {
+  if (gain <= 0) return 0;
+  return gain * 0.15;
+}
+
+/**
  * Calculates Future Value of a Systematic Investment Plan (SIP)
  * @param {number} monthlyInvestment - Monthly SIP amount
  * @param {number} annualRatePercent - Annual expected return

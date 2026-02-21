@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mutual Fund Returns | FinCalc</title>
+  <meta name="description"
+    content="Calculate SIP & lumpsum mutual fund returns with CAGR, tax (LTCG/STCG), and wealth projection.">
+  <meta name="theme-color" content="#0d9488">
+  <link rel="manifest" href="../manifest.webmanifest">
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../styles.css">
+  <link rel="canonical" href="https://yashpal-0.github.io/Financial-Calculator/pages/mutual-fund.html">
+</head>
+
+<body>
+  <div class="container"
+    style="display:flex;justify-content:flex-end;gap:12px;padding-top:12px;position:relative;z-index:100;">
+    <button id="installBtn" class="ghost"
+      style="display:none;padding:6px 12px;font-size:14px;border-radius:20px;">Install App</button>
+    <button id="themeToggle" class="ghost" title="Toggle dark mode"
+      style="padding:6px 12px;font-size:16px;border-radius:20px;">🌓</button>
+  </div>
+
+  <nav class="navbar">
+    <div class="container nav-wrap">
+      <div class="brand">FinCalc Suite</div>
+      <button class="nav-toggle" aria-label="Toggle menu" onclick="document.body.classList.toggle('nav-open')">☰
+        Menu</button>
+      <ul class="nav-links">
+        <li><a href="../index.html">Home</a></li>
+        <li><a href="./emi.html">EMI</a></li>
+        <li><a href="./prepayment.html">Prepay</a></li>
+        <li><a href="./sip.html">SIP</a></li>
+        <li><a href="./mutual-fund.html" aria-current="page">Mutual Fund</a></li>
+        <li><a href="./fd.html">FD</a></li>
+        <li><a href="./rd.html">RD</a></li>
+        <li><a href="./ppf.html">PPF</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <header class="page-header container">
+    <h1>Mutual Fund Returns</h1>
+    <p style="color:var(--muted); font-size:18px;">Project SIP & lumpsum returns with CAGR and post-tax analysis for
+      equity funds.</p>
+  </header>
+
+  <main>
+    <section class="grid grid-2 container">
+      <div class="card" aria-labelledby="sip-heading">
+        <h2 id="sip-heading">SIP Returns</h2>
+        <div class="row row-1" style="gap:16px;">
+          <div>
+            <label for="mfMonthly">Monthly SIP (₹)</label>
+            <input id="mfMonthly" type="number" inputmode="decimal" min="500" step="500" placeholder="e.g. 10000">
+          </div>
+          <div>
+            <label for="mfRate">Expected Return (p.a) %</label>
+            <input id="mfRate" type="number" inputmode="decimal" min="1" step="0.5" placeholder="e.g. 12">
+          </div>
+          <div>
+            <label for="mfYears">Years</label>
+            <input id="mfYears" type="number" inputmode="numeric" min="1" step="1" placeholder="e.g. 10">
+          </div>
+        </div>
+      </div>
+
+      <div class="card" aria-labelledby="lumpsum-heading">
+        <h2 id="lumpsum-heading">Lumpsum Returns</h2>
+        <div class="row row-1" style="gap:16px;">
+          <div>
+            <label for="mfLumpsum">Investment (₹)</label>
+            <input id="mfLumpsum" type="number" inputmode="decimal" min="1000" step="1000" placeholder="e.g. 100000">
+          </div>
+          <div>
+            <label for="mfLumpRate">Expected Return (p.a) %</label>
+            <input id="mfLumpRate" type="number" inputmode="decimal" min="1" step="0.5" placeholder="e.g. 12">
+          </div>
+          <div>
+            <label for="mfLumpYears">Years</label>
+            <input id="mfLumpYears" type="number" inputmode="numeric" min="1" step="1" placeholder="e.g. 10">
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="container" style="margin-top: 8px;">
+      <div class="card">
+        <div class="row row-2" style="gap: 24px;">
+          <div>
+            <label for="mfHoldingYears">Holding Period for Tax (years)</label>
+            <input id="mfHoldingYears" type="number" inputmode="numeric" min="0" step="0.5"
+              placeholder="Same as years above">
+            <div class="help">Used for LTCG (≥1yr) vs STCG (&lt;1yr) tax calculation</div>
+          </div>
+          <div>
+            <label for="mfCalcMode">Calculate</label>
+            <select id="mfCalcMode">
+              <option value="both" selected>SIP + Lumpsum</option>
+              <option value="sip">SIP only</option>
+              <option value="lumpsum">Lumpsum only</option>
+            </select>
+          </div>
+        </div>
+        <div class="actions">
+          <button id="mfCalcBtn">Calculate Returns ✨</button>
+          <button id="mfResetBtn" class="ghost">Reset</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="container" aria-labelledby="mf-summary-heading" style="margin-top: 32px;">
+      <h2 id="mf-summary-heading" style="margin-bottom: 16px;">Returns Analysis</h2>
+      <div id="mfSipSection" class="summary-section">
+        <h3 class="section-title">SIP Results</h3>
+        <div class="summary mf-summary">
+          <div class="kpi">
+            <div class="label">Invested</div>
+            <div class="value" id="mfSipInvested">-</div>
+          </div>
+          <div class="kpi">
+            <div class="label">Future Value</div>
+            <div class="value highlight" id="mfSipFV">-</div>
+          </div>
+          <div class="kpi">
+            <div class="label">Gains</div>
+            <div class="value" id="mfSipGains" style="color:var(--success);">-</div>
+          </div>
+          <div class="kpi">
+            <div class="label">CAGR (implied)</div>
+            <div class="value" id="mfSipCAGR">-</div>
+          </div>
+          <div class="kpi">
+            <div class="label">Tax (est.)</div>
+            <div class="value" id="mfSipTax">-</div>
+          </div>
+          <div class="kpi">
+            <div class="label">Post-Tax Value</div>
+            <div class="value" id="mfSipPostTax">-</div>
+          </div>
+        </div>
+      </div>
+      <div id="mfLumpSection" class="summary-section" style="margin-top: 24px;">
+        <h3 class="section-title">Lumpsum Results</h3>
+        <div class="summary mf-summary">
+          <div class="kpi">
+            <div class="label">Invested</div>
+            <div class="value" id="mfLumpInvested">-</div>
+          </div>
+          <div class="kpi">
+            <div class="label">Future Value</div>
+            <div class="value highlight" id="mfLumpFV">-</div>
+          </div>
+          <div class="kpi">
+            <div class="label">Gains</div>
+            <div class="value" id="mfLumpGains" style="color:var(--success);">-</div>
+          </div>
+          <div class="kpi">
+            <div class="label">CAGR</div>
+            <div class="value" id="mfLumpCAGR">-</div>
+          </div>
+          <div class="kpi">
+            <div class="label">Tax (est.)</div>
+            <div class="value" id="mfLumpTax">-</div>
+          </div>
+          <div class="kpi">
+            <div class="label">Post-Tax Value</div>
+            <div class="value" id="mfLumpPostTax">-</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="container" style="margin-top: 32px;">
+      <div class="card info-card">
+        <h3 style="margin-bottom: 8px;">📌 Tax Notes (Equity Funds)</h3>
+        <p class="help" style="margin: 0; font-size: 13px; line-height: 1.6;">
+          <strong>LTCG</strong>: 10% on gains above ₹1 lakh/year (holding ≥1 year). <strong>STCG</strong>: 15% (holding &lt;1
+          year). This is an estimate; consult a CA for exact liability.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div>✨ Built for everyone. Works offline in your browser.</div>
+      <div style="margin-top: 12px;">Crafted with passion. Connect on <a
+          href="https://www.linkedin.com/in/yashpal-yadav-990278221/" target="_blank" rel="me noopener">LinkedIn</a>
+      </div>
+    </div>
+  </footer>
+
+  <script type="module">
+    import { initApp } from '../scripts/app.js';
+    import '../scripts/mutual-fund.js';
+    initApp();
+  </script>
+</body>
+
+</html>

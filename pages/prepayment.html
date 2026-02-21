@@ -40,6 +40,7 @@
         <li><a href="./emi.html">EMI</a></li>
         <li><a href="./prepayment.html" aria-current="page">Prepay</a></li>
         <li><a href="./sip.html">SIP</a></li>
+        <li><a href="./mutual-fund.html">Mutual Fund</a></li>
         <li><a href="./fd.html">FD</a></li>
         <li><a href="./rd.html">RD</a></li>
         <li><a href="./ppf.html">PPF</a></li>
@@ -96,7 +97,7 @@
       </div>
     </section>
 
-    <section class="container" aria-labelledby="summary-heading" style="margin-top: 24px;">
+    <section class="container" style="margin-top: 24px;">
       <h2 id="summary-heading" style="margin-bottom: 12px;">Prepayment Analysis</h2>
       <div class="summary" id="summary"
         style="margin-top: 0; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
@@ -124,6 +125,32 @@
           <div class="label">Total Paid (With Prepay)</div>
           <div class="value" id="stratInterest">-</div>
         </div>
+      </div>
+
+      <div class="card info-card" id="prepayVsInvestCard" style="margin-top: 24px;">
+        <h3 style="margin-bottom: 12px;">Prepay vs Invest</h3>
+        <p class="help" style="margin-bottom: 12px;">Compare interest saved by prepayment with investing the same amount in mutual funds.</p>
+        <div class="row row-2" style="gap: 16px; margin-bottom: 16px;">
+          <div>
+            <label for="prepayVsInvestRate">Expected MF Return %</label>
+            <input id="prepayVsInvestRate" type="number" inputmode="decimal" min="0" step="0.5" value="12" placeholder="e.g. 12">
+          </div>
+        </div>
+        <div class="summary" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px;">
+          <div class="kpi">
+            <div class="label">Total Prepaid</div>
+            <div class="value" id="prepayTotalPrepaid">-</div>
+          </div>
+          <div class="kpi">
+            <div class="label">Interest Saved</div>
+            <div class="value highlight" id="prepayInterestSaved">-</div>
+          </div>
+          <div class="kpi">
+            <div class="label">Same Amount in MF (projected)</div>
+            <div class="value" id="prepayMfProjected">-</div>
+          </div>
+        </div>
+        <p class="help" style="margin-top: 12px; font-size: 13px;" id="prepayVsInvestNote">Add prepayments and calculate to compare.</p>
       </div>
     </section>
 

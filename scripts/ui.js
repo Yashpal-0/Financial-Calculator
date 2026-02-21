@@ -1,5 +1,5 @@
 import { toNumber, formatINR, formatNum } from './util.js';
-import { buildPrepayInstances } from './finance.js';
+import { buildPrepayInstances, calculateLumpsum } from './finance.js';
 
 export function collectInputs() {
   const P = toNumber(document.getElementById('loanAmount').value);
@@ -23,17 +23,56 @@ export function validateInputs(P, rate, tenure) {
   return errors;
 }
 
-export function renderSummary(base, strat, tenure, schedLen) {
-  document.getElementById('baseEmi').textContent = formatINR(base.emi);
-  document.getElementById('baseInterest').textContent = formatINR(base.totalInterest);
-  document.getElementById('baseTotal').textContent = formatINR(base.totalInterest + (base.emi * tenure));
-  document.getElementById('stratEmi').textContent = formatINR(strat.strategyEmi);
-  document.getElementById('stratInterest').textContent = formatINR(strat.totalInterest);
+/**
+ * Renders prepayment summary KPIs. Uses optional elements to support different page layouts.
+ * @param {number} principal - Original loan amount (for total-paid calc)
+ * @param {object} base - { emi, totalInterest } from baseline schedule
+ * @param {object} strat - { totalInterest, strategyEmi } from prepayment schedule
+ * @param {number} tenure - Original tenure in months
+ * @param {number} schedLen - New tenure (months) after prepayments
+ */
+export function renderSummary(principal, base, strat, tenure, schedLen) {
+  const totalPaidBase = base.emi * tenure;
+  const totalPaidStrat = principal + strat.totalInterest;
   const interestSaved = Math.max(0, base.totalInterest - strat.totalInterest);
-  document.getElementById('interestSaved').textContent = formatINR(interestSaved);
-  document.getElementById('baseTenure').textContent = formatNum(tenure) + ' months';
-  document.getElementById('newTenure').textContent = formatNum(schedLen) + ' months';
-  document.getElementById('monthsSaved').textContent = formatNum(Math.max(0, tenure - schedLen));
+  const monthsSaved = Math.max(0, tenure - schedLen);
+
+  setEl('baseEmi', formatINR(base.emi));
+  setEl('baseTotal', formatINR(totalPaidBase));
+  setEl('stratEmi', formatINR(strat.strategyEmi));
+  setEl('stratInterest', formatINR(totalPaidStrat));
+  setEl('interestSaved', formatINR(interestSaved));
+  setEl('monthsSaved', formatNum(monthsSaved));
+  setEl('baseInterest', formatINR(base.totalInterest));
+  setEl('baseTenure', formatNum(tenure) + ' months');
+  setEl('newTenure', formatNum(schedLen) + ' months');
+}
+
+function setEl(id, text) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = text;
+}
+
+/**
+ * Renders Prepay vs Invest comparison: total prepaid, interest saved, and
+ * projected MF growth for the same amount at user-specified return.
+ */
+export function renderPrepayVsInvest(schedule, interestSaved, loanRatePercent, monthsSaved) {
+  const totalPrepaid = schedule.reduce((sum, r) => sum + (r.prepayment || 0), 0);
+  const mfRateEl = document.getElementById('prepayVsInvestRate');
+  const mfRate = mfRateEl ? parseFloat(mfRateEl.value) || 12 : 12;
+  const yearsSaved = monthsSaved / 12;
+  const mfFV = totalPrepaid > 0 && yearsSaved > 0
+    ? calculateLumpsum(totalPrepaid, mfRate, yearsSaved, 1)
+    : 0;
+
+  setEl('prepayTotalPrepaid', formatINR(totalPrepaid));
+  setEl('prepayInterestSaved', formatINR(interestSaved));
+  setEl('prepayMfProjected', totalPrepaid > 0 ? formatINR(mfFV) : '-');
+  setEl('prepayVsInvestNote',
+    totalPrepaid > 0
+      ? `Prepaying saves guaranteed interest (≈${loanRatePercent}% effective). MF at ${mfRate}% has market risk.`
+      : 'Add prepayments and calculate to compare.');
 }
 
 export function renderSchedule(schedule) {
