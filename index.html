@@ -4,24 +4,24 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Financial Calculator Suite</title>
+  <title>FinCalc Suite – Premium Financial Calculators</title>
   <meta name="description"
-    content="Free premium calculators: EMI, Prepayment, SIP, FD, RD, and more. Mobile-friendly and detailed schedules.">
+    content="14 premium financial calculators: EMI, SIP, Step-Up SIP, FD, RD, PPF, Inflation, Retirement Planner, Income Tax, and more. Mobile-friendly, works offline, no ads.">
   <meta name="theme-color" content="#0d9488">
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="styles.css">
   <link rel="canonical" href="https://yashpal-0.github.io/Financial-Calculator/">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Financial Calculator Suite">
+  <meta property="og:title" content="FinCalc Suite – Premium Financial Calculators">
   <meta property="og:description"
-    content="Free premium calculators: EMI, SIP, FD, RD, and more. Detailed schedules and gorgeous UI.">
+    content="Free premium calculators: EMI, SIP, Step-Up SIP, FD, RD, PPF, Retirement, Tax. Detailed charts and gorgeous UI.">
   <meta property="og:url" content="https://yashpal-0.github.io/Financial-Calculator/">
   <meta property="og:image" content="https://yashpal-0.github.io/Financial-Calculator/favicon.svg">
 </head>
 
 <body>
-  <!-- Fixed Controls -->
+  <!-- Controls -->
   <div class="container"
     style="display:flex;justify-content:flex-end;gap:12px;padding-top:12px;position:relative;z-index:100;">
     <button id="installBtn" class="ghost"
@@ -32,19 +32,22 @@
 
   <nav class="navbar">
     <div class="container nav-wrap">
-      <div class="brand">FinCalc Suite</div>
+      <div class="brand"><span class="brand-icon">💹</span> FinCalc Suite</div>
       <button class="nav-toggle" aria-label="Toggle menu" onclick="document.body.classList.toggle('nav-open')">☰
         Menu</button>
       <ul class="nav-links">
         <li><a href="index.html" aria-current="page">Home</a></li>
         <li><a href="pages/emi.html">EMI</a></li>
-        <li><a href="pages/prepayment.html">Prepayment</a></li>
+        <li><a href="pages/prepayment.html">Prepay</a></li>
         <li><a href="pages/sip.html">SIP</a></li>
+        <li><a href="pages/step-up-sip.html">Step-Up SIP</a></li>
         <li><a href="pages/mutual-fund.html">Mutual Fund</a></li>
         <li><a href="pages/fd.html">FD</a></li>
         <li><a href="pages/rd.html">RD</a></li>
         <li><a href="pages/ppf.html">PPF</a></li>
-        <!-- Hidden by default, accessible via a dropdown or more link later if needed, but for now we list them -->
+        <li><a href="pages/inflation.html">Inflation</a></li>
+        <li><a href="pages/retirement.html">Retirement</a></li>
+        <li><a href="pages/income-tax.html">Tax</a></li>
       </ul>
     </div>
   </nav>
@@ -52,86 +55,248 @@
   <header>
     <div class="container" style="position:relative;z-index:1;">
       <h1>Master Your Finances</h1>
-      <p>A beautiful, premium suite of professional-grade tools for EMIs, loans, SIPs, and investments. Calculate with
-        absolute precision.</p>
+      <p>A beautiful, precision-engineered suite of tools for EMIs, investments, tax planning, and retirement.
+        Completely free. Works offline.</p>
+      <div class="hero-stats">
+        <div class="stat-badge"><span class="stat-icon">🧮</span><span class="stat-num">14</span> Calculators</div>
+        <div class="stat-badge"><span class="stat-icon">📶</span> Works <span class="stat-num">Offline</span></div>
+        <div class="stat-badge"><span class="stat-icon">🔒</span><span class="stat-num">Zero</span> Data Collection
+        </div>
+        <div class="stat-badge"><span class="stat-icon">💸</span><span class="stat-num">Free</span> Forever</div>
+        <div class="stat-badge"><span class="stat-icon">📱</span> Mobile <span class="stat-num">Friendly</span></div>
+      </div>
     </div>
   </header>
 
   <main>
     <div class="container">
-      <h2
-        style="margin-bottom:24px; font-size: 28px; background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
-        Loan Calculators</h2>
+
+      <!-- Feature Row -->
+      <div class="feature-row mt-8">
+        <div class="feature-item">
+          <span class="fi-icon">📊</span>
+          <h3>Visual Charts</h3>
+          <p>Interactive donut & bar charts show exactly how your money works</p>
+        </div>
+        <div class="feature-item">
+          <span class="fi-icon">🎚️</span>
+          <h3>Live Sliders</h3>
+          <p>Drag sliders to instantly see how changing inputs affects your results</p>
+        </div>
+        <div class="feature-item">
+          <span class="fi-icon">🇮🇳</span>
+          <h3>India-Specific</h3>
+          <p>Accurate Indian tax slabs, PPF rules, LTCG, and RD compounding</p>
+        </div>
+        <div class="feature-item">
+          <span class="fi-icon">⚡</span>
+          <h3>Instant Results</h3>
+          <p>Lightning-fast calculations with no server round-trips ever needed</p>
+        </div>
+      </div>
+
+      <!-- Loan Calculators -->
+      <div style="margin-top:56px;">
+        <div class="section-label">Loans & Repayment</div>
+        <h2 class="section-heading">Loan Calculators</h2>
+      </div>
       <section class="cards mb-4">
         <a class="card card-link" href="pages/emi.html">
           <div class="card-icon">🏠</div>
           <h2>EMI Calculator</h2>
-          <p>Calculate monthly EMI payments and generate detailed amortization schedules with interest breakdowns.</p>
+          <p>Calculate monthly EMI with interactive sliders, amortization schedule, and visual interest breakdown chart.
+          </p>
+          <div class="card-arrow">Explore →</div>
         </a>
         <a class="card card-link" href="pages/prepayment.html">
           <div class="card-icon">⚡</div>
           <h2>Prepayment</h2>
           <p>Optimize your loan with reduced tenure or EMI strategies using one-time or recurring prepayments.</p>
+          <div class="card-arrow">Explore →</div>
         </a>
         <a class="card card-link" href="pages/affordability.html">
           <div class="card-icon">📊</div>
           <h2>Affordability</h2>
-          <p>Determine your maximum eligible loan amount based on income, current EMIs, and FOIR ratios.</p>
+          <p>Determine maximum eligible loan based on income, existing EMIs, and FOIR ratios.</p>
+          <div class="card-arrow">Explore →</div>
         </a>
         <a class="card card-link" href="pages/balance-transfer.html">
           <div class="card-icon">🔄</div>
           <h2>Balance Transfer</h2>
-          <p>Compare your current loan with new lender offers to find potential savings and break-even points.</p>
+          <p>Compare current loan vs new lender to find savings and break-even points.</p>
+          <div class="card-arrow">Explore →</div>
+        </a>
+        <a class="card card-link" href="pages/education.html">
+          <div class="card-icon">🎓</div>
+          <h2>Education Loan</h2>
+          <p>Plan education loan EMIs with moratorium period and grace period calculations.</p>
+          <div class="card-arrow">Explore →</div>
         </a>
       </section>
 
-      <h2
-        style="margin-top: 48px; margin-bottom:24px; font-size: 28px; background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
-        Investment & Savings</h2>
-      <section class="cards">
-        <a class="card card-link" href="pages/mutual-fund.html">
-          <div class="card-icon">📊</div>
-          <h2>Mutual Fund Returns</h2>
-          <p>SIP & lumpsum returns with CAGR, LTCG/STCG tax estimates, and post-tax wealth projection.</p>
-        </a>
+      <!-- Investment Calculators -->
+      <div style="margin-top:56px;">
+        <div class="section-label">Wealth & Investing</div>
+        <h2 class="section-heading">Investment & Savings</h2>
+      </div>
+      <section class="cards mb-4">
         <a class="card card-link" href="pages/sip.html">
           <div class="card-icon">📈</div>
           <h2>SIP Calculator</h2>
-          <p>Calculate the future value of your Systematic Investment Plan and analyze wealth growth over time.</p>
+          <p>Calculate SIP future value with year-by-year bar chart and wealth gained vs invested breakdown.</p>
+          <div class="card-arrow">Explore →</div>
+        </a>
+        <a class="card card-link" href="pages/step-up-sip.html">
+          <div class="card-icon">🚀</div>
+          <h2>Step-Up SIP</h2>
+          <p>Model SIP with annual step-up increments. Compare vs flat SIP and see exponential wealth growth.</p>
+          <div class="card-arrow">Explore →</div>
+        </a>
+        <a class="card card-link" href="pages/mutual-fund.html">
+          <div class="card-icon">💼</div>
+          <h2>Mutual Fund Returns</h2>
+          <p>SIP & lumpsum returns with CAGR, LTCG/STCG tax estimates, and post-tax wealth projection.</p>
+          <div class="card-arrow">Explore →</div>
         </a>
         <a class="card card-link" href="pages/lumpsum.html">
           <div class="card-icon">💰</div>
-          <h2>Lumpsum Calculator</h2>
-          <p>Project the compound growth of a one-time investment over your desired time horizon.</p>
+          <h2>Lumpsum</h2>
+          <p>Project the compound growth of a one-time investment over your chosen time horizon.</p>
+          <div class="card-arrow">Explore →</div>
         </a>
         <a class="card card-link" href="pages/fd.html">
           <div class="card-icon">🏦</div>
           <h2>Fixed Deposit (FD)</h2>
-          <p>Plan secure investments with compound interest calculations to maximize your guaranteed returns.</p>
+          <p>Plan secure investments with various compounding frequencies (monthly, quarterly, yearly).</p>
+          <div class="card-arrow">Explore →</div>
         </a>
         <a class="card card-link" href="pages/rd.html">
           <div class="card-icon">📅</div>
           <h2>Recurring Deposit (RD)</h2>
-          <p>Calculate maturity value for regular monthly deposits into an RD account.</p>
+          <p>Calculate maturity value for regular monthly deposits with quarterly compounding.</p>
+          <div class="card-arrow">Explore →</div>
         </a>
         <a class="card card-link" href="pages/ppf.html">
           <div class="card-icon">🏛️</div>
           <h2>PPF Calculator</h2>
-          <p>Estimate returns on Public Provident Fund with yearly compounding and tax-free maturity benefits.</p>
+          <p>Estimate tax-free returns on Public Provident Fund with yearly compounding over 15+ years.</p>
+          <div class="card-arrow">Explore →</div>
         </a>
       </section>
+
+      <!-- Planning Calculators -->
+      <div style="margin-top:56px;">
+        <div class="section-label">Future Planning</div>
+        <h2 class="section-heading">Financial Planning</h2>
+      </div>
+      <section class="cards mb-4">
+        <a class="card card-link" href="pages/retirement.html">
+          <div class="card-icon">🏖️</div>
+          <h2>Retirement Planner</h2>
+          <p>Calculate the corpus needed to retire and the exact monthly SIP required to get there, inflation-adjusted.
+          </p>
+          <div class="card-arrow">Explore →</div>
+        </a>
+        <a class="card card-link" href="pages/inflation.html">
+          <div class="card-icon">📉</div>
+          <h2>Inflation Calculator</h2>
+          <p>See how inflation erodes purchasing power and what goods/services will cost in the future.</p>
+          <div class="card-arrow">Explore →</div>
+        </a>
+        <a class="card card-link" href="pages/income-tax.html">
+          <div class="card-icon">🧾</div>
+          <h2>Income Tax (FY 2024-25)</h2>
+          <p>Compare Old vs New Regime with all deductions. Instantly see which tax regime saves you more.</p>
+          <div class="card-arrow">Explore →</div>
+        </a>
+      </section>
+
+      <!-- FAQ Section -->
+      <section class="faq-section">
+        <div style="margin-bottom:32px;">
+          <div class="section-label">Got Questions?</div>
+          <h2 class="section-heading">Frequently Asked Questions</h2>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question" onclick="toggleFaq(this)">
+            What is compound interest and how does the EMI calculator use it?
+            <span class="faq-chevron">▾</span>
+          </button>
+          <div class="faq-answer">
+            <p>Compound interest is interest calculated on both the principal and accumulated interest. The EMI
+              calculator uses the standard reducing-balance formula: <strong>EMI = P × r × (1+r)ⁿ / ((1+r)ⁿ -
+                1)</strong>, where P = principal, r = monthly rate, n = tenure in months. Each month, interest is
+              charged only on the outstanding balance, which reduces as you pay EMIs.</p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question" onclick="toggleFaq(this)">
+            Is a Step-Up SIP really better than a regular SIP?
+            <span class="faq-chevron">▾</span>
+          </button>
+          <div class="faq-answer">
+            <p>Yes, significantly! With a 10% annual step-up on a ₹5,000/month SIP at 12% return over 20 years, you
+              accumulate <strong>₹2.6 Cr vs ₹1.0 Cr</strong> with a flat SIP — nearly 2.6× more wealth! Since salaries
+              typically rise every year, a step-up SIP aligns your investments with your income growth.</p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question" onclick="toggleFaq(this)">
+            Which tax regime should I choose — Old or New?
+            <span class="faq-chevron">▾</span>
+          </button>
+          <div class="faq-answer">
+            <p>It depends on your deductions. If you have large 80C investments (₹1.5L), HRA, and NPS (₹50K), the Old
+              Regime is usually better for income above ₹7.5L. If you have minimal deductions or income under ₹7L, the
+              New Regime with its rebate makes sense. Use our <a href="pages/income-tax.html"
+                style="color:var(--accent);font-weight:600;">Income Tax Calculator</a> to see your exact numbers.</p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question" onclick="toggleFaq(this)">
+            How much retirement corpus do I need?
+            <span class="faq-chevron">▾</span>
+          </button>
+          <div class="faq-answer">
+            <p>A common rule is the <strong>25x Rule</strong>: multiply your annual expenses at retirement by 25. So if
+              you need ₹60,000/month (₹7.2L/year), you need a corpus of ~₹1.8 Cr. But our <a
+                href="pages/retirement.html" style="color:var(--accent);font-weight:600;">Retirement Planner</a> factors
+              in inflation, post-retirement years, and investment returns for a more precise estimate.</p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question" onclick="toggleFaq(this)">
+            Does this app store any of my data?
+            <span class="faq-chevron">▾</span>
+          </button>
+          <div class="faq-answer">
+            <p>Absolutely not. All calculations happen 100% in your browser. We store <strong>only your theme
+                preference</strong> (dark/light mode) in localStorage. There are no analytics, no tracking pixels, no
+              ads, and no servers involved. Your financial data never leaves your device.</p>
+          </div>
+        </div>
+      </section>
+
     </div>
   </main>
 
   <footer>
     <div class="container">
-      <div>✨ Built for everyone. Works offline in your browser. No data collection, tracking, or ads.</div>
-      <div style="margin-top: 12px;">Crafted with passion. Connect on <a
+      <div>✨ Built for everyone. Works offline. No data collection, tracking, or ads.</div>
+      <div style="margin-top:12px;">Crafted with passion. Connect on <a
           href="https://www.linkedin.com/in/yashpal-yadav-990278221/" target="_blank" rel="me noopener">LinkedIn</a>
       </div>
     </div>
   </footer>
 
+  <script>
+    function toggleFaq(btn) {
+      const item = btn.closest('.faq-item');
+      const wasOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item.open').forEach(el => el.classList.remove('open'));
+      if (!wasOpen) item.classList.add('open');
+    }
+  </script>
   <script type="module">
     import { initApp } from './scripts/app.js';
     initApp();

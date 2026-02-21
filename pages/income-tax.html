@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Income Tax Calculator | FinCalc Suite</title>
+    <meta name="description"
+        content="Compare income tax under Old vs New Regime for FY 2024-25 with Section 80C, HRA, and NPS deductions. Find which regime saves you more.">
+    <meta name="theme-color" content="#0d9488">
+    <link rel="manifest" href="../manifest.webmanifest">
+    <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="canonical" href="https://yashpal-0.github.io/Financial-Calculator/pages/income-tax.html">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+
+<body>
+    <div class="container"
+        style="display:flex;justify-content:flex-end;gap:12px;padding-top:12px;position:relative;z-index:100;">
+        <button id="installBtn" class="ghost"
+            style="display:none;padding:6px 12px;font-size:14px;border-radius:20px;">Install App</button>
+        <button id="themeToggle" class="ghost" title="Toggle dark mode"
+            style="padding:6px 12px;font-size:16px;border-radius:20px;">🌓</button>
+    </div>
+    <nav class="navbar">
+        <div class="container nav-wrap">
+            <div class="brand"><span class="brand-icon">💹</span> FinCalc Suite</div>
+            <button class="nav-toggle" aria-label="Toggle menu" onclick="document.body.classList.toggle('nav-open')">☰
+                Menu</button>
+            <ul class="nav-links">
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="./emi.html">EMI</a></li>
+                <li><a href="./prepayment.html">Prepay</a></li>
+                <li><a href="./sip.html">SIP</a></li>
+                <li><a href="./step-up-sip.html">Step-Up SIP</a></li>
+                <li><a href="./mutual-fund.html">Mutual Fund</a></li>
+                <li><a href="./fd.html">FD</a></li>
+                <li><a href="./rd.html">RD</a></li>
+                <li><a href="./ppf.html">PPF</a></li>
+                <li><a href="./inflation.html">Inflation</a></li>
+                <li><a href="./retirement.html">Retirement</a></li>
+                <li><a href="./income-tax.html" aria-current="page">Tax</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <header class="page-header container">
+        <h1
+            style="background:var(--accent-gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">
+            Income Tax Calculator</h1>
+        <p>Compare Old vs New Tax Regime for FY 2024-25 and find which saves you more money.</p>
+    </header>
+
+    <main>
+        <section class="card container">
+            <h3 style="font-size:17px;font-weight:700;margin-bottom:20px;color:var(--text);">Income Details</h3>
+            <div class="row row-2">
+                <div>
+                    <label for="grossIncome">Gross Annual Income (₹)
+                        <span class="label-hint" tabindex="0">?<span class="tooltip">Total CTC or annual income before
+                                tax</span></span>
+                    </label>
+                    <input id="grossIncome" type="number" inputmode="decimal" min="0" step="10000"
+                        placeholder="e.g. 1200000">
+                    <div class="slider-group">
+                        <div class="slider-row">
+                            <input type="range" id="grossIncomeSlider" min="200000" max="5000000" step="50000"
+                                value="1200000">
+                            <span class="slider-value" id="grossIncomeVal">₹12L</span>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <label for="sec80C">Section 80C Investments (₹)
+                        <span class="label-hint" tabindex="0">?<span class="tooltip">ELSS, PPF, LIC, EPF – max ₹1.5L
+                                allowed</span></span>
+                    </label>
+                    <input id="sec80C" type="number" inputmode="decimal" min="0" max="150000" step="5000"
+                        placeholder="e.g. 150000">
+                    <div class="slider-group">
+                        <div class="slider-row">
+                            <input type="range" id="sec80CSlider" min="0" max="150000" step="5000" value="150000">
+                            <span class="slider-value" id="sec80CVal">₹1.5L</span>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <label for="hra">HRA Exemption (₹)
+                        <span class="label-hint" tabindex="0">?<span class="tooltip">HRA exempted amount for salaried
+                                employees</span></span>
+                    </label>
+                    <input id="hra" type="number" inputmode="decimal" min="0" step="5000" placeholder="e.g. 60000">
+                    <div class="slider-group">
+                        <div class="slider-row">
+                            <input type="range" id="hraSlider" min="0" max="500000" step="5000" value="60000">
+                            <span class="slider-value" id="hraVal">₹60,000</span>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <label for="nps">NPS Contribution 80CCD(1B) (₹)
+                        <span class="label-hint" tabindex="0">?<span class="tooltip">Additional NPS deduction up to
+                                ₹50,000</span></span>
+                    </label>
+                    <input id="nps" type="number" inputmode="decimal" min="0" max="50000" step="5000"
+                        placeholder="e.g. 50000">
+                    <div class="slider-group">
+                        <div class="slider-row">
+                            <input type="range" id="npsSlider" min="0" max="50000" step="5000" value="50000">
+                            <span class="slider-value" id="npsVal">₹50,000</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row-2" style="grid-column:1/-1;">
+                    <div>
+                        <label for="otherDed">Other Deductions (₹)
+                            <span class="label-hint" tabindex="0">?<span class="tooltip">80D medical, 80E education loan
+                                    interest, etc.</span></span>
+                        </label>
+                        <input id="otherDed" type="number" inputmode="decimal" min="0" step="5000"
+                            placeholder="e.g. 25000">
+                    </div>
+                </div>
+            </div>
+            <div class="actions">
+                <button id="calcBtn">Calculate Tax ✨</button>
+                <button id="resetBtn" class="ghost">Reset</button>
+            </div>
+        </section>
+
+        <!-- Result: Recommendation Banner -->
+        <section class="container" id="recommSection" style="display:none;margin-top:24px;">
+            <div id="recommBanner"
+                style="background:var(--accent-gradient);border-radius:var(--radius-xl);padding:24px 32px;display:flex;align-items:center;gap:20px;flex-wrap:wrap;box-shadow:var(--shadow-lg);animation:fadeUp 0.4s ease-out;">
+                <div style="font-size:40px;">🏆</div>
+                <div>
+                    <div
+                        style="color:rgba(255,255,255,0.85);font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:1px;">
+                        Recommended Regime</div>
+                    <div id="recommText" style="color:white;font-size:24px;font-weight:800;margin-top:4px;">–</div>
+                </div>
+                <div style="margin-left:auto;text-align:right;">
+                    <div style="color:rgba(255,255,255,0.85);font-size:13px;font-weight:600;">You Save</div>
+                    <div id="savingsText" style="color:white;font-size:22px;font-weight:800;">–</div>
+                </div>
+            </div>
+        </section>
+
+        <section class="container" style="margin-top:24px;" id="resultsSection" style="display:none;">
+            <h2 class="section-heading">Regime Comparison</h2>
+            <div class="compare-table-wrap scroll-x">
+                <table class="compare-table">
+                    <thead>
+                        <tr>
+                            <th class="left">Parameter</th>
+                            <th>Old Regime</th>
+                            <th>New Regime (FY 2024-25)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="compareTableBody"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="container chart-section" id="chartSection" style="display:none;">
+            <div class="chart-container">
+                <div class="chart-title">Tax Comparison: Old vs New Regime</div>
+                <div class="chart-donut-wrap">
+                    <canvas id="taxBarChart" height="200" style="max-width:100%;flex:1;"></canvas>
+                </div>
+            </div>
+            <div class="tip-card">
+                <span class="tip-icon">📌</span>
+                <div class="tip-content">
+                    <h4>Note on Tax Slabs (FY 2024-25)</h4>
+                    <p>The New Regime now offers a ₹75,000 standard deduction (up from ₹50,000) and a ₹25,000 rebate u/s
+                        87A for incomes up to ₹7L. Tax is calculated + 4% Health &amp; Education Cess. Values shown are
+                        <strong>estimates</strong>—consult a CA for exact liability.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div>✨ Works offline. No tracking or ads.</div>
+            <div style="margin-top:12px;">Connect on <a href="https://www.linkedin.com/in/yashpal-yadav-990278221/"
+                    target="_blank" rel="me noopener">LinkedIn</a></div>
+        </div>
+    </footer>
+
+    <script type="module">
+        import { initApp } from '../scripts/app.js';
+        import '../scripts/income-tax.js';
+        initApp();
+    </script>
+</body>
+
+</html>

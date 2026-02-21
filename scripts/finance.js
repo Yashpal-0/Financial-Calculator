@@ -1,3 +1,147 @@
+// Finance.js – Core financial calculation library
+
+/**
+ * Calculates future cost due to inflation
+ * @param {number} currentValue - Current price/value
+ * @param {number} inflationPercent - Annual inflation rate %
+ * @param {number} years - Number of years
+ * @returns {{ futureCost: number, purchasingPowerLost: number }}
+ */
+export function calculateInflation(currentValue, inflationPercent, years) {
+  const futureCost = currentValue * Math.pow(1 + inflationPercent / 100, years);
+  const purchasingPowerLost = futureCost - currentValue;
+  return { futureCost, purchasingPowerLost };
+}
+
+/**
+ * Calculates Step-Up SIP (SIP with annual increment)
+ * @param {number} initialMonthly - Starting monthly investment
+ * @param {number} stepUpPercent - Annual step-up %
+ * @param {number} annualReturn - Expected annual return %
+ * @param {number} years - Total years
+ * @returns {{ futureValue: number, totalInvested: number, yearlyData: Array }}
+ */
+export function calculateStepUpSIP(initialMonthly, stepUpPercent, annualReturn, years) {
+  const r = annualReturn / 100 / 12;
+  let totalFV = 0;
+  let totalInvested = 0;
+  const yearlyData = [];
+  let currentMonthly = initialMonthly;
+
+  for (let y = 0; y < years; y++) {
+    // Each year's SIP installments as a lumpsum at start of that year block
+    const monthsRemaining = (years - y) * 12;
+    // FV of this year's SIP at r for monthsRemaining months
+    const yearFV = r === 0
+      ? currentMonthly * 12
+      : currentMonthly * ((Math.pow(1 + r, monthsRemaining) - 1) / r) * (1 + r);
+    totalFV += yearFV;
+    totalInvested += currentMonthly * 12;
+    yearlyData.push({ year: y + 1, monthly: currentMonthly, cumInvested: totalInvested });
+    currentMonthly = currentMonthly * (1 + stepUpPercent / 100);
+  }
+  return { futureValue: totalFV, totalInvested, yearlyData };
+}
+
+/**
+ * Calculates required retirement corpus and monthly SIP needed
+ * @param {number} currentAge
+ * @param {number} retirementAge
+ * @param {number} monthlyExpense - Desired monthly expense at retirement (today's value)
+ * @param {number} inflationPercent - Inflation rate % p.a.
+ * @param {number} returnPercent - Investment return rate % p.a.
+ * @param {number} postRetirementYears - Expected years in retirement (default 25)
+ */
+export function calculateRetirementCorpus(currentAge, retirementAge, monthlyExpense, inflationPercent, returnPercent, postRetirementYears = 25) {
+  const yearsToRetire = retirementAge - currentAge;
+  const r = inflationPercent / 100;
+  const retMonthlyExpense = monthlyExpense * Math.pow(1 + r, yearsToRetire);
+  const retAnnualExpense = retMonthlyExpense * 12;
+
+  // Real rate of return in retirement: (1+return)/(1+inflation) - 1
+  const realRate = (1 + returnPercent / 100) / (1 + inflationPercent / 100) - 1;
+  let corpusNeeded;
+  if (Math.abs(realRate) < 0.0001) {
+    corpusNeeded = retAnnualExpense * postRetirementYears;
+  } else {
+    corpusNeeded = retAnnualExpense * (1 - Math.pow(1 + realRate, -postRetirementYears)) / realRate;
+  }
+
+  // Monthly SIP to reach corpusNeeded in yearsToRetire at returnPercent
+  const monthlyRate = returnPercent / 100 / 12;
+  const n = yearsToRetire * 12;
+  let monthlySIPNeeded;
+  if (monthlyRate === 0) {
+    monthlySIPNeeded = corpusNeeded / n;
+  } else {
+    monthlySIPNeeded = corpusNeeded * monthlyRate / ((Math.pow(1 + monthlyRate, n) - 1) * (1 + monthlyRate));
+  }
+
+  return { corpusNeeded, monthlySIPNeeded, retMonthlyExpense, yearsToRetire };
+}
+
+/**
+ * Calculates India Income Tax for FY 2024-25
+ * @param {number} grossIncome - Gross annual salary
+ * @param {{ section80C, hra, nps, otherDeductions }} oldRegimeDeductions
+ * @returns {{ oldRegimeTax, newRegimeTax, recommendation, oldTaxableIncome, newTaxableIncome }}
+ */
+export function calculateIncomeTax(grossIncome, oldRegimeDeductions = {}) {
+  // ===== OLD REGIME =====
+  const standardDeductionOld = 50000;
+  const { section80C = 0, hra = 0, nps = 0, otherDeductions = 0 } = oldRegimeDeductions;
+  const totalDeductions = Math.min(section80C, 150000) + hra + Math.min(nps, 50000) + otherDeductions + standardDeductionOld;
+  const oldTaxableIncome = Math.max(0, grossIncome - totalDeductions);
+  const oldRegimeTax = computeOldRegimeTax(oldTaxableIncome);
+
+  // ===== NEW REGIME (FY 2024-25) =====
+  const standardDeductionNew = 75000; // Budget 2024 increased to 75,000
+  const newTaxableIncome = Math.max(0, grossIncome - standardDeductionNew);
+  const newRegimeTax = computeNewRegimeTax(newTaxableIncome);
+
+  const recommendation = newRegimeTax <= oldRegimeTax ? 'new' : 'old';
+  const savings = Math.abs(oldRegimeTax - newRegimeTax);
+
+  return { oldRegimeTax, newRegimeTax, recommendation, savings, oldTaxableIncome, newTaxableIncome };
+}
+
+function applySlabs(income, slabs) {
+  let tax = 0;
+  for (const { from, to, rate } of slabs) {
+    if (income <= from) break;
+    tax += (Math.min(income, to) - from) * rate / 100;
+  }
+  return tax;
+}
+
+function computeOldRegimeTax(income) {
+  if (income <= 250000) return 0;
+  const slabs = [
+    { from: 250000, to: 500000, rate: 5 },
+    { from: 500000, to: 1000000, rate: 20 },
+    { from: 1000000, to: Infinity, rate: 30 },
+  ];
+  let tax = applySlabs(income, slabs);
+  // Rebate u/s 87A: full rebate up to ₹12,500 if income ≤ ₹5L
+  if (income <= 500000) tax = Math.max(0, tax - 12500);
+  // Add 4% health & education cess
+  return tax + tax * 0.04;
+}
+
+function computeNewRegimeTax(income) {
+  if (income <= 300000) return 0;
+  const slabs = [
+    { from: 300000, to: 700000, rate: 5 },
+    { from: 700000, to: 1000000, rate: 10 },
+    { from: 1000000, to: 1200000, rate: 15 },
+    { from: 1200000, to: 1500000, rate: 20 },
+    { from: 1500000, to: Infinity, rate: 30 },
+  ];
+  let tax = applySlabs(income, slabs);
+  // Rebate u/s 87A: full rebate up to ₹25,000 if income ≤ ₹7L
+  if (income <= 700000) tax = Math.max(0, tax - 25000);
+  return tax + tax * 0.04;
+}
 // No date utilities needed after simplifying to month-based schedule
 
 /**

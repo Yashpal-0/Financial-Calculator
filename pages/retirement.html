@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Retirement Planner | FinCalc Suite</title>
+    <meta name="description"
+        content="Calculate retirement corpus needed and monthly SIP required to retire comfortably. Plan with inflation and return rates.">
+    <meta name="theme-color" content="#0d9488">
+    <link rel="manifest" href="../manifest.webmanifest">
+    <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="canonical" href="https://yashpal-0.github.io/Financial-Calculator/pages/retirement.html">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+
+<body>
+    <div class="container"
+        style="display:flex;justify-content:flex-end;gap:12px;padding-top:12px;position:relative;z-index:100;">
+        <button id="installBtn" class="ghost"
+            style="display:none;padding:6px 12px;font-size:14px;border-radius:20px;">Install App</button>
+        <button id="themeToggle" class="ghost" title="Toggle dark mode"
+            style="padding:6px 12px;font-size:16px;border-radius:20px;">🌓</button>
+    </div>
+    <nav class="navbar">
+        <div class="container nav-wrap">
+            <div class="brand"><span class="brand-icon">💹</span> FinCalc Suite</div>
+            <button class="nav-toggle" aria-label="Toggle menu" onclick="document.body.classList.toggle('nav-open')">☰
+                Menu</button>
+            <ul class="nav-links">
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="./emi.html">EMI</a></li>
+                <li><a href="./prepayment.html">Prepay</a></li>
+                <li><a href="./sip.html">SIP</a></li>
+                <li><a href="./step-up-sip.html">Step-Up SIP</a></li>
+                <li><a href="./mutual-fund.html">Mutual Fund</a></li>
+                <li><a href="./fd.html">FD</a></li>
+                <li><a href="./rd.html">RD</a></li>
+                <li><a href="./ppf.html">PPF</a></li>
+                <li><a href="./inflation.html">Inflation</a></li>
+                <li><a href="./retirement.html" aria-current="page">Retirement</a></li>
+                <li><a href="./income-tax.html">Tax</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <header class="page-header container">
+        <h1
+            style="background:var(--accent-gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">
+            Retirement Planner</h1>
+        <p>Find out how much corpus you need to retire and how much to SIP monthly to get there.</p>
+    </header>
+
+    <main>
+        <section class="card container">
+            <div class="row row-2">
+                <div>
+                    <label for="currentAge">Current Age (Years)</label>
+                    <input id="currentAge" type="number" min="18" max="70" step="1" placeholder="e.g. 30">
+                    <div class="slider-group">
+                        <div class="slider-row">
+                            <input type="range" id="currentAgeSlider" min="18" max="65" step="1" value="30">
+                            <span class="slider-value" id="currentAgeVal">30 yrs</span>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <label for="retirementAge">Retirement Age (Years)</label>
+                    <input id="retirementAge" type="number" min="40" max="80" step="1" placeholder="e.g. 60">
+                    <div class="slider-group">
+                        <div class="slider-row">
+                            <input type="range" id="retirementAgeSlider" min="40" max="80" step="1" value="60">
+                            <span class="slider-value" id="retirementAgeVal">60 yrs</span>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <label for="monthlyExpense">Monthly Expense at Retirement (₹ today's value)
+                        <span class="label-hint" tabindex="0">?<span class="tooltip">How much would you spend per month
+                                if you retired today?</span></span>
+                    </label>
+                    <input id="monthlyExpense" type="number" inputmode="decimal" min="5000" step="5000"
+                        placeholder="e.g. 50000">
+                    <div class="slider-group">
+                        <div class="slider-row">
+                            <input type="range" id="monthlyExpenseSlider" min="10000" max="500000" step="5000"
+                                value="50000">
+                            <span class="slider-value" id="monthlyExpenseVal">₹50,000</span>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <label for="postRetYears">Post-Retirement Life (Years)
+                        <span class="label-hint" tabindex="0">?<span class="tooltip">How many years to fund after
+                                retirement?</span></span>
+                    </label>
+                    <input id="postRetYears" type="number" min="5" max="50" step="1" placeholder="e.g. 25">
+                    <div class="slider-group">
+                        <div class="slider-row">
+                            <input type="range" id="postRetYearsSlider" min="5" max="50" step="1" value="25">
+                            <span class="slider-value" id="postRetYearsVal">25 yrs</span>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <label for="retInflation">Inflation Rate (% p.a.)
+                        <span class="label-hint" tabindex="0">?<span class="tooltip">Expected annual inflation
+                                rate</span></span>
+                    </label>
+                    <input id="retInflation" type="number" inputmode="decimal" min="1" max="15" step="0.5"
+                        placeholder="e.g. 6">
+                    <div class="slider-group">
+                        <div class="slider-row">
+                            <input type="range" id="retInflationSlider" min="1" max="15" step="0.5" value="6">
+                            <span class="slider-value" id="retInflationVal">6.0%</span>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <label for="retReturn">Expected Return (% p.a.)
+                        <span class="label-hint" tabindex="0">?<span class="tooltip">Expected investment return during
+                                accumulation</span></span>
+                    </label>
+                    <input id="retReturn" type="number" inputmode="decimal" min="1" max="25" step="0.5"
+                        placeholder="e.g. 12">
+                    <div class="slider-group">
+                        <div class="slider-row">
+                            <input type="range" id="retReturnSlider" min="4" max="20" step="0.5" value="12">
+                            <span class="slider-value" id="retReturnVal">12.0%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="actions">
+                <button id="calcBtn">Plan My Retirement ✨</button>
+                <button id="resetBtn" class="ghost">Reset</button>
+            </div>
+        </section>
+
+        <section class="container" style="margin-top:24px;" id="resultsSection" style="display:none;">
+            <h2 class="section-heading">Retirement Plan</h2>
+            <div class="summary" id="summary"
+                style="margin-top:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px;">
+                <div class="kpi">
+                    <div class="label">Years to Retirement</div>
+                    <div class="value" id="yearsToRetOut">–</div>
+                </div>
+                <div class="kpi">
+                    <div class="label">Monthly Expense at Retirement</div>
+                    <div class="value" id="retExpenseOut">–</div>
+                </div>
+                <div class="kpi">
+                    <div class="label">Corpus Needed at Retirement</div>
+                    <div class="value highlight" id="corpusOut">–</div>
+                </div>
+                <div class="kpi">
+                    <div class="label">Monthly SIP Required Now</div>
+                    <div class="value highlight" id="monthlySIPOut">–</div>
+                </div>
+            </div>
+        </section>
+
+        <section class="container chart-section" id="chartSection" style="display:none;">
+            <div class="chart-container">
+                <div class="chart-title">Corpus Build-up vs Required</div>
+                <div class="chart-wrap"><canvas id="retChart" height="300"></canvas></div>
+            </div>
+            <div class="tip-card">
+                <span class="tip-icon">🏖️</span>
+                <div class="tip-content">
+                    <h4>Start Early, Retire Rich</h4>
+                    <p>Starting your retirement SIP at age 25 vs 35 can <strong>halve your required monthly
+                            investment</strong> thanks to the compounding snowball effect. The best time to start was
+                        yesterday — the second best time is now.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div>✨ Works offline. No tracking or ads.</div>
+            <div style="margin-top:12px;">Connect on <a href="https://www.linkedin.com/in/yashpal-yadav-990278221/"
+                    target="_blank" rel="me noopener">LinkedIn</a></div>
+        </div>
+    </footer>
+
+    <script type="module">
+        import { initApp } from '../scripts/app.js';
+        import '../scripts/retirement.js';
+        initApp();
+    </script>
+</body>
+
+</html>

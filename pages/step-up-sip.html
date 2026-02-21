@@ -4,14 +4,14 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>SIP Calculator | FinCalc Suite</title>
+    <title>Step-Up SIP Calculator | FinCalc Suite</title>
     <meta name="description"
-        content="Calculate future value of monthly SIP investments with interactive sliders and year-by-year growth chart.">
+        content="Calculate wealth from a SIP with annual step-up increments. See the power of increasing your monthly investment each year.">
     <meta name="theme-color" content="#0d9488">
     <link rel="manifest" href="../manifest.webmanifest">
     <link rel="icon" href="../favicon.svg" type="image/svg+xml">
     <link rel="stylesheet" href="../styles.css">
-    <link rel="canonical" href="https://yashpal-0.github.io/Financial-Calculator/pages/sip.html">
+    <link rel="canonical" href="https://yashpal-0.github.io/Financial-Calculator/pages/step-up-sip.html">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 </head>
 
@@ -23,7 +23,6 @@
         <button id="themeToggle" class="ghost" title="Toggle dark mode"
             style="padding:6px 12px;font-size:16px;border-radius:20px;">🌓</button>
     </div>
-
     <nav class="navbar">
         <div class="container nav-wrap">
             <div class="brand"><span class="brand-icon">💹</span> FinCalc Suite</div>
@@ -33,8 +32,8 @@
                 <li><a href="../index.html">Home</a></li>
                 <li><a href="./emi.html">EMI</a></li>
                 <li><a href="./prepayment.html">Prepay</a></li>
-                <li><a href="./sip.html" aria-current="page">SIP</a></li>
-                <li><a href="./step-up-sip.html">Step-Up SIP</a></li>
+                <li><a href="./sip.html">SIP</a></li>
+                <li><a href="./step-up-sip.html" aria-current="page">Step-Up SIP</a></li>
                 <li><a href="./mutual-fund.html">Mutual Fund</a></li>
                 <li><a href="./fd.html">FD</a></li>
                 <li><a href="./rd.html">RD</a></li>
@@ -49,64 +48,77 @@
     <header class="page-header container">
         <h1
             style="background:var(--accent-gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">
-            SIP Calculator</h1>
-        <p>Estimate wealth creation through regular monthly investments with a year-by-year growth chart.</p>
+            Step-Up SIP Calculator</h1>
+        <p>Increase your SIP amount every year and watch your wealth grow dramatically faster.</p>
     </header>
 
     <main>
         <section class="card container">
-            <div class="row row-3">
+            <div class="row row-2">
                 <div>
-                    <label for="monthlyInv">Monthly Investment (₹)
-                        <span class="label-hint" tabindex="0">?<span class="tooltip">Amount invested every month via
-                                SIP</span></span>
+                    <label for="initSIP">Initial Monthly SIP (₹)
+                        <span class="label-hint" tabindex="0">?<span class="tooltip">Starting monthly
+                                investment</span></span>
                     </label>
-                    <input id="monthlyInv" type="number" inputmode="decimal" min="500" max="1000000" step="500"
-                        placeholder="e.g. 5000">
+                    <input id="initSIP" type="number" inputmode="decimal" min="500" step="500" placeholder="e.g. 5000">
                     <div class="slider-group">
                         <div class="slider-row">
-                            <input type="range" id="monthlyInvSlider" min="500" max="100000" step="500" value="5000">
-                            <span class="slider-value" id="monthlyInvVal">₹5,000</span>
+                            <input type="range" id="initSIPSlider" min="500" max="100000" step="500" value="5000">
+                            <span class="slider-value" id="initSIPVal">₹5,000</span>
                         </div>
                     </div>
                 </div>
                 <div>
-                    <label for="annualRate">Expected Return (p.a) %
-                        <span class="label-hint" tabindex="0">?<span class="tooltip">Average annual return from equity
-                                mutual funds</span></span>
+                    <label for="stepUpPct">Annual Step-Up (%)
+                        <span class="label-hint" tabindex="0">?<span class="tooltip">% by which SIP increases each
+                                year</span></span>
                     </label>
-                    <input id="annualRate" type="number" inputmode="decimal" min="1" max="30" step="0.5"
-                        placeholder="e.g. 12">
-                    <div class="slider-group">
-                        <div class="slider-row">
-                            <input type="range" id="annualRateSlider" min="5" max="25" step="0.5" value="12">
-                            <span class="slider-value" id="annualRateVal">12.0%</span>
-                        </div>
-                    </div>
-                </div>
-                <div>
-                    <label for="tenureYears">Time Period (Years)
-                        <span class="label-hint" tabindex="0">?<span class="tooltip">Investment horizon in
-                                years</span></span>
-                    </label>
-                    <input id="tenureYears" type="number" inputmode="numeric" min="1" max="40" step="1"
+                    <input id="stepUpPct" type="number" inputmode="decimal" min="1" max="50" step="1"
                         placeholder="e.g. 10">
                     <div class="slider-group">
                         <div class="slider-row">
-                            <input type="range" id="tenureYearsSlider" min="1" max="40" step="1" value="10">
-                            <span class="slider-value" id="tenureYearsVal">10 yrs</span>
+                            <input type="range" id="stepUpPctSlider" min="1" max="50" step="1" value="10">
+                            <span class="slider-value" id="stepUpPctVal">10%</span>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <label for="returnRate">Expected Return (p.a) %
+                        <span class="label-hint" tabindex="0">?<span class="tooltip">Annual expected return from
+                                equity</span></span>
+                    </label>
+                    <input id="returnRate" type="number" inputmode="decimal" min="1" max="30" step="0.5"
+                        placeholder="e.g. 12">
+                    <div class="slider-group">
+                        <div class="slider-row">
+                            <input type="range" id="returnRateSlider" min="5" max="25" step="0.5" value="12">
+                            <span class="slider-value" id="returnRateVal">12.0%</span>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <label for="sipYears">Investment Period (Years)
+                        <span class="label-hint" tabindex="0">?<span class="tooltip">Total duration of the step-up
+                                SIP</span></span>
+                    </label>
+                    <input id="sipYears" type="number" inputmode="numeric" min="1" max="40" step="1"
+                        placeholder="e.g. 10">
+                    <div class="slider-group">
+                        <div class="slider-row">
+                            <input type="range" id="sipYearsSlider" min="1" max="40" step="1" value="10">
+                            <span class="slider-value" id="sipYearsVal">10 yrs</span>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="actions">
-                <button id="calcBtn">Calculate Returns ✨</button>
+                <button id="calcBtn">Calculate Growth ✨</button>
                 <button id="resetBtn" class="ghost">Reset</button>
             </div>
         </section>
 
-        <section class="container" aria-labelledby="summary-heading" style="margin-top:24px;">
-            <h2 id="summary-heading" class="section-heading">Investment Analysis</h2>
+        <section class="container" style="margin-top:24px;">
+            <h2 class="section-heading">Wealth Projection</h2>
             <div class="summary" id="summary" style="margin-top:0;">
                 <div class="kpi">
                     <div class="label">Total Invested</div>
@@ -125,19 +137,16 @@
 
         <section class="container chart-section" id="chartSection" style="display:none;">
             <div class="chart-container">
-                <div class="chart-title">Year-by-Year Wealth Growth</div>
-                <div class="chart-wrap">
-                    <canvas id="sipBarChart" height="300"></canvas>
-                </div>
+                <div class="chart-title">Year-by-Year Growth (Step-Up SIP)</div>
+                <div class="chart-wrap"><canvas id="stepUpChart" height="300"></canvas></div>
             </div>
             <div class="tip-card">
-                <span class="tip-icon">💡</span>
+                <span class="tip-icon">🚀</span>
                 <div class="tip-content">
-                    <h4>Power of Compounding</h4>
-                    <p>The longer you stay invested, the greater the effect of compounding. Starting a ₹5,000/month SIP
-                        5 years earlier can <strong>more than double your final corpus</strong>. Want to boost returns
-                        with annual step-ups? Try our <a href="./step-up-sip.html"
-                            style="color:var(--accent);font-weight:600;">Step-Up SIP Calculator</a>.</p>
+                    <h4>Accelerate Wealth with Step-Ups</h4>
+                    <p>A 10% annual step-up on a ₹5,000 SIP over 20 years can generate <strong>3–4 times more
+                            wealth</strong> than a flat SIP. As your salary grows, increasing your SIP proportionally is
+                        the most powerful wealth-building habit.</p>
                 </div>
             </div>
         </section>
@@ -145,16 +154,15 @@
 
     <footer>
         <div class="container">
-            <div>✨ Built for everyone. Works offline. No tracking or ads.</div>
-            <div style="margin-top:12px;">Crafted with passion. Connect on <a
-                    href="https://www.linkedin.com/in/yashpal-yadav-990278221/" target="_blank"
-                    rel="me noopener">LinkedIn</a></div>
+            <div>✨ Works offline. No tracking or ads.</div>
+            <div style="margin-top:12px;">Connect on <a href="https://www.linkedin.com/in/yashpal-yadav-990278221/"
+                    target="_blank" rel="me noopener">LinkedIn</a></div>
         </div>
     </footer>
 
     <script type="module">
         import { initApp } from '../scripts/app.js';
-        import '../scripts/sip.js';
+        import '../scripts/step-up-sip.js';
         initApp();
     </script>
 </body>

@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Inflation Calculator | FinCalc Suite</title>
+    <meta name="description"
+        content="See how inflation erodes purchasing power. Calculate future cost of goods and services.">
+    <meta name="theme-color" content="#0d9488">
+    <link rel="manifest" href="../manifest.webmanifest">
+    <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="canonical" href="https://yashpal-0.github.io/Financial-Calculator/pages/inflation.html">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+
+<body>
+    <div class="container"
+        style="display:flex;justify-content:flex-end;gap:12px;padding-top:12px;position:relative;z-index:100;">
+        <button id="installBtn" class="ghost"
+            style="display:none;padding:6px 12px;font-size:14px;border-radius:20px;">Install App</button>
+        <button id="themeToggle" class="ghost" title="Toggle dark mode"
+            style="padding:6px 12px;font-size:16px;border-radius:20px;">🌓</button>
+    </div>
+    <nav class="navbar">
+        <div class="container nav-wrap">
+            <div class="brand"><span class="brand-icon">💹</span> FinCalc Suite</div>
+            <button class="nav-toggle" aria-label="Toggle menu" onclick="document.body.classList.toggle('nav-open')">☰
+                Menu</button>
+            <ul class="nav-links">
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="./emi.html">EMI</a></li>
+                <li><a href="./prepayment.html">Prepay</a></li>
+                <li><a href="./sip.html">SIP</a></li>
+                <li><a href="./step-up-sip.html">Step-Up SIP</a></li>
+                <li><a href="./mutual-fund.html">Mutual Fund</a></li>
+                <li><a href="./fd.html">FD</a></li>
+                <li><a href="./rd.html">RD</a></li>
+                <li><a href="./ppf.html">PPF</a></li>
+                <li><a href="./inflation.html" aria-current="page">Inflation</a></li>
+                <li><a href="./retirement.html">Retirement</a></li>
+                <li><a href="./income-tax.html">Tax</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <header class="page-header container">
+        <h1
+            style="background:var(--accent-gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">
+            Inflation Calculator</h1>
+        <p>Understand how inflation silently erodes the purchasing power of your money over time.</p>
+    </header>
+
+    <main>
+        <section class="card container">
+            <div class="row row-3">
+                <div>
+                    <label for="currentValue">Current Value / Cost (₹)
+                        <span class="label-hint" tabindex="0">?<span class="tooltip">Today's price or value of
+                                goods/service</span></span>
+                    </label>
+                    <input id="currentValue" type="number" inputmode="decimal" min="1" placeholder="e.g. 100000">
+                    <div class="slider-group">
+                        <div class="slider-row">
+                            <input type="range" id="currentValueSlider" min="1000" max="10000000" step="1000"
+                                value="100000">
+                            <span class="slider-value" id="currentValueVal">₹1L</span>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <label for="inflationRate">Annual Inflation Rate (%)
+                        <span class="label-hint" tabindex="0">?<span class="tooltip">India's average CPI inflation is
+                                ~5-6%</span></span>
+                    </label>
+                    <input id="inflationRate" type="number" inputmode="decimal" min="0.1" max="30" step="0.1"
+                        placeholder="e.g. 6">
+                    <div class="slider-group">
+                        <div class="slider-row">
+                            <input type="range" id="inflationRateSlider" min="1" max="20" step="0.1" value="6">
+                            <span class="slider-value" id="inflationRateVal">6.0%</span>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <label for="inflationYears">Time Period (Years)
+                        <span class="label-hint" tabindex="0">?<span class="tooltip">How many years into the
+                                future</span></span>
+                    </label>
+                    <input id="inflationYears" type="number" inputmode="numeric" min="1" max="50" step="1"
+                        placeholder="e.g. 10">
+                    <div class="slider-group">
+                        <div class="slider-row">
+                            <input type="range" id="inflationYearsSlider" min="1" max="50" step="1" value="10">
+                            <span class="slider-value" id="inflationYearsVal">10 yrs</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="actions">
+                <button id="calcBtn">Calculate Impact ✨</button>
+                <button id="resetBtn" class="ghost">Reset</button>
+            </div>
+        </section>
+
+        <section class="container" style="margin-top:24px;">
+            <h2 class="section-heading">Inflation Impact</h2>
+            <div class="summary" id="summary" style="margin-top:0;">
+                <div class="kpi">
+                    <div class="label">Today's Value</div>
+                    <div class="value" id="todayOut">–</div>
+                </div>
+                <div class="kpi">
+                    <div class="label">Future Cost</div>
+                    <div class="value highlight" id="futureCostOut">–</div>
+                </div>
+                <div class="kpi">
+                    <div class="label">Purchasing Power Lost</div>
+                    <div class="value error" id="powerLostOut">–</div>
+                </div>
+            </div>
+        </section>
+
+        <section class="container chart-section" id="chartSection" style="display:none;">
+            <div class="chart-container">
+                <div class="chart-title">Year-by-Year Cost Growth</div>
+                <div class="chart-wrap"><canvas id="inflationChart" height="280"></canvas></div>
+            </div>
+            <div class="tip-card">
+                <span class="tip-icon">🔥</span>
+                <div class="tip-content">
+                    <h4>Beat Inflation with Investments</h4>
+                    <p>At 6% inflation, money halves in purchasing power every ~12 years. Equity mutual funds have
+                        historically returned 12–14% annually, well above inflation. A simple SIP can help you stay
+                        ahead — try our <a href="./sip.html" style="color:var(--accent);font-weight:600;">SIP
+                            Calculator</a>.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div>✨ Works offline. No tracking or ads.</div>
+            <div style="margin-top:12px;">Connect on <a href="https://www.linkedin.com/in/yashpal-yadav-990278221/"
+                    target="_blank" rel="me noopener">LinkedIn</a></div>
+        </div>
+    </footer>
+
+    <script type="module">
+        import { initApp } from '../scripts/app.js';
+        import '../scripts/inflation.js';
+        initApp();
+    </script>
+</body>
+
+</html>
