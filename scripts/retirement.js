@@ -52,7 +52,9 @@ function updateDonutChart(label1, val1, label2, val2) {
       <span class="font-semibold text-slate-900 dark:text-white">₹${Number(val2).toLocaleString('en-IN')}</span>
     </div>
   `;
-}\n\nimport { formatINR } from './util.js';
+}
+
+import { formatINR } from './util.js';
 import { calculateRetirementCorpus, calculateSIP } from './finance.js';
 
 function syncSlider(inputId, sliderId, displayId, formatter) {

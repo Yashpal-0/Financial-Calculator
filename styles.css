@@ -402,6 +402,9 @@
   .h-48 {
     height: calc(var(--spacing) * 48);
   }
+  .h-80 {
+    height: calc(var(--spacing) * 80);
+  }
   .h-px {
     height: 1px;
   }

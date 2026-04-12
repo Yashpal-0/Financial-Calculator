@@ -35,10 +35,7 @@ function updateDonutChart(label1, val1, label2, val2) {
         chartInstance.data = data;
         chartInstance.update();
     } else {
-        chartInstance = new Chart(ctx, { type: 'doughnut', data, options: opts 
-    document.getElementById('resultsSection').classList.remove('hidden');
-    updateDonutChart('Invested Amount', invested, 'Estimated Returns', gained);
-});
+        chartInstance = new Chart(ctx, { type: 'doughnut', data, options: opts });
     }
 
     const legendEl = document.getElementById('chartLegend');
@@ -83,6 +80,12 @@ document.getElementById('calcBtn')?.addEventListener('click', () => {
 document.getElementById('resetBtn')?.addEventListener('click', () => {
     document.getElementById('lumpsumInv').value = '';
     document.getElementById('annualRate').value = '';
+    document.getElementById('tenureYears').value = '';
+    document.getElementById('totalInvestedOut').textContent = '-';
+    document.getElementById('wealthGainedOut').textContent = '-';
+    document.getElementById('futureValueOut').textContent = '-';
+});
+   document.getElementById('annualRate').value = '';
     document.getElementById('tenureYears').value = '';
     document.getElementById('totalInvestedOut').textContent = '-';
     document.getElementById('wealthGainedOut').textContent = '-';

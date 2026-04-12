@@ -77,6 +77,9 @@ document.getElementById('calcBtn')?.addEventListener('click', () => {
     document.getElementById('principalOut').textContent = formatINR(invested);
     document.getElementById('interestOut').textContent = formatINR(interest);
     document.getElementById('maturityOut').textContent = formatINR(maturity);
+
+    document.getElementById('resultsSection').classList.remove('hidden');
+    updateDonutChart('Total Deposits', invested, 'Total Interest', interest);
 });
 
 document.getElementById('resetBtn')?.addEventListener('click', () => {

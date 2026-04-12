@@ -26,12 +26,6 @@ syncSlider('monthlyInv', 'monthlyInvSlider', 'monthlyInvVal', v => `₹${Number(
 syncSlider('annualRate', 'annualRateSlider', 'annualRateVal', v => `${parseFloat(v).toFixed(1)}%`);
 syncSlider('tenureYears', 'tenureYearsSlider', 'tenureYearsVal', v => `${v} yrs`);
 
-
-
-
-
-}
-
 let chartInstance = null;
 function updateDonutChart(label1, val1, label2, val2) {
     const isDark = document.documentElement.dataset.theme === 'dark';

@@ -23,16 +23,36 @@ function onCalculate() {
   const mode = getEl('mfCalcMode')?.value || 'both';
   const holdingYears = parseFloat(getEl('mfHoldingYears')?.value || '') || null;
 
+  let totalInvested = 0;
+  let totalFV = 0;
+  let hasValidInput = false;
+
   if (mode === 'sip' || mode === 'both') {
-    calcSIP(holdingYears);
+    const sipRes = calcSIP(holdingYears);
+    if (sipRes) {
+      totalInvested += sipRes.invested;
+      totalFV += sipRes.fv;
+      hasValidInput = true;
+    }
   } else {
     hideSipResults();
   }
 
   if (mode === 'lumpsum' || mode === 'both') {
-    calcLumpsum(holdingYears);
+    const lumpRes = calcLumpsum(holdingYears);
+    if (lumpRes) {
+      totalInvested += lumpRes.invested;
+      totalFV += lumpRes.fv;
+      hasValidInput = true;
+    }
   } else {
     hideLumpResults();
+  }
+
+  if (hasValidInput) {
+    const resultsSec = document.getElementById('resultsSection');
+    if (resultsSec) resultsSec.classList.remove('hidden');
+    updateDonutChart('Invested Amount', totalInvested, 'Estimated Returns', totalFV - totalInvested);
   }
 }
 
@@ -43,7 +63,7 @@ function calcSIP(holdingYearsOverride) {
 
   if (!(monthly > 0 && rate >= 0 && years > 0)) {
     hideSipResults();
-    return;
+    return null;
   }
 
   const months = years * 12;
@@ -61,6 +81,8 @@ function calcSIP(holdingYearsOverride) {
   setText('mfSipTax', formatINR(tax));
   setText('mfSipPostTax', formatINR(postTax));
   showSection('mfSipSection', true);
+
+  return { invested, fv };
 }
 
 function hideSipResults() {
@@ -75,7 +97,7 @@ function calcLumpsum(holdingYearsOverride) {
 
   if (!(lumpsum > 0 && rate >= 0 && years > 0)) {
     hideLumpResults();
-    return;
+    return null;
   }
 
   const fv = calculateLumpsum(lumpsum, rate, years, 1);
@@ -92,6 +114,8 @@ function calcLumpsum(holdingYearsOverride) {
   setText('mfLumpTax', formatINR(tax));
   setText('mfLumpPostTax', formatINR(postTax));
   showSection('mfLumpSection', true);
+
+  return { invested: lumpsum, fv };
 }
 
 function hideLumpResults() {
@@ -100,16 +124,20 @@ function hideLumpResults() {
 }
 
 function onReset() {
-  getEl('mfMonthly').value = '';
-  getEl('mfRate').value = '';
-  getEl('mfYears').value = '';
-  getEl('mfLumpsum').value = '';
-  getEl('mfLumpRate').value = '';
-  getEl('mfLumpYears').value = '';
-  getEl('mfHoldingYears').value = '';
-  getEl('mfCalcMode').value = 'both';
+  if (getEl('mfMonthly')) getEl('mfMonthly').value = '';
+  if (getEl('mfRate')) getEl('mfRate').value = '';
+  if (getEl('mfYears')) getEl('mfYears').value = '';
+  if (getEl('mfLumpsum')) getEl('mfLumpsum').value = '';
+  if (getEl('mfLumpRate')) getEl('mfLumpRate').value = '';
+  if (getEl('mfLumpYears')) getEl('mfLumpYears').value = '';
+  if (getEl('mfHoldingYears')) getEl('mfHoldingYears').value = '';
+  if (getEl('mfCalcMode')) getEl('mfCalcMode').value = 'both';
   hideSipResults();
   hideLumpResults();
+  
+  const resultsSec = document.getElementById('resultsSection');
+  if (resultsSec) resultsSec.classList.add('hidden');
+  if (chartInstance) { chartInstance.destroy(); chartInstance = null; }
 }
 
 getEl('mfCalcBtn')?.addEventListener('click', onCalculate);

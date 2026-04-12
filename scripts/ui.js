@@ -174,26 +174,24 @@ export function readPrepayConfigs() {
 export function addPrepaymentUI(defaults) {
   const container = document.getElementById('prepayList');
   const wrap = document.createElement('div');
-  wrap.className = 'prepay-item';
+  wrap.className = 'prepay-item mb-4 card p-4';
   wrap.innerHTML = `
-    <div class="row row-3">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
       <div>
-        <label>Amount</label>
-        <input type="number" inputmode="decimal" min="0" step="1000" data-prepay="amount" placeholder="e.g. 100000">
+        <label class="label-text">Amount</label>
+        <input type="number" class="input-field" inputmode="decimal" min="0" step="1000" data-prepay="amount" placeholder="e.g. 100000">
       </div>
       <div>
-        <label>Frequency</label>
-        <select data-prepay="frequency">
+        <label class="label-text">Frequency</label>
+        <select class="input-field" data-prepay="frequency">
           <option value="once" selected>One-time</option>
           <option value="monthly">Monthly</option>
           <option value="yearly">Yearly</option>
         </select>
       </div>
     </div>
-    <div class="row row-2">
-      <div class="actions">
-        <button type="button" class="ghost" data-prepay="remove">Remove</button>
-      </div>
+    <div class="flex justify-end">
+      <button type="button" class="btn-secondary text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 text-sm py-1.5 px-3" data-prepay="remove">Remove</button>
     </div>
   `;
   if (defaults) {

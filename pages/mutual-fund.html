@@ -8,6 +8,7 @@
   <link rel="icon" href="../favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="../styles.css">
   <link rel="canonical" href="https://yashpal-0.github.io/Financial-Calculator/pages/mutual-fund.html">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body class="bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-50 font-sans antialiased transition-colors duration-300">
@@ -67,7 +68,51 @@
   <main class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-24">
     <section class="card p-6 md:p-8 mb-8">
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div>
+          <label for="mfCalcMode" class="label-text flex items-center">Calculation Mode</label>
+          <select id="mfCalcMode" class="input-field mb-4">
+            <option value="both" selected>SIP + Lumpsum</option>
+            <option value="sip">SIP Only</option>
+            <option value="lumpsum">Lumpsum Only</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="mfHoldingYears" class="label-text flex items-center">Holding Period for Tax (Years)</label>
+          <input id="mfHoldingYears" class="input-field mb-4" type="number" inputmode="decimal" min="0" step="0.5" placeholder="e.g. 3">
+        </div>
         
+        <div class="col-span-1 md:col-span-3 h-px bg-slate-200 dark:bg-slate-700 my-2"></div>
+        
+        <!-- SIP Inputs -->
+        <div>
+          <label for="mfMonthly" class="label-text flex items-center">Monthly SIP (₹)</label>
+          <input id="mfMonthly" class="input-field mb-4" type="number" inputmode="decimal" min="500" step="500" placeholder="e.g. 5000">
+        </div>
+        <div>
+          <label for="mfRate" class="label-text flex items-center">SIP Expected Return (%)</label>
+          <input id="mfRate" class="input-field mb-4" type="number" inputmode="decimal" min="1" max="30" step="0.5" placeholder="e.g. 12">
+        </div>
+        <div>
+          <label for="mfYears" class="label-text flex items-center">SIP Time Period (Years)</label>
+          <input id="mfYears" class="input-field mb-4" type="number" inputmode="numeric" min="1" max="40" step="1" placeholder="e.g. 10">
+        </div>
+
+        <div class="col-span-1 md:col-span-3 h-px bg-slate-200 dark:bg-slate-700 my-2"></div>
+
+        <!-- Lumpsum Inputs -->
+        <div>
+          <label for="mfLumpsum" class="label-text flex items-center">Lumpsum Investment (₹)</label>
+          <input id="mfLumpsum" class="input-field mb-4" type="number" inputmode="decimal" min="500" step="500" placeholder="e.g. 100000">
+        </div>
+        <div>
+          <label for="mfLumpRate" class="label-text flex items-center">Lumpsum Expected Return (%)</label>
+          <input id="mfLumpRate" class="input-field mb-4" type="number" inputmode="decimal" min="1" max="30" step="0.5" placeholder="e.g. 12">
+        </div>
+        <div>
+          <label for="mfLumpYears" class="label-text flex items-center">Lumpsum Time Period (Years)</label>
+          <input id="mfLumpYears" class="input-field mb-4" type="number" inputmode="numeric" min="1" max="40" step="1" placeholder="e.g. 10">
+        </div>
       </div>
 
       <div class="flex flex-wrap items-center gap-4 pt-6 border-t border-slate-100 dark:border-slate-800">

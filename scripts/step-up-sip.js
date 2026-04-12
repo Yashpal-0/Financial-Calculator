@@ -14,10 +14,7 @@ function syncSlider(inputId, sliderId, displayId, formatter) {
         const trackColor = document.documentElement.dataset.theme === 'dark' ? '#334155' : '#e2e8f0';
         slider.style.background = `linear-gradient(to right, ${thumbColor} ${pct}%, ${trackColor} ${pct}%)`;
     }
-    input.addEventListener('input', () => { slider.value = input.value; update(input.value); 
-    document.getElementById('resultsSection').classList.remove('hidden');
-    updateDonutChart('Invested Amount', invested, 'Estimated Returns', gained);
-});
+    input.addEventListener('input', () => { slider.value = input.value; update(input.value); });
     slider.addEventListener('input', () => { input.value = slider.value; update(slider.value); });
     update(slider.value);
     
