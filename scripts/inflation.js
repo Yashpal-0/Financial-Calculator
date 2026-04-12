@@ -6,14 +6,20 @@ function syncSlider(inputId, sliderId, displayId, formatter) {
     const slider = document.getElementById(sliderId);
     const display = document.getElementById(displayId);
     if (!input || !slider || !display) return;
+
     function update(val) {
         display.textContent = formatter(val);
         const pct = ((val - slider.min) / (slider.max - slider.min)) * 100;
-        slider.style.background = `linear-gradient(to right, var(--slider-thumb) ${pct}%, var(--slider-track) ${pct}%)`;
+        const thumbColor = '#0d9488';
+        const trackColor = document.documentElement.dataset.theme === 'dark' ? '#334155' : '#e2e8f0';
+        slider.style.background = `linear-gradient(to right, ${thumbColor} ${pct}%, ${trackColor} ${pct}%)`;
     }
     input.addEventListener('input', () => { slider.value = input.value; update(input.value); });
     slider.addEventListener('input', () => { input.value = slider.value; update(slider.value); });
     update(slider.value);
+    
+    const observer = new MutationObserver(() => update(slider.value));
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
 }
 
 syncSlider('currentValue', 'currentValueSlider', 'currentValueVal', v => {
@@ -43,7 +49,7 @@ document.getElementById('calcBtn')?.addEventListener('click', () => {
         data.push(val * Math.pow(1 + rate / 100, y));
     }
 
-    document.getElementById('chartSection').style.display = '';
+    document.getElementById('chartSection').classList.remove('hidden');
     const isDark = document.documentElement.dataset.theme === 'dark';
     const ctx = document.getElementById('inflationChart').getContext('2d');
     if (infChart) { infChart.destroy(); infChart = null; }
@@ -88,6 +94,6 @@ document.getElementById('calcBtn')?.addEventListener('click', () => {
 document.getElementById('resetBtn')?.addEventListener('click', () => {
     ['currentValue', 'inflationRate', 'inflationYears'].forEach(id => document.getElementById(id).value = '');
     ['todayOut', 'futureCostOut', 'powerLostOut'].forEach(id => document.getElementById(id).textContent = '–');
-    document.getElementById('chartSection').style.display = 'none';
+    document.getElementById('chartSection').classList.add('hidden');
     if (infChart) { infChart.destroy(); infChart = null; }
 });

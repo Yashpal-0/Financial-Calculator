@@ -39,7 +39,7 @@ function render(schedule) {
 
 function appendTd(tr, text, left) {
   const td = document.createElement('td');
-  if (left) td.className = 'left';
+  if (left) td.className = 'text-left font-medium';
   td.textContent = text;
   tr.appendChild(td);
 }
@@ -67,13 +67,19 @@ function syncSlider(inputId, sliderId, displayId, formatter) {
 
   function update(val) {
     display.textContent = formatter(val);
-    // gradient fill
     const pct = ((val - slider.min) / (slider.max - slider.min)) * 100;
-    slider.style.background = `linear-gradient(to right, var(--slider-thumb) ${pct}%, var(--slider-track) ${pct}%)`;
+    // We can use a custom property for Tailwind if needed, but inline style works fine for gradient
+    const thumbColor = '#0d9488'; // teal-600
+    const trackColor = document.documentElement.dataset.theme === 'dark' ? '#334155' : '#e2e8f0'; // slate-700 / slate-200
+    slider.style.background = `linear-gradient(to right, ${thumbColor} ${pct}%, ${trackColor} ${pct}%)`;
   }
   input.addEventListener('input', () => { slider.value = input.value; update(input.value); });
   slider.addEventListener('input', () => { input.value = slider.value; update(slider.value); });
   update(slider.value);
+  
+  // Also observe theme changes to update track color
+  const observer = new MutationObserver(() => update(slider.value));
+  observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
 }
 
 /** Chart.js donut chart */
@@ -87,7 +93,7 @@ function updateDonutChart(principal, totalInterest) {
       data: [principal, totalInterest],
       backgroundColor: ['rgba(13,148,136,0.85)', 'rgba(8,145,178,0.75)'],
       hoverBackgroundColor: ['rgba(13,148,136,1)', 'rgba(8,145,178,1)'],
-      borderColor: isDark ? '#1c1917' : '#fff',
+      borderColor: isDark ? '#0f172a' : '#ffffff', // slate-900 / white
       borderWidth: 3,
       hoverOffset: 8,
     }]
@@ -102,10 +108,12 @@ function updateDonutChart(principal, totalInterest) {
         }
       }
     },
-    animation: { animateRotate: true, duration: 600 }
+    animation: { animateRotate: true, duration: 600 },
+    maintainAspectRatio: false
   };
 
   if (emiChart) {
+    emiChart.options.plugins.tooltip = opts.plugins.tooltip;
     emiChart.data = data;
     emiChart.update();
   } else {
@@ -115,19 +123,23 @@ function updateDonutChart(principal, totalInterest) {
   // Update legend
   const legendEl = document.getElementById('chartLegend');
   legendEl.innerHTML = `
-    <div class="legend-item">
-      <div class="legend-dot" style="background:rgba(13,148,136,0.85)"></div>
-      <span class="legend-label">Principal</span>
-      <span class="legend-value">${formatINR(principal)}</span>
+    <div class="flex items-center justify-between">
+      <div class="flex items-center">
+        <div class="w-3 h-3 rounded-full mr-3" style="background:rgba(13,148,136,0.85)"></div>
+        <span class="text-sm text-slate-600 dark:text-slate-400">Principal</span>
+      </div>
+      <span class="font-semibold text-slate-900 dark:text-white">${formatINR(principal)}</span>
     </div>
-    <div class="legend-item">
-      <div class="legend-dot" style="background:rgba(8,145,178,0.75)"></div>
-      <span class="legend-label">Total Interest</span>
-      <span class="legend-value">${formatINR(totalInterest)}</span>
+    <div class="flex items-center justify-between">
+      <div class="flex items-center">
+        <div class="w-3 h-3 rounded-full mr-3" style="background:rgba(8,145,178,0.75)"></div>
+        <span class="text-sm text-slate-600 dark:text-slate-400">Total Interest</span>
+      </div>
+      <span class="font-semibold text-slate-900 dark:text-white">${formatINR(totalInterest)}</span>
     </div>
-    <div class="legend-item" style="margin-top:4px;border-top:1px solid var(--border);padding-top:12px;">
-      <span class="legend-label" style="font-weight:700;color:var(--text);">Interest Ratio</span>
-      <span class="legend-value">${((totalInterest / (principal + totalInterest)) * 100).toFixed(1)}%</span>
+    <div class="mt-2 pt-3 border-t border-slate-200 dark:border-slate-700 flex items-center justify-between">
+      <span class="font-bold text-slate-900 dark:text-white">Interest Ratio</span>
+      <span class="font-bold text-teal-600 dark:text-teal-400">${((totalInterest / (principal + totalInterest)) * 100).toFixed(1)}%</span>
     </div>
   `;
 }
@@ -135,7 +147,9 @@ function updateDonutChart(principal, totalInterest) {
 /** Sticky bar logic */
 let stickyHidden = false;
 document.getElementById('stickyDismiss')?.addEventListener('click', () => {
-  document.getElementById('stickyResult').classList.remove('visible');
+  const bar = document.getElementById('stickyResult');
+  bar.classList.remove('translate-y-0');
+  bar.classList.add('translate-y-full');
   stickyHidden = true;
 });
 
@@ -144,20 +158,31 @@ function showStickyBar(emi, interest) {
   const bar = document.getElementById('stickyResult');
   document.getElementById('stickyEmi').textContent = formatINR(emi);
   document.getElementById('stickyInterest').textContent = formatINR(interest);
-  bar.classList.add('visible');
+  bar.classList.remove('translate-y-full');
+  bar.classList.add('translate-y-0');
+}
+
+function hideStickyBar() {
+  const bar = document.getElementById('stickyResult');
+  if(bar) {
+    bar.classList.remove('translate-y-0');
+    bar.classList.add('translate-y-full');
+  }
 }
 
 // Intersection observer to show sticky bar when results are offscreen
 const summaryObs = new IntersectionObserver(([entry]) => {
   const bar = document.getElementById('stickyResult');
+  if (!bar) return;
   if (!stickyHidden && !entry.isIntersecting && window.__emiResult) {
-    bar.classList.add('visible');
+    bar.classList.remove('translate-y-full');
+    bar.classList.add('translate-y-0');
   } else {
-    bar.classList.remove('visible');
+    bar.classList.remove('translate-y-0');
+    bar.classList.add('translate-y-full');
   }
 }, { threshold: 0 });
-const summaryEl = document.getElementById('summary');
-if (summaryEl) summaryObs.observe(summaryEl);
+const summaryEl = document.getElementById('emiOut'); // We can observe the KPI number
 
 // Wire up
 syncSlider('loanAmount', 'loanAmountSlider', 'loanAmountVal', v => {
@@ -182,21 +207,38 @@ document.getElementById('calcBtn').addEventListener('click', () => {
   window.__emiSchedule = schedule;
   window.__emiResult = { emi, totalInterest };
 
-  // Show chart
-  document.getElementById('chartSection').style.display = '';
+  // Show results
+  document.getElementById('resultsSection').classList.remove('hidden');
   updateDonutChart(P, totalInterest);
   showStickyBar(emi, totalInterest);
   stickyHidden = false;
+  
+  if (summaryEl) {
+    summaryObs.observe(summaryEl);
+  }
 });
 
 document.getElementById('resetBtn').addEventListener('click', () => {
   ['loanAmount', 'annualRate', 'tenureMonths'].forEach(id => document.getElementById(id).value = '');
+  
+  // Re-sync sliders
+  const loanInput = document.getElementById('loanAmount');
+  if(loanInput) loanInput.dispatchEvent(new Event('input'));
+  const rateInput = document.getElementById('annualRate');
+  if(rateInput) rateInput.dispatchEvent(new Event('input'));
+  const tenureInput = document.getElementById('tenureMonths');
+  if(tenureInput) tenureInput.dispatchEvent(new Event('input'));
+
   document.getElementById('emiOut').textContent = '–';
   document.getElementById('totalInterestOut').textContent = '–';
   document.getElementById('totalPaymentOut').textContent = '–';
   document.getElementById('scheduleBody').innerHTML = '';
-  document.getElementById('chartSection').style.display = 'none';
-  document.getElementById('stickyResult').classList.remove('visible');
+  document.getElementById('resultsSection').classList.add('hidden');
+  
+  hideStickyBar();
+  stickyHidden = false;
+  if(summaryEl) summaryObs.unobserve(summaryEl);
+
   window.__emiSchedule = null;
   window.__emiResult = null;
   if (emiChart) { emiChart.destroy(); emiChart = null; }

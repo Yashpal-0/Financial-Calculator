@@ -44,6 +44,8 @@ document.getElementById('resetBtn').addEventListener('click', () => {
   document.getElementById('prepayList').innerHTML = '';
   if (document.getElementById('prepayVsInvestRate')) document.getElementById('prepayVsInvestRate').value = '12';
   renderSummary(0, { emi: 0, totalInterest: 0 }, { strategyEmi: 0, totalInterest: 0 }, 0, 0);
+  document.getElementById('resultsSection').classList.add('hidden');
+  if (window.chartInstance) { window.chartInstance.destroy(); window.chartInstance = null; }
   renderSchedule([]);
   if (typeof renderPrepayVsInvest === 'function') renderPrepayVsInvest([], 0, 0, 0);
 });

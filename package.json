@@ -1,5 +1,12 @@
 {
+  "scripts": {
+    "build:css": "npx @tailwindcss/cli -i ./src/input.css -o ./styles.css --watch"
+  },
   "dependencies": {
     "punycode": "^2.3.1"
+  },
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.2.2",
+    "tailwindcss": "^4.2.2"
   }
 }

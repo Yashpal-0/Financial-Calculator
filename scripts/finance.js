@@ -29,13 +29,16 @@ export function calculateStepUpSIP(initialMonthly, stepUpPercent, annualReturn, 
   let currentMonthly = initialMonthly;
 
   for (let y = 0; y < years; y++) {
-    // Each year's SIP installments as a lumpsum at start of that year block
-    const monthsRemaining = (years - y) * 12;
-    // FV of this year's SIP at r for monthsRemaining months
-    const yearFV = r === 0
+    // FV of 12 months of SIP at currentMonthly
+    const yearFVAtEndOfYear = r === 0
       ? currentMonthly * 12
-      : currentMonthly * ((Math.pow(1 + r, monthsRemaining) - 1) / r) * (1 + r);
-    totalFV += yearFV;
+      : currentMonthly * ((Math.pow(1 + r, 12) - 1) / r) * (1 + r);
+    
+    // Now, this year's end-of-year corpus will compound for the remaining (years - y - 1) years
+    const remainingMonths = (years - y - 1) * 12;
+    const finalValue = yearFVAtEndOfYear * Math.pow(1 + r, remainingMonths);
+    
+    totalFV += finalValue;
     totalInvested += currentMonthly * 12;
     yearlyData.push({ year: y + 1, monthly: currentMonthly, cumInvested: totalInvested });
     currentMonthly = currentMonthly * (1 + stepUpPercent / 100);
@@ -171,25 +174,25 @@ export function calculateCAGR(startValue, endValue, years) {
 }
 
 /**
- * LTCG tax for equity mutual funds (India): 10% on gains above ₹1L per year.
- * STCG: 15% for equity held < 1 year.
+ * LTCG tax for equity mutual funds (India): 12.5% on gains above ₹1.25L per year.
+ * STCG: 20% for equity held < 1 year.
  * @param {number} gain - Capital gains amount
  * @param {number} holdingYears - Years held
- * @param {number} exemptionLimit - Annual exemption (default 1,00,000)
+ * @param {number} exemptionLimit - Annual exemption (default 1,25,000)
  * @returns {number} Tax amount in INR
  */
-export function equityLTCGTax(gain, holdingYears, exemptionLimit = 100000) {
+export function equityLTCGTax(gain, holdingYears, exemptionLimit = 125000) {
   if (gain <= 0 || holdingYears < 1) return 0;
   const taxableGain = Math.max(0, gain - exemptionLimit);
-  return taxableGain * 0.1;
+  return taxableGain * 0.125;
 }
 
 /**
- * STCG tax for equity (< 1 year): 15%
+ * STCG tax for equity (< 1 year): 20%
  */
 export function equitySTCGTax(gain) {
   if (gain <= 0) return 0;
-  return gain * 0.15;
+  return gain * 0.2;
 }
 
 /**
@@ -375,5 +378,67 @@ export function generateSchedule(params) {
   }
 
   return { schedule, totalInterest, strategyEmi: schedule.length ? schedule[0].emi : 0 };
+}
+
+/**
+ * Calculates GST (Goods and Services Tax)
+ * @param {number} amount
+ * @param {number} rate
+ * @param {string} type - 'inclusive' or 'exclusive'
+ * @returns {{ netAmount, gstAmount, totalAmount }}
+ */
+export function calculateGST(amount, rate, type) {
+  let netAmount, gstAmount, totalAmount;
+  if (type === 'inclusive') {
+    totalAmount = amount;
+    netAmount = amount / (1 + rate / 100);
+    gstAmount = totalAmount - netAmount;
+  } else {
+    netAmount = amount;
+    gstAmount = amount * (rate / 100);
+    totalAmount = netAmount + gstAmount;
+  }
+  return { netAmount, gstAmount, totalAmount };
+}
+
+/**
+ * Calculates Gratuity
+ * @param {number} lastDrawnSalary
+ * @param {number} tenureYears
+ * @returns {{ gratuity: number }}
+ */
+export function calculateGratuity(lastDrawnSalary, tenureYears) {
+  const gratuity = (15 / 26) * lastDrawnSalary * tenureYears;
+  return { gratuity };
+}
+
+/**
+ * Calculates Sukanya Samriddhi Yojana (SSY) Maturity
+ * @param {number} yearlyDeposit
+ * @param {number} tenureYears - Years of deposit (usually 15)
+ * @param {number} rate - Annual interest rate
+ * @returns {number} Maturity amount (usually matures at 21 years)
+ */
+export function calculateSSY(yearlyDeposit, tenureYears, rate) {
+  let balance = 0;
+  const r = rate / 100;
+  for (let i = 0; i < 21; i++) {
+    if (i < tenureYears) {
+      balance += yearlyDeposit;
+    }
+    balance += balance * r; // Compounded annually
+  }
+  return balance;
+}
+
+/**
+ * Calculates Post Office Monthly Income Scheme (POMIS)
+ * @param {number} deposit
+ * @param {number} rate
+ * @returns {{ monthlyIncome: number }}
+ */
+export function calculatePOMIS(deposit, rate) {
+  const monthlyIncome = deposit * (rate / 100) / 12;
+  return { monthlyIncome };
 }
 

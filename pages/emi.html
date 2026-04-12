@@ -17,186 +17,229 @@
   <meta property="og:description"
     content="Calculate home loan EMI with interactive sliders and visual breakdown charts.">
   <meta property="og:url" content="https://yashpal-0.github.io/Financial-Calculator/pages/emi.html">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
-<body>
-  <div class="container"
-    style="display:flex;justify-content:flex-end;gap:12px;padding-top:12px;position:relative;z-index:100;">
-    <button id="installBtn" class="ghost"
-      style="display:none;padding:6px 12px;font-size:14px;border-radius:20px;">Install App</button>
-    <button id="themeToggle" class="ghost" title="Toggle dark mode"
-      style="padding:6px 12px;font-size:16px;border-radius:20px;">🌓</button>
+<body class="bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-50 font-sans antialiased transition-colors duration-300">
+  
+  <!-- Controls -->
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-end gap-3 pt-3 relative z-50">
+    <button id="installBtn" class="hidden px-3 py-1.5 text-sm rounded-full hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors">Install App</button>
+    <button id="themeToggle" class="px-3 py-1.5 text-base rounded-full hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors" title="Toggle dark mode">🌓</button>
   </div>
 
-  <nav class="navbar">
-    <div class="container nav-wrap">
-      <div class="brand"><span class="brand-icon">💹</span> FinCalc Suite</div>
-      <button class="nav-toggle" aria-label="Toggle menu" onclick="document.body.classList.toggle('nav-open')">☰
-        Menu</button>
-      <ul class="nav-links">
-        <li><a href="../index.html">Home</a></li>
-        <li><a href="./emi.html" aria-current="page">EMI</a></li>
-        <li><a href="./prepayment.html">Prepay</a></li>
-        <li><a href="./sip.html">SIP</a></li>
-        <li><a href="./step-up-sip.html">Step-Up SIP</a></li>
-        <li><a href="./mutual-fund.html">Mutual Fund</a></li>
-        <li><a href="./fd.html">FD</a></li>
-        <li><a href="./rd.html">RD</a></li>
-        <li><a href="./ppf.html">PPF</a></li>
-        <li><a href="./inflation.html">Inflation</a></li>
-        <li><a href="./retirement.html">Retirement</a></li>
-        <li><a href="./income-tax.html">Tax</a></li>
-      </ul>
+  <nav class="sticky top-0 z-40 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        <a href="../index.html" class="flex-shrink-0 flex items-center font-bold text-xl tracking-tight text-teal-700 dark:text-teal-400">
+          <span class="mr-2 text-2xl">💹</span> FinCalc Suite
+        </a>
+        <div class="flex items-center">
+          <button class="md:hidden p-2 rounded-md text-slate-600 hover:text-slate-900 hover:bg-slate-100 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800 focus:outline-none" aria-label="Toggle menu" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')">
+            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
+        </div>
+        <div class="hidden md:flex space-x-1 overflow-x-auto pb-2 -mb-2 no-scrollbar">
+          <a href="../index.html" class="px-3 py-2 rounded-md text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800">Home</a>
+          <a href="./emi.html" class="px-3 py-2 rounded-md text-sm font-medium bg-slate-100 text-slate-900 dark:bg-slate-800 dark:text-white" aria-current="page">EMI</a>
+          <a href="./prepayment.html" class="px-3 py-2 rounded-md text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800">Prepay</a>
+          <a href="./sip.html" class="px-3 py-2 rounded-md text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800">SIP</a>
+          <a href="./step-up-sip.html" class="px-3 py-2 rounded-md text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800">Step-Up SIP</a>
+          <a href="./mutual-fund.html" class="px-3 py-2 rounded-md text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800">Mutual Fund</a>
+          <a href="./fd.html" class="px-3 py-2 rounded-md text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800">FD</a>
+        </div>
+      </div>
+    </div>
+    <!-- Mobile menu -->
+    <div class="hidden md:hidden bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800" id="mobile-menu">
+      <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3 grid grid-cols-2 gap-2">
+        <a href="../index.html" class="block px-3 py-2 rounded-md text-base font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800">Home</a>
+        <a href="./emi.html" class="block px-3 py-2 rounded-md text-base font-medium bg-slate-100 text-slate-900 dark:bg-slate-800 dark:text-white">EMI</a>
+        <a href="./prepayment.html" class="block px-3 py-2 rounded-md text-base font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800">Prepay</a>
+        <a href="./sip.html" class="block px-3 py-2 rounded-md text-base font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800">SIP</a>
+      </div>
     </div>
   </nav>
 
-  <header class="page-header container">
-    <h1
-      style="background:var(--accent-gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">
-      EMI Calculator</h1>
-    <p>Compute monthly payments with interactive sliders and a visual breakdown of principal vs. interest.</p>
+  <header class="py-12 md:py-16 text-center px-4 sm:px-6 lg:px-8">
+    <div class="max-w-3xl mx-auto">
+      <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight mb-4 bg-gradient-to-r from-teal-600 to-cyan-600 bg-clip-text text-transparent">
+        EMI Calculator
+      </h1>
+      <p class="text-lg text-slate-600 dark:text-slate-400">
+        Compute monthly payments with interactive sliders and a visual breakdown of principal vs. interest.
+      </p>
+    </div>
   </header>
 
-  <main>
-    <section class="card container">
-      <!-- Loan Amount -->
-      <div class="row row-3">
+  <main class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-24">
+    <section class="card p-6 md:p-8 mb-8">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        
+        <!-- Loan Amount -->
         <div>
-          <label for="loanAmount">
+          <label for="loanAmount" class="label-text flex items-center">
             Loan Amount (₹)
-            <span class="label-hint" tabindex="0" aria-label="hint">?<span class="tooltip">Total loan principal from the
-                bank</span></span>
-          </label>
-          <input id="loanAmount" type="number" inputmode="decimal" min="100000" max="100000000" step="50000"
-            placeholder="e.g. 5,000,000">
-          <div class="slider-group">
-            <div class="slider-row">
-              <input type="range" id="loanAmountSlider" min="100000" max="20000000" step="50000" value="5000000">
-              <span class="slider-value" id="loanAmountVal">₹50L</span>
+            <div class="group relative ml-2 cursor-help">
+              <span class="inline-flex items-center justify-center w-4 h-4 rounded-full bg-slate-200 dark:bg-slate-700 text-xs text-slate-500 dark:text-slate-400">?</span>
+              <div class="hidden group-hover:block absolute z-10 w-48 p-2 mt-1 text-xs text-white bg-slate-800 rounded shadow-lg -left-2 top-full">
+                Total loan principal from the bank
+              </div>
             </div>
+          </label>
+          <input id="loanAmount" class="input-field mb-4" type="number" inputmode="decimal" min="100000" max="100000000" step="50000" placeholder="e.g. 5000000">
+          
+          <div class="flex items-center space-x-4">
+            <input type="range" id="loanAmountSlider" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer dark:bg-slate-700 accent-teal-600" min="100000" max="20000000" step="50000" value="5000000">
+            <span class="text-sm font-semibold text-teal-700 dark:text-teal-400 min-w-[3rem] text-right" id="loanAmountVal">₹50L</span>
           </div>
         </div>
+
+        <!-- Annual Rate -->
         <div>
-          <label for="annualRate">
+          <label for="annualRate" class="label-text flex items-center">
             Annual Interest % (APR)
-            <span class="label-hint" tabindex="0" aria-label="hint">?<span class="tooltip">Annual rate charged by the
-                lender</span></span>
-          </label>
-          <input id="annualRate" type="number" inputmode="decimal" min="1" max="30" step="0.1" placeholder="e.g. 8.5">
-          <div class="slider-group">
-            <div class="slider-row">
-              <input type="range" id="annualRateSlider" min="5" max="20" step="0.1" value="8.5">
-              <span class="slider-value" id="annualRateVal">8.5%</span>
+            <div class="group relative ml-2 cursor-help">
+              <span class="inline-flex items-center justify-center w-4 h-4 rounded-full bg-slate-200 dark:bg-slate-700 text-xs text-slate-500 dark:text-slate-400">?</span>
+              <div class="hidden group-hover:block absolute z-10 w-48 p-2 mt-1 text-xs text-white bg-slate-800 rounded shadow-lg -left-2 top-full">
+                Annual rate charged by the lender
+              </div>
             </div>
+          </label>
+          <input id="annualRate" class="input-field mb-4" type="number" inputmode="decimal" min="1" max="30" step="0.1" placeholder="e.g. 8.5">
+          
+          <div class="flex items-center space-x-4">
+            <input type="range" id="annualRateSlider" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer dark:bg-slate-700 accent-teal-600" min="5" max="20" step="0.1" value="8.5">
+            <span class="text-sm font-semibold text-teal-700 dark:text-teal-400 min-w-[3rem] text-right" id="annualRateVal">8.5%</span>
           </div>
         </div>
+
+        <!-- Tenure -->
         <div>
-          <label for="tenureMonths">
+          <label for="tenureMonths" class="label-text flex items-center">
             Tenure (months)
-            <span class="label-hint" tabindex="0" aria-label="hint">?<span class="tooltip">Loan duration e.g. 240 = 20
-                years</span></span>
-          </label>
-          <input id="tenureMonths" type="number" inputmode="numeric" min="12" max="360" step="12"
-            placeholder="e.g. 240">
-          <div class="slider-group">
-            <div class="slider-row">
-              <input type="range" id="tenureMonthsSlider" min="12" max="360" step="12" value="240">
-              <span class="slider-value" id="tenureMonthsVal">240 mo</span>
+            <div class="group relative ml-2 cursor-help">
+              <span class="inline-flex items-center justify-center w-4 h-4 rounded-full bg-slate-200 dark:bg-slate-700 text-xs text-slate-500 dark:text-slate-400">?</span>
+              <div class="hidden group-hover:block absolute z-10 w-48 p-2 mt-1 text-xs text-white bg-slate-800 rounded shadow-lg -left-2 top-full">
+                Loan duration e.g. 240 = 20 years
+              </div>
             </div>
+          </label>
+          <input id="tenureMonths" class="input-field mb-4" type="number" inputmode="numeric" min="12" max="360" step="12" placeholder="e.g. 240">
+          
+          <div class="flex items-center space-x-4">
+            <input type="range" id="tenureMonthsSlider" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer dark:bg-slate-700 accent-teal-600" min="12" max="360" step="12" value="240">
+            <span class="text-sm font-semibold text-teal-700 dark:text-teal-400 min-w-[3rem] text-right" id="tenureMonthsVal">240 mo</span>
           </div>
         </div>
       </div>
-      <div class="actions">
-        <button id="calcBtn">Calculate ✨</button>
-        <button id="resetBtn" class="ghost">Reset</button>
+
+      <div class="flex flex-wrap items-center gap-4 pt-6 border-t border-slate-100 dark:border-slate-800">
+        <button id="calcBtn" class="btn-primary flex-1 sm:flex-none">Calculate ✨</button>
+        <button id="resetBtn" class="btn-secondary flex-1 sm:flex-none">Reset</button>
       </div>
     </section>
 
-    <section class="container" aria-labelledby="summary-heading" style="margin-top: 24px;">
-      <h2 id="summary-heading" class="section-heading">Summary Overview</h2>
-      <div class="summary" id="summary" style="margin-top:0;">
-        <div class="kpi">
-          <div class="label">Monthly EMI</div>
-          <div class="value highlight" id="emiOut">–</div>
+    <!-- Summary & Chart Section -->
+    <div id="resultsSection" class="hidden">
+      <h2 class="text-2xl font-bold mb-6">Overview</h2>
+      
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-10">
+        <!-- KPIs -->
+        <div class="card p-6 md:p-8 flex flex-col justify-center bg-gradient-to-br from-white to-slate-50 dark:from-slate-900 dark:to-slate-800/80">
+          <div class="space-y-6">
+            <div>
+              <div class="text-sm font-medium text-slate-500 dark:text-slate-400 mb-1">Monthly EMI</div>
+              <div class="text-4xl font-extrabold text-teal-600 dark:text-teal-400" id="emiOut">–</div>
+            </div>
+            <div class="w-full h-px bg-slate-200 dark:bg-slate-700"></div>
+            <div>
+              <div class="text-sm font-medium text-slate-500 dark:text-slate-400 mb-1">Total Interest</div>
+              <div class="text-2xl font-bold text-slate-900 dark:text-white" id="totalInterestOut">–</div>
+            </div>
+            <div>
+              <div class="text-sm font-medium text-slate-500 dark:text-slate-400 mb-1">Total Payment</div>
+              <div class="text-2xl font-bold text-slate-900 dark:text-white" id="totalPaymentOut">–</div>
+            </div>
+          </div>
         </div>
-        <div class="kpi">
-          <div class="label">Total Interest</div>
-          <div class="value" id="totalInterestOut">–</div>
-        </div>
-        <div class="kpi">
-          <div class="label">Total Payment</div>
-          <div class="value" id="totalPaymentOut">–</div>
-        </div>
-      </div>
-    </section>
 
-    <!-- Donut Chart -->
-    <section class="container chart-section" id="chartSection" style="display:none;">
-      <div class="chart-container">
-        <div class="chart-title">Principal vs. Interest Breakdown</div>
-        <div class="chart-donut-wrap">
-          <canvas id="emiDonutChart" class="chart-donut-canvas" width="220" height="220"></canvas>
-          <div class="chart-legend" id="chartLegend"></div>
+        <!-- Donut Chart -->
+        <div class="card p-6 md:p-8 flex flex-col sm:flex-row items-center gap-8">
+          <div class="w-48 h-48 sm:w-56 sm:h-56 relative flex-shrink-0">
+            <canvas id="emiDonutChart"></canvas>
+          </div>
+          <div id="chartLegend" class="flex-1 w-full space-y-3">
+            <!-- Legend items will be injected here via JS -->
+          </div>
         </div>
       </div>
-      <div class="tip-card">
-        <span class="tip-icon">💡</span>
-        <div class="tip-content">
-          <h4>Pro Tip</h4>
-          <p>Making even a small prepayment in the first few years can save <strong>lakhs in interest</strong> and
-            reduce your loan tenure significantly. Try our <a href="./prepayment.html"
-              style="color:var(--accent);font-weight:600;">Prepayment Calculator</a> to see the impact.</p>
-        </div>
-      </div>
-    </section>
 
-    <section class="table-container container" aria-labelledby="schedule-heading">
-      <div
-        style="padding:24px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;border-bottom:1px solid var(--glass-border);">
-        <h2 id="schedule-heading" style="margin:0;font-size:20px;">Amortization Schedule</h2>
-        <div class="actions" style="margin-top:0;">
-          <button id="exportCsvBtn" class="ghost" style="padding:8px 16px;font-size:14px;">Download CSV ⬇️</button>
+      <!-- Tip Card -->
+      <div class="bg-teal-50 dark:bg-teal-900/20 border border-teal-100 dark:border-teal-800/30 rounded-xl p-5 mb-10 flex items-start gap-4">
+        <div class="text-2xl">💡</div>
+        <div>
+          <h4 class="font-bold text-teal-800 dark:text-teal-300 mb-1">Pro Tip</h4>
+          <p class="text-sm text-teal-700 dark:text-teal-400/80">
+            Making even a small prepayment in the first few years can save <strong>lakhs in interest</strong> and reduce your loan tenure significantly. Try our <a href="./prepayment.html" class="font-bold underline">Prepayment Calculator</a> to see the impact.
+          </p>
         </div>
       </div>
-      <div class="scroll-x">
-        <table>
-          <thead>
-            <tr>
-              <th class="left"># Month</th>
-              <th>Opening Bal</th>
-              <th>EMI Paid</th>
-              <th>Interest</th>
-              <th>Principal</th>
-              <th>Closing Bal</th>
-            </tr>
-          </thead>
-          <tbody id="scheduleBody"></tbody>
-        </table>
+
+      <!-- Schedule Table -->
+      <h2 class="text-2xl font-bold mb-6 flex justify-between items-center">
+        <span>Amortization Schedule</span>
+        <button id="exportCsvBtn" class="text-sm font-medium text-teal-600 hover:text-teal-700 dark:text-teal-400 dark:hover:text-teal-300 px-3 py-1 rounded-md hover:bg-teal-50 dark:hover:bg-teal-900/30 transition-colors">
+          Export CSV ⬇️
+        </button>
+      </h2>
+      
+      <div class="table-container">
+        <div class="overflow-x-auto">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Month</th>
+                <th>Opening Bal</th>
+                <th>EMI Paid</th>
+                <th>Interest</th>
+                <th>Principal</th>
+                <th>Closing Bal</th>
+              </tr>
+            </thead>
+            <tbody id="scheduleBody"></tbody>
+          </table>
+        </div>
       </div>
-    </section>
+    </div>
   </main>
 
-  <footer>
-    <div class="container">
-      <div>✨ Built for everyone. Works offline. No data collection, tracking, or ads.</div>
-      <div style="margin-top:12px;">Crafted with passion. Connect on <a
-          href="https://www.linkedin.com/in/yashpal-yadav-990278221/" target="_blank" rel="me noopener">LinkedIn</a>
+  <footer class="bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 py-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-sm text-slate-500 dark:text-slate-400">
+      <div class="mb-2">✨ Built for everyone. Works offline. No data collection, tracking, or ads.</div>
+      <div>Crafted with passion. Connect on <a
+          href="https://www.linkedin.com/in/yashpal-yadav-990278221/" target="_blank" rel="me noopener" class="text-teal-600 dark:text-teal-400 font-medium hover:underline">LinkedIn</a>
       </div>
     </div>
   </footer>
 
   <!-- Sticky Result Bar -->
-  <div class="sticky-result" id="stickyResult">
-    <div>
-      <div class="sr-label">Monthly EMI</div>
-      <div class="sr-value" id="stickyEmi">–</div>
+  <div class="fixed bottom-0 inset-x-0 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] transform translate-y-full transition-transform duration-300 z-50 flex justify-between items-center px-4 py-3 sm:px-6 lg:px-8" id="stickyResult">
+    <div class="flex flex-wrap items-center gap-x-6 gap-y-1">
+      <div>
+        <div class="text-xs text-slate-500 dark:text-slate-400 font-medium">Monthly EMI</div>
+        <div class="text-lg font-bold text-teal-600 dark:text-teal-400" id="stickyEmi">–</div>
+      </div>
+      <div>
+        <div class="text-xs text-slate-500 dark:text-slate-400 font-medium">Total Interest</div>
+        <div class="text-lg font-bold text-slate-900 dark:text-white" id="stickyInterest">–</div>
+      </div>
     </div>
-    <div>
-      <div class="sr-label">Total Interest</div>
-      <div class="sr-value" id="stickyInterest">–</div>
-    </div>
-    <button class="sr-dismiss" id="stickyDismiss">✕</button>
+    <button class="p-2 -mr-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 rounded-full" id="stickyDismiss" aria-label="Dismiss">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+    </button>
   </div>
 
   <script type="module">

@@ -1,0 +1,67 @@
+<!DOCTYPE html><html lang="en"><head>
+  <meta charset="utf-8">
+  <title>Gratuity Calculator | FinCalc Suite</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-50 font-sans antialiased transition-colors duration-300">
+  <nav class="sticky top-0 z-40 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        <a href="../index.html" class="flex-shrink-0 flex items-center font-bold text-xl tracking-tight text-teal-700 dark:text-teal-400 text-slate-600 hover:text-slate-900 hover:bg-slate-50 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800">
+          <span class="mr-2 text-2xl">💹</span> FinCalc Suite
+        </a>
+        <div class="flex items-center">
+          <button class="md:hidden p-2 rounded-md text-slate-600 hover:text-slate-900 hover:bg-slate-100 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800 focus:outline-none" aria-label="Toggle menu" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')">
+            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
+          </button>
+        </div>
+        <div class="hidden md:flex space-x-1 overflow-x-auto pb-2 -mb-2 no-scrollbar">
+          <a href="../index.html" class="px-3 py-2 rounded-md text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800">Home</a>
+          <a href="./emi.html" class="px-3 py-2 rounded-md text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800">EMI</a>
+          <a href="./prepayment.html" class="px-3 py-2 rounded-md text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800">Prepay</a>
+          <a href="./sip.html" class="px-3 py-2 rounded-md text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800">SIP</a>
+          <a href="./step-up-sip.html" class="px-3 py-2 rounded-md text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800">Step-Up SIP</a>
+          <a href="./mutual-fund.html" class="px-3 py-2 rounded-md text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800">Mutual Fund</a>
+          <a href="./fd.html" class="px-3 py-2 rounded-md text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800">FD</a>
+        </div>
+      </div>
+    </div>
+    <!-- Mobile menu -->
+    <div class="hidden md:hidden bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800" id="mobile-menu">
+      <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3 grid grid-cols-2 gap-2">
+        <a href="../index.html" class="block px-3 py-2 rounded-md text-base font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800">Home</a>
+        <a href="./emi.html" class="block px-3 py-2 rounded-md text-base font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800">EMI</a>
+        <a href="./prepayment.html" class="block px-3 py-2 rounded-md text-base font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800">Prepay</a>
+        <a href="./sip.html" class="block px-3 py-2 rounded-md text-base font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800">SIP</a>
+      </div>
+    </div>
+  </nav>
+  <header class="py-12 md:py-16 text-center px-4 sm:px-6 lg:px-8"><div class="max-w-3xl mx-auto">
+    <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight mb-4 bg-gradient-to-r from-teal-600 to-cyan-600 bg-clip-text text-transparent">Gratuity Calculator</h1>
+  </div></header>
+  <main class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-24">
+    <section class="card p-6 md:p-8 mb-8">
+      <div class="row-3 grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div>
+          <label class="label-text flex items-center mb-1">Last Drawn Salary (Basic + DA)</label>
+          <input id="salary" type="number" placeholder="e.g. 50000" class="input-field mb-4 w-full">
+        </div>
+        <div>
+          <label class="label-text flex items-center mb-1">Tenure (Years)</label>
+          <input id="tenure" type="number" placeholder="e.g. 5" class="input-field mb-4 w-full">
+        </div>
+      </div>
+      <div class="flex flex-wrap items-center gap-4 pt-6 border-t border-slate-100 dark:border-slate-800">
+        <button id="calcBtn">Calculate</button>
+      </div>
+    </section>
+    <section class="">
+      <h2>Result</h2>
+      <div style="font-size: 24px; font-weight: bold;">Gratuity Amount: ₹<span id="resultOut">–</span></div>
+    </section>
+  </main>
+  <script type="module" src="../scripts/gratuity.js"></script>
+
+</body></html>

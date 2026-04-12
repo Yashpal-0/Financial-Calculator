@@ -6,14 +6,20 @@ function syncSlider(inputId, sliderId, displayId, formatter) {
     const slider = document.getElementById(sliderId);
     const display = document.getElementById(displayId);
     if (!input || !slider || !display) return;
+
     function update(val) {
         display.textContent = formatter(val);
-        const pct = ((+val - +slider.min) / (+slider.max - +slider.min)) * 100;
-        slider.style.background = `linear-gradient(to right, var(--slider-thumb) ${Math.max(0, Math.min(100, pct))}%, var(--slider-track) ${Math.max(0, Math.min(100, pct))}%)`;
+        const pct = ((val - slider.min) / (slider.max - slider.min)) * 100;
+        const thumbColor = '#0d9488';
+        const trackColor = document.documentElement.dataset.theme === 'dark' ? '#334155' : '#e2e8f0';
+        slider.style.background = `linear-gradient(to right, ${thumbColor} ${pct}%, ${trackColor} ${pct}%)`;
     }
     input.addEventListener('input', () => { slider.value = input.value; update(input.value); });
     slider.addEventListener('input', () => { input.value = slider.value; update(slider.value); });
     update(slider.value);
+    
+    const observer = new MutationObserver(() => update(slider.value));
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
 }
 
 const lakhFmt = v => { const L = v / 100000; return L >= 100 ? `₹${(v / 10000000).toFixed(1)}Cr` : L >= 1 ? `₹${L.toFixed(1)}L` : `₹${Number(v).toLocaleString('en-IN')}`; };
@@ -43,8 +49,8 @@ document.getElementById('calcBtn')?.addEventListener('click', () => {
 
     document.getElementById('recommText').textContent = regimeName + ' saves you more';
     document.getElementById('savingsText').textContent = formatINR(savings) + '/yr';
-    document.getElementById('recommSection').style.display = '';
-    document.getElementById('resultsSection')?.removeAttribute('style');
+    document.getElementById('recommSection').classList.remove('hidden');
+    document.getElementById('resultsSection')?.classList.remove('hidden');
 
     // Comparison table
     const rows = [
@@ -87,7 +93,7 @@ document.getElementById('calcBtn')?.addEventListener('click', () => {
     }
 
     // Bar chart
-    document.getElementById('chartSection').style.display = '';
+    document.getElementById('chartSection').classList.remove('hidden');
     const isDark = document.documentElement.dataset.theme === 'dark';
     const ctx = document.getElementById('taxBarChart').getContext('2d');
     if (taxChart) { taxChart.destroy(); taxChart = null; }
@@ -99,12 +105,12 @@ document.getElementById('calcBtn')?.addEventListener('click', () => {
                 label: 'Annual Tax',
                 data: [oldRegimeTax, newRegimeTax],
                 backgroundColor: [
-                    recommendation === 'old' ? 'rgba(5,150,105,0.8)' : 'rgba(220,38,38,0.7)',
-                    recommendation === 'new' ? 'rgba(5,150,105,0.8)' : 'rgba(220,38,38,0.7)',
+                    recommendation === 'old' ? 'rgba(13,148,136,0.85)' : 'rgba(8,145,178,0.75)',
+                    recommendation === 'new' ? 'rgba(13,148,136,0.85)' : 'rgba(8,145,178,0.75)',
                 ],
                 borderColor: [
-                    recommendation === 'old' ? 'rgba(5,150,105,1)' : 'rgba(220,38,38,1)',
-                    recommendation === 'new' ? 'rgba(5,150,105,1)' : 'rgba(220,38,38,1)',
+                    recommendation === 'old' ? 'rgba(13,148,136,1)' : 'rgba(8,145,178,1)',
+                    recommendation === 'new' ? 'rgba(13,148,136,1)' : 'rgba(8,145,178,1)',
                 ],
                 borderWidth: 1.5,
                 borderRadius: 10,
@@ -130,6 +136,6 @@ document.getElementById('calcBtn')?.addEventListener('click', () => {
 
 document.getElementById('resetBtn')?.addEventListener('click', () => {
     ['grossIncome', 'sec80C', 'hra', 'nps', 'otherDed'].forEach(id => document.getElementById(id).value = '');
-    ['recommSection', 'resultsSection', 'chartSection'].forEach(id => { const el = document.getElementById(id); if (el) el.style.display = 'none'; });
+    ['recommSection', 'resultsSection', 'chartSection'].forEach(id => { const el = document.getElementById(id); if (el) el.classList.add('hidden'); });
     if (taxChart) { taxChart.destroy(); taxChart = null; }
 });

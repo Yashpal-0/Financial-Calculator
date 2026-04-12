@@ -6,14 +6,23 @@ function syncSlider(inputId, sliderId, displayId, formatter) {
     const slider = document.getElementById(sliderId);
     const display = document.getElementById(displayId);
     if (!input || !slider || !display) return;
+
     function update(val) {
         display.textContent = formatter(val);
         const pct = ((val - slider.min) / (slider.max - slider.min)) * 100;
-        slider.style.background = `linear-gradient(to right, var(--slider-thumb) ${pct}%, var(--slider-track) ${pct}%)`;
+        const thumbColor = '#0d9488';
+        const trackColor = document.documentElement.dataset.theme === 'dark' ? '#334155' : '#e2e8f0';
+        slider.style.background = `linear-gradient(to right, ${thumbColor} ${pct}%, ${trackColor} ${pct}%)`;
     }
-    input.addEventListener('input', () => { slider.value = input.value; update(input.value); });
+    input.addEventListener('input', () => { slider.value = input.value; update(input.value); 
+    document.getElementById('resultsSection').classList.remove('hidden');
+    updateDonutChart('Invested Amount', invested, 'Estimated Returns', gained);
+});
     slider.addEventListener('input', () => { input.value = slider.value; update(slider.value); });
     update(slider.value);
+    
+    const observer = new MutationObserver(() => update(slider.value));
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
 }
 
 syncSlider('initSIP', 'initSIPSlider', 'initSIPVal', v => `₹${Number(v).toLocaleString('en-IN')}`);
@@ -21,7 +30,63 @@ syncSlider('stepUpPct', 'stepUpPctSlider', 'stepUpPctVal', v => `${v}%`);
 syncSlider('returnRate', 'returnRateSlider', 'returnRateVal', v => `${parseFloat(v).toFixed(1)}%`);
 syncSlider('sipYears', 'sipYearsSlider', 'sipYearsVal', v => `${v} yrs`);
 
-let stepChart = null;
+
+
+let chartInstance = null;
+function updateDonutChart(label1, val1, label2, val2) {
+    const isDark = document.documentElement.dataset.theme === 'dark';
+    const ctx = document.getElementById('donutChart').getContext('2d');
+    const data = {
+        labels: [label1, label2],
+        datasets: [{
+            data: [val1, val2],
+            backgroundColor: ['rgba(13,148,136,0.85)', 'rgba(8,145,178,0.75)'],
+            hoverBackgroundColor: ['rgba(13,148,136,1)', 'rgba(8,145,178,1)'],
+            borderColor: isDark ? '#0f172a' : '#ffffff',
+            borderWidth: 3,
+            hoverOffset: 8,
+        }]
+    };
+    const opts = {
+        cutout: '70%',
+        plugins: {
+            legend: { display: false },
+            tooltip: {
+                callbacks: {
+                    label: ctx => ` ${ctx.label}: ${formatINR(ctx.raw)}`
+                }
+            }
+        },
+        animation: { animateRotate: true, duration: 600 },
+        maintainAspectRatio: false
+    };
+
+    if (chartInstance) {
+        chartInstance.options.plugins.tooltip = opts.plugins.tooltip;
+        chartInstance.data = data;
+        chartInstance.update();
+    } else {
+        chartInstance = new Chart(ctx, { type: 'doughnut', data, options: opts });
+    }
+
+    const legendEl = document.getElementById('chartLegend');
+    legendEl.innerHTML = `
+    <div class="flex items-center justify-between">
+      <div class="flex items-center">
+        <div class="w-3 h-3 rounded-full mr-3" style="background:rgba(13,148,136,0.85)"></div>
+        <span class="text-sm text-slate-600 dark:text-slate-400">${label1}</span>
+      </div>
+      <span class="font-semibold text-slate-900 dark:text-white">${formatINR(val1)}</span>
+    </div>
+    <div class="flex items-center justify-between">
+      <div class="flex items-center">
+        <div class="w-3 h-3 rounded-full mr-3" style="background:rgba(8,145,178,0.75)"></div>
+        <span class="text-sm text-slate-600 dark:text-slate-400">${label2}</span>
+      </div>
+      <span class="font-semibold text-slate-900 dark:text-white">${formatINR(val2)}</span>
+    </div>
+  `;
+}
 
 document.getElementById('calcBtn')?.addEventListener('click', () => {
     const init = Number(document.getElementById('initSIP').value || '0');
@@ -53,7 +118,8 @@ document.getElementById('calcBtn')?.addEventListener('click', () => {
         monthly = monthly * (1 + step / 100);
     }
 
-    document.getElementById('chartSection').style.display = '';
+    document.getElementById('resultsSection').classList.remove('hidden');
+    updateDonutChart('Invested Amount', totalInvested, 'Estimated Returns', wealthGained);
     const isDark = document.documentElement.dataset.theme === 'dark';
     const ctx = document.getElementById('stepUpChart').getContext('2d');
     const datasets = [
@@ -73,8 +139,8 @@ document.getElementById('calcBtn')?.addEventListener('click', () => {
         },
     ];
 
-    if (stepChart) { stepChart.destroy(); stepChart = null; }
-    stepChart = new Chart(ctx, {
+    if (window.stepChart) { window.stepChart.destroy(); }
+    window.stepChart = new Chart(ctx, {
         type: 'line',
         data: { labels, datasets },
         options: {
@@ -98,6 +164,6 @@ document.getElementById('calcBtn')?.addEventListener('click', () => {
 document.getElementById('resetBtn')?.addEventListener('click', () => {
     ['initSIP', 'stepUpPct', 'returnRate', 'sipYears'].forEach(id => document.getElementById(id).value = '');
     ['totalInvestedOut', 'wealthGainedOut', 'futureValueOut'].forEach(id => document.getElementById(id).textContent = '–');
-    document.getElementById('chartSection').style.display = 'none';
-    if (stepChart) { stepChart.destroy(); stepChart = null; }
+    document.getElementById('resultsSection').classList.add('hidden');
+    if (chartInstance) { chartInstance.destroy(); chartInstance = null; }
 });

@@ -1,7 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
+<!DOCTYPE html><html lang="en"><head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Recurring Deposit Calculator | FinCalc</title>
@@ -12,93 +9,147 @@
     <link rel="stylesheet" href="../styles.css">
 </head>
 
-<body>
-    <div class="container"
-        style="display:flex;justify-content:flex-end;gap:12px;padding-top:12px;position:relative;z-index:100;">
-        <button id="themeToggle" class="ghost" title="Toggle dark mode"
-            style="padding:6px 12px;font-size:16px;border-radius:20px;">🌓</button>
+<body class="bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-50 font-sans antialiased transition-colors duration-300">
+  <!-- Controls -->
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-end gap-3 pt-3 relative z-50">
+    <button id="installBtn" class="hidden px-3 py-1.5 text-sm rounded-full hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors">Install App</button>
+    <button id="themeToggle" class="px-3 py-1.5 text-base rounded-full hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors" title="Toggle dark mode">🌓</button>
+  </div>
+
+  <nav class="sticky top-0 z-40 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        <a href="../index.html" class="flex-shrink-0 flex items-center font-bold text-xl tracking-tight text-teal-700 dark:text-teal-400 text-slate-600 hover:text-slate-900 hover:bg-slate-50 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800">
+          <span class="mr-2 text-2xl">💹</span> FinCalc Suite
+        </a>
+        <div class="flex items-center">
+          <button class="md:hidden p-2 rounded-md text-slate-600 hover:text-slate-900 hover:bg-slate-100 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800 focus:outline-none" aria-label="Toggle menu" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')">
+            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
+          </button>
+        </div>
+        <div class="hidden md:flex space-x-1 overflow-x-auto pb-2 -mb-2 no-scrollbar">
+          <a href="../index.html" class="px-3 py-2 rounded-md text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800">Home</a>
+          <a href="./emi.html" class="px-3 py-2 rounded-md text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800">EMI</a>
+          <a href="./prepayment.html" class="px-3 py-2 rounded-md text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800">Prepay</a>
+          <a href="./sip.html" class="px-3 py-2 rounded-md text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800">SIP</a>
+          <a href="./step-up-sip.html" class="px-3 py-2 rounded-md text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800">Step-Up SIP</a>
+          <a href="./mutual-fund.html" class="px-3 py-2 rounded-md text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800">Mutual Fund</a>
+          <a href="./fd.html" class="px-3 py-2 rounded-md text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800">FD</a>
+        </div>
+      </div>
     </div>
+    <!-- Mobile menu -->
+    <div class="hidden md:hidden bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800" id="mobile-menu">
+      <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3 grid grid-cols-2 gap-2">
+        <a href="../index.html" class="block px-3 py-2 rounded-md text-base font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800">Home</a>
+        <a href="./emi.html" class="block px-3 py-2 rounded-md text-base font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800">EMI</a>
+        <a href="./prepayment.html" class="block px-3 py-2 rounded-md text-base font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800">Prepay</a>
+        <a href="./sip.html" class="block px-3 py-2 rounded-md text-base font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800">SIP</a>
+      </div>
+    </div>
+  </nav>
 
-    <nav class="navbar">
-        <div class="container nav-wrap">
-            <div class="brand"><span class="brand-icon">💹</span> FinCalc Suite</div>
-            <button class="nav-toggle" aria-label="Toggle menu" onclick="document.body.classList.toggle('nav-open')">☰
-                Menu</button>
-                        <ul class="nav-links">
-        <li><a href="../index.html">Home</a></li>
-        <li><a href="./emi.html">EMI</a></li>
-        <li><a href="./prepayment.html">Prepay</a></li>
-        <li><a href="./sip.html">SIP</a></li>
-        <li><a href="./step-up-sip.html">Step-Up SIP</a></li>
-        <li><a href="./mutual-fund.html">Mutual Fund</a></li>
-        <li><a href="./fd.html">FD</a></li>
-        <li><a href="./rd.html" aria-current="page">RD</a></li>
-        <li><a href="./ppf.html">PPF</a></li>
-        <li><a href="./inflation.html">Inflation</a></li>
-        <li><a href="./retirement.html">Retirement</a></li>
-        <li><a href="./income-tax.html">Tax</a></li>
-      </ul>
+  <header class="py-12 md:py-16 text-center px-4 sm:px-6 lg:px-8">
+    <div class="max-w-3xl mx-auto">
+      <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight mb-4 bg-gradient-to-r from-teal-600 to-cyan-600 bg-clip-text text-transparent">
+        Recurring Deposit (RD)
+      </h1>
+      <p class="text-lg text-slate-600 dark:text-slate-400">
+        Estimate the maturity value of your regular monthly deposits.
+      </p>
+    </div>
+  </header>
+
+  <main class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-24">
+    <section class="card p-6 md:p-8 mb-8">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        
+        <div>
+          <label for="monthlyDeposit" class="label-text flex items-center">
+            Monthly Deposit
+          </label>
+          <input id="monthlyDeposit" class="input-field mb-4" type="number" inputmode="decimal" min="500" step="100" placeholder="e.g. 5000">
+          
         </div>
-    </nav>
 
-    <header class="page-header container">
-        <h1>Recurring Deposit (RD)</h1>
-        <p style="color:var(--muted); font-size:18px;">Estimate the maturity value of your regular monthly deposits.</p>
-    </header>
-
-    <main>
-        <section class="card container">
-            <div class="row row-3">
-                <div>
-                    <label for="monthlyDeposit">Monthly Deposit</label>
-                    <input id="monthlyDeposit" type="number" inputmode="decimal" min="500" step="100"
-                        placeholder="e.g. 5000">
-                </div>
-                <div>
-                    <label for="annualRate">Interest Rate (p.a) %</label>
-                    <input id="annualRate" type="number" inputmode="decimal" min="1" step="0.1" placeholder="e.g. 6.5">
-                </div>
-                <div>
-                    <label for="tenureMonths">Tenure (Months)</label>
-                    <input id="tenureMonths" type="number" inputmode="numeric" min="6" step="1" placeholder="e.g. 60">
-                </div>
-            </div>
-            <div class="actions">
-                <button id="calcBtn">Calculate Maturity ✨</button>
-                <button id="resetBtn" class="ghost">Reset</button>
-            </div>
-        </section>
-
-        <section class="container" aria-labelledby="summary-heading" style="margin-top: 32px;">
-            <h2 id="summary-heading" style="margin-bottom: 12px;">Deposit Summary</h2>
-            <div class="summary" id="summary" style="margin-top: 0;">
-                <div class="kpi">
-                    <div class="label">Total Amount Deposited</div>
-                    <div class="value" id="principalOut">-</div>
-                </div>
-                <div class="kpi">
-                    <div class="label">Total Interest Earned</div>
-                    <div class="value" id="interestOut" style="color:var(--success);">-</div>
-                </div>
-                <div class="kpi">
-                    <div class="label">Maturity Value</div>
-                    <div class="value highlight" id="maturityOut">-</div>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <footer>
-        <div class="container">
-            <div>✨ Built for everyone. Works offline in your browser.</div>
+        <div>
+          <label for="annualRate" class="label-text flex items-center">
+            Interest Rate (p.a) %
+          </label>
+          <input id="annualRate" class="input-field mb-4" type="number" inputmode="decimal" min="1" step="0.1" placeholder="e.g. 6.5">
+          
         </div>
-    </footer>
 
-    <script type="module">
-        import { initApp } from '../scripts/app.js';
-        import '../scripts/rd.js';
-        initApp();
-    </script>
-</body>
+        <div>
+          <label for="tenureMonths" class="label-text flex items-center">
+            Tenure (Months)
+          </label>
+          <input id="tenureMonths" class="input-field mb-4" type="number" inputmode="numeric" min="6" step="1" placeholder="e.g. 60">
+          
+        </div>
+      </div>
 
-</html>
+      <div class="flex flex-wrap items-center gap-4 pt-6 border-t border-slate-100 dark:border-slate-800">
+        <button id="calcBtn" class="btn-primary flex-1 sm:flex-none">Calculate Maturity ✨</button>
+        <button id="resetBtn" class="btn-secondary flex-1 sm:flex-none">Reset</button>
+      </div>
+    </section>
+
+    <!-- Summary & Chart Section -->
+    <div id="resultsSection" class="hidden">
+      <h2 class="text-2xl font-bold mb-6">Overview</h2>
+      
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-10">
+        <!-- KPIs -->
+        <div class="card p-6 md:p-8 flex flex-col justify-center bg-gradient-to-br from-white to-slate-50 dark:from-slate-900 dark:to-slate-800/80">
+          <div class="space-y-6">
+            
+            <div>
+              <div class="text-sm font-medium text-slate-500 dark:text-slate-400 mb-1">Total Amount Deposited</div>
+              <div class="text-2xl font-bold text-slate-900 dark:text-white" id="principalOut">–</div>
+            </div>
+            <div class="w-full h-px bg-slate-200 dark:bg-slate-700"></div>
+
+            <div>
+              <div class="text-sm font-medium text-slate-500 dark:text-slate-400 mb-1">Total Interest Earned</div>
+              <div class="text-2xl font-bold text-slate-900 dark:text-white" id="interestOut">–</div>
+            </div>
+
+            <div>
+              <div class="text-sm font-medium text-slate-500 dark:text-slate-400 mb-1">Maturity Value</div>
+              <div class="text-4xl font-extrabold text-teal-600 dark:text-teal-400" id="maturityOut">–</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Donut Chart -->
+        <div class="card p-6 md:p-8 flex flex-col sm:flex-row items-center gap-8">
+          <div class="w-48 h-48 sm:w-56 sm:h-56 relative flex-shrink-0">
+            <canvas id="donutChart"></canvas>
+          </div>
+          <div id="chartLegend" class="flex-1 w-full space-y-3">
+            <!-- Legend items will be injected here via JS -->
+          </div>
+        </div>
+      </div>
+
+      
+    </div>
+  </main>
+
+  <footer class="bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 py-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-sm text-slate-500 dark:text-slate-400">
+      <div class="mb-2">✨ Built for everyone. Works offline. No data collection, tracking, or ads.</div>
+      <div>Crafted with passion. Connect on <a href="https://www.linkedin.com/in/yashpal-yadav-990278221/" target="_blank" rel="me noopener" class="text-teal-600 dark:text-teal-400 font-medium hover:underline">LinkedIn</a>
+      </div>
+    </div>
+  </footer>
+
+  <script type="module">
+    import { initApp } from '../scripts/app.js';
+    import '../scripts/rd.js';
+    initApp();
+  </script>
+</body></html>

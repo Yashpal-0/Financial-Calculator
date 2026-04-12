@@ -1,12 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
+<!DOCTYPE html><html lang="en"><head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Prepayment Calculator | FinCalc</title>
-  <meta name="description"
-    content="Home loan prepayment calculator with reduce tenure or reduce EMI strategies, recurring options, and CSV export.">
+  <meta name="description" content="Home loan prepayment calculator with reduce tenure or reduce EMI strategies, recurring options, and CSV export.">
   <meta name="theme-color" content="#4f46e5">
   <link rel="manifest" href="../manifest.webmanifest">
   <link rel="icon" href="../favicon.svg" type="image/svg+xml">
@@ -14,170 +10,162 @@
   <link rel="canonical" href="https://yashpal-0.github.io/Financial-Calculator/pages/prepayment.html">
   <meta property="og:type" content="website">
   <meta property="og:title" content="Prepayment Calculator | FinCalc">
-  <meta property="og:description"
-    content="Home loan prepayment calculator with reduce tenure or reduce EMI strategies, recurring options, and CSV export.">
+  <meta property="og:description" content="Home loan prepayment calculator with reduce tenure or reduce EMI strategies, recurring options, and CSV export.">
   <meta property="og:url" content="https://yashpal-0.github.io/Financial-Calculator/pages/prepayment.html">
   <meta property="og:image" content="https://yashpal-0.github.io/Financial-Calculator/favicon.svg">
 </head>
 
-<body>
+<body class="bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-50 font-sans antialiased transition-colors duration-300">
   <!-- Fixed Controls -->
-  <div class="container"
-    style="display:flex;justify-content:flex-end;gap:12px;padding-top:12px;position:relative;z-index:100;">
-    <button id="installBtn" class="ghost"
-      style="display:none;padding:6px 12px;font-size:14px;border-radius:20px;">Install App</button>
-    <button id="themeToggle" class="ghost" title="Toggle dark mode"
-      style="padding:6px 12px;font-size:16px;border-radius:20px;">🌓</button>
+  
+  <!-- Controls -->
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-end gap-3 pt-3 relative z-50">
+    <button id="installBtn" class="hidden px-3 py-1.5 text-sm rounded-full hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors">Install App</button>
+    <button id="themeToggle" class="px-3 py-1.5 text-base rounded-full hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors" title="Toggle dark mode">🌓</button>
   </div>
 
-  <nav class="navbar">
-    <div class="container nav-wrap">
-      <div class="brand"><span class="brand-icon">💹</span> FinCalc Suite</div>
-      <button class="nav-toggle" aria-label="Toggle menu" onclick="document.body.classList.toggle('nav-open')">☰
-        Menu</button>
-                  <ul class="nav-links">
-        <li><a href="../index.html">Home</a></li>
-        <li><a href="./emi.html">EMI</a></li>
-        <li><a href="./prepayment.html" aria-current="page">Prepay</a></li>
-        <li><a href="./sip.html">SIP</a></li>
-        <li><a href="./step-up-sip.html">Step-Up SIP</a></li>
-        <li><a href="./mutual-fund.html">Mutual Fund</a></li>
-        <li><a href="./fd.html">FD</a></li>
-        <li><a href="./rd.html">RD</a></li>
-        <li><a href="./ppf.html">PPF</a></li>
-        <li><a href="./inflation.html">Inflation</a></li>
-        <li><a href="./retirement.html">Retirement</a></li>
-        <li><a href="./income-tax.html">Tax</a></li>
-      </ul>
+  <nav class="sticky top-0 z-40 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        <a href="../index.html" class="flex-shrink-0 flex items-center font-bold text-xl tracking-tight text-teal-700 dark:text-teal-400 text-slate-600 hover:text-slate-900 hover:bg-slate-50 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800">
+          <span class="mr-2 text-2xl">💹</span> FinCalc Suite
+        </a>
+        <div class="flex items-center">
+          <button class="md:hidden p-2 rounded-md text-slate-600 hover:text-slate-900 hover:bg-slate-100 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800 focus:outline-none" aria-label="Toggle menu" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')">
+            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
+          </button>
+        </div>
+        <div class="hidden md:flex space-x-1 overflow-x-auto pb-2 -mb-2 no-scrollbar">
+          <a href="../index.html" class="px-3 py-2 rounded-md text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800">Home</a>
+          <a href="./emi.html" class="px-3 py-2 rounded-md text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800">EMI</a>
+          <a href="./prepayment.html" class="px-3 py-2 rounded-md text-sm font-medium bg-slate-100 text-slate-900 dark:bg-slate-800 dark:text-white" aria-current="page">Prepay</a>
+          <a href="./sip.html" class="px-3 py-2 rounded-md text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800">SIP</a>
+          <a href="./step-up-sip.html" class="px-3 py-2 rounded-md text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800">Step-Up SIP</a>
+          <a href="./mutual-fund.html" class="px-3 py-2 rounded-md text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800">Mutual Fund</a>
+          <a href="./fd.html" class="px-3 py-2 rounded-md text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800">FD</a>
+        </div>
+      </div>
+    </div>
+    <!-- Mobile menu -->
+    <div class="hidden md:hidden bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800" id="mobile-menu">
+      <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3 grid grid-cols-2 gap-2">
+        <a href="../index.html" class="block px-3 py-2 rounded-md text-base font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800">Home</a>
+        <a href="./emi.html" class="block px-3 py-2 rounded-md text-base font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800">EMI</a>
+        <a href="./prepayment.html" class="block px-3 py-2 rounded-md text-base font-medium bg-slate-100 text-slate-900 dark:bg-slate-800 dark:text-white" aria-current="page">Prepay</a>
+        <a href="./sip.html" class="block px-3 py-2 rounded-md text-base font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800">SIP</a>
+      </div>
     </div>
   </nav>
 
-  <header class="page-header container">
-    <h1>Prepayment strategy</h1>
-    <p style="color:var(--muted); font-size:18px;">Model one-time or recurring prepayments to save massive interest.</p>
-  </header>
+  <header class="py-12 md:py-16 text-center px-4 sm:px-6 lg:px-8"><div class="max-w-3xl mx-auto">
+    <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight mb-4 bg-gradient-to-r from-teal-600 to-cyan-600 bg-clip-text text-transparent">Prepayment strategy</h1>
+    <p class="text-lg text-slate-600 dark:text-slate-400">Model one-time or recurring prepayments to save massive interest.</p>
+  </div></header>
 
-  <main>
-    <section class="grid grid-2 container">
-      <div class="card" aria-labelledby="loan-inputs-heading">
+  <main class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-24">
+    <section class="grid grid-2">
+      <div class="card p-6 md:p-8 mb-8" aria-labelledby="loan-inputs-heading">
         <h2 id="loan-inputs-heading">Loan Inputs</h2>
-        <div class="row row-1" style="gap:16px;">
+        <div class="row-1 grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <div>
-            <label for="loanAmount">Loan Amount</label>
-            <input id="loanAmount" type="number" inputmode="decimal" min="0" step="1000" placeholder="e.g. 5,000,000">
+            <label for="loanAmount" class="label-text flex items-center mb-1">Loan Amount</label>
+            <input id="loanAmount" type="number" inputmode="decimal" min="0" step="1000" placeholder="e.g. 5,000,000" class="input-field mb-4 w-full">
           </div>
           <div>
-            <label for="annualRate">Annual Interest % (APR)</label>
-            <input id="annualRate" type="number" inputmode="decimal" min="0" step="0.01" placeholder="e.g. 8.5">
+            <label for="annualRate" class="label-text flex items-center mb-1">Annual Interest % (APR)</label>
+            <input id="annualRate" type="number" inputmode="decimal" min="0" step="0.01" placeholder="e.g. 8.5" class="input-field mb-4 w-full">
           </div>
           <div>
-            <label for="tenureMonths">Tenure (months)</label>
-            <input id="tenureMonths" type="number" inputmode="numeric" min="1" step="1" placeholder="e.g. 240">
+            <label for="tenureMonths" class="label-text flex items-center mb-1">Tenure (months)</label>
+            <input id="tenureMonths" type="number" inputmode="numeric" min="1" step="1" placeholder="e.g. 240" class="input-field mb-4 w-full">
           </div>
         </div>
-        <div class="actions">
+        <div class="flex flex-wrap items-center gap-4 pt-6 border-t border-slate-100 dark:border-slate-800">
           <button id="calcBtn">Calculate ✨</button>
           <button id="resetBtn" class="ghost">Reset</button>
         </div>
       </div>
 
-      <div class="card">
+      <div class="card p-6 md:p-8 mb-8">
         <h2>Prepayment Options</h2>
-        <div class="row row-1">
+        <div class="row-1 grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <div>
-            <label for="strategy">Strategy</label>
-            <select id="strategy">
-              <option value="reduce_tenure" selected>Reduce Tenure</option>
+            <label for="strategy" class="label-text flex items-center mb-1">Strategy</label>
+            <select id="strategy" class="input-field mb-4 w-full">
+              <option value="reduce_tenure" selected="">Reduce Tenure</option>
               <option value="reduce_emi">Reduce EMI</option>
             </select>
             <div class="help mt-4">Reducing tenure saves the maximum interest!</div>
           </div>
         </div>
         <div class="prepay-list" id="prepayList" aria-live="polite"></div>
-        <div class="actions">
+        <div class="flex flex-wrap items-center gap-4 pt-6 border-t border-slate-100 dark:border-slate-800">
           <button id="addPrepayBtn" class="secondary">+ Add Prepayment</button>
           <button id="clearPrepayBtn" class="ghost">Clear</button>
         </div>
       </div>
     </section>
 
-    <section class="container" style="margin-top: 24px;">
-      <h2 id="summary-heading" style="margin-bottom: 12px;">Prepayment Analysis</h2>
-      <div class="summary" id="summary"
-        style="margin-top: 0; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
-        <div class="kpi">
-          <div class="label">Interest Saved</div>
-          <div class="value highlight" id="interestSaved">-</div>
-        </div>
-        <div class="kpi">
-          <div class="label">Months Saved</div>
-          <div class="value highlight" id="monthsSaved">-</div>
-        </div>
-        <div class="kpi">
-          <div class="label">Original EMI</div>
-          <div class="value" id="baseEmi">-</div>
-        </div>
-        <div class="kpi">
-          <div class="label">New Strategy EMI</div>
-          <div class="value" id="stratEmi">-</div>
-        </div>
-        <div class="kpi">
-          <div class="label">Total Paid (No Prepay)</div>
-          <div class="value" id="baseTotal">-</div>
-        </div>
-        <div class="kpi">
-          <div class="label">Total Paid (With Prepay)</div>
-          <div class="value" id="stratInterest">-</div>
+    
+<div id="resultsSection" class="hidden mt-8">
+  <h2 class="text-2xl font-bold mb-6">Prepayment Analysis</h2>
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-10">
+    <div class="card p-6 md:p-8 flex flex-col justify-center bg-gradient-to-br from-white to-slate-50 dark:from-slate-900 dark:to-slate-800/80">
+      <div class="grid grid-cols-2 gap-4">
+        <div class="flex flex-col space-y-1">
+          <div class="text-sm font-medium text-slate-500 dark:text-slate-400">Interest Saved</div>
+          <div class="text-3xl sm:text-4xl font-extrabold text-teal-600 dark:text-teal-400" id="interestSaved">-</div>
+        </div>\n<div class="flex flex-col space-y-1">
+          <div class="text-sm font-medium text-slate-500 dark:text-slate-400">Months Saved</div>
+          <div class="text-3xl sm:text-4xl font-extrabold text-teal-600 dark:text-teal-400" id="monthsSaved">-</div>
+        </div>\n<div class="flex flex-col space-y-1">
+          <div class="text-sm font-medium text-slate-500 dark:text-slate-400">Original EMI</div>
+          <div class="text-2xl font-bold text-slate-900 dark:text-white" id="baseEmi">-</div>
+        </div>\n<div class="flex flex-col space-y-1">
+          <div class="text-sm font-medium text-slate-500 dark:text-slate-400">New Strategy EMI</div>
+          <div class="text-2xl font-bold text-slate-900 dark:text-white" id="stratEmi">-</div>
+        </div>\n<div class="flex flex-col space-y-1">
+          <div class="text-sm font-medium text-slate-500 dark:text-slate-400">Total Paid (No Prepay)</div>
+          <div class="text-2xl font-bold text-slate-900 dark:text-white" id="baseTotal">-</div>
+        </div>\n<div class="flex flex-col space-y-1">
+          <div class="text-sm font-medium text-slate-500 dark:text-slate-400">Total Paid (With Prepay)</div>
+          <div class="text-2xl font-bold text-slate-900 dark:text-white" id="stratInterest">-</div>
         </div>
       </div>
-
-      <div class="card info-card" id="prepayVsInvestCard" style="margin-top: 24px;">
-        <h3 style="margin-bottom: 12px;">Prepay vs Invest</h3>
-        <p class="help" style="margin-bottom: 12px;">Compare interest saved by prepayment with investing the same amount in mutual funds.</p>
-        <div class="row row-2" style="gap: 16px; margin-bottom: 16px;">
-          <div>
-            <label for="prepayVsInvestRate">Expected MF Return %</label>
-            <input id="prepayVsInvestRate" type="number" inputmode="decimal" min="0" step="0.5" value="12" placeholder="e.g. 12">
-          </div>
-        </div>
-        <div class="summary" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px;">
-          <div class="kpi">
-            <div class="label">Total Prepaid</div>
-            <div class="value" id="prepayTotalPrepaid">-</div>
-          </div>
-          <div class="kpi">
-            <div class="label">Interest Saved</div>
-            <div class="value highlight" id="prepayInterestSaved">-</div>
-          </div>
-          <div class="kpi">
-            <div class="label">Same Amount in MF (projected)</div>
-            <div class="value" id="prepayMfProjected">-</div>
-          </div>
-        </div>
-        <p class="help" style="margin-top: 12px; font-size: 13px;" id="prepayVsInvestNote">Add prepayments and calculate to compare.</p>
+    </div>
+    <div class="card p-6 md:p-8 flex flex-col sm:flex-row items-center gap-8">
+      <div class="w-48 h-48 sm:w-56 sm:h-56 relative flex-shrink-0">
+        <canvas id="donutChart"></canvas>
       </div>
-    </section>
+      <div id="chartLegend" class="flex-1 w-full space-y-3">
+      </div>
+    </div>
+  </div>
+  
+</div>
 
-    <section class="table-container container" aria-labelledby="schedule-heading" style="margin-top: 32px;">
-      <div
-        style="padding: 24px; display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;border-bottom: 1px solid var(--glass-border);">
+
+    <section class="overflow-x-auto" aria-labelledby="schedule-heading" style="margin-top: 32px;">
+      <div style="padding: 24px; display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;border-bottom: 1px solid var(--glass-border);">
         <h2 id="schedule-heading" style="margin:0; font-size:20px;">Revised Amortization Schedule</h2>
-        <div class="actions" style="margin-top:0;">
+        <div class="flex flex-wrap items-center gap-4 pt-6 border-t border-slate-100 dark:border-slate-800" style="margin-top:0;">
           <button id="exportCsvBtn" class="ghost" style="padding:8px 16px; font-size:14px;">Download CSV ⬇️</button>
           <button id="printBtn" class="ghost" style="padding:8px 16px; font-size:14px;">Print 🖨️</button>
         </div>
       </div>
-      <div class="scroll-x">
-        <table aria-describedby="summary-heading">
+      <div class="overflow-x-auto">
+        <table aria-describedby="summary-heading" class="w-full text-left border-collapse">
           <thead>
             <tr>
-              <th class="left">#</th>
-              <th>Opening Bal</th>
-              <th>EMI Paid</th>
-              <th>Interest</th>
-              <th>Principal</th>
-              <th style="color:var(--success);">Prepaid</th>
-              <th>Closing Bal</th>
+              <th class="left px-4 py-3 text-sm font-medium text-slate-500 dark:text-slate-400 border-b border-slate-200 dark:border-slate-800">#</th>
+              <th class="px-4 py-3 text-sm font-medium text-slate-500 dark:text-slate-400 border-b border-slate-200 dark:border-slate-800">Opening Bal</th>
+              <th class="px-4 py-3 text-sm font-medium text-slate-500 dark:text-slate-400 border-b border-slate-200 dark:border-slate-800">EMI Paid</th>
+              <th class="px-4 py-3 text-sm font-medium text-slate-500 dark:text-slate-400 border-b border-slate-200 dark:border-slate-800">Interest</th>
+              <th class="px-4 py-3 text-sm font-medium text-slate-500 dark:text-slate-400 border-b border-slate-200 dark:border-slate-800">Principal</th>
+              <th class="px-4 py-3 text-sm font-medium text-slate-500 dark:text-slate-400 border-b border-slate-200 dark:border-slate-800">Prepaid</th>
+              <th class="px-4 py-3 text-sm font-medium text-slate-500 dark:text-slate-400 border-b border-slate-200 dark:border-slate-800">Closing Bal</th>
             </tr>
           </thead>
           <tbody id="scheduleBody"></tbody>
@@ -186,11 +174,10 @@
     </section>
   </main>
 
-  <footer>
-    <div class="container">
-      <div>✨ Built for everyone. Works offline in your browser.</div>
-      <div style="margin-top: 12px;">Crafted with passion. Connect on <a
-          href="https://www.linkedin.com/in/yashpal-yadav-990278221/" target="_blank" rel="me noopener">LinkedIn</a>
+  <footer class="bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 py-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-sm text-slate-500 dark:text-slate-400">
+      <div class="mb-2">✨ Built for everyone. Works offline. No data collection, tracking, or ads.</div>
+      <div>Crafted with passion. Connect on <a href="https://www.linkedin.com/in/yashpal-yadav-990278221/" target="_blank" rel="me noopener" class="text-teal-600 dark:text-teal-400 font-medium hover:underline">LinkedIn</a>
       </div>
     </div>
   </footer>
@@ -200,6 +187,6 @@
     import '../scripts/main.js';
     initApp();
   </script>
-</body>
 
-</html>
+
+</body></html>

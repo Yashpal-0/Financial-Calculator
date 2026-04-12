@@ -1,4 +1,58 @@
-import { formatINR } from './util.js';
+let chartInstance = null;
+function updateDonutChart(label1, val1, label2, val2) {
+    const isDark = document.documentElement.dataset.theme === 'dark';
+    const ctx = document.getElementById('donutChart').getContext('2d');
+    const data = {
+        labels: [label1, label2],
+        datasets: [{
+            data: [val1, val2],
+            backgroundColor: ['rgba(13,148,136,0.85)', 'rgba(8,145,178,0.75)'],
+            hoverBackgroundColor: ['rgba(13,148,136,1)', 'rgba(8,145,178,1)'],
+            borderColor: isDark ? '#0f172a' : '#ffffff',
+            borderWidth: 3,
+            hoverOffset: 8,
+        }]
+    };
+    const opts = {
+        cutout: '70%',
+        plugins: {
+            legend: { display: false },
+            tooltip: {
+                callbacks: {
+                    label: ctx => ` ${ctx.label}: ₹${Number(ctx.raw).toLocaleString('en-IN')}`
+                }
+            }
+        },
+        animation: { animateRotate: true, duration: 600 },
+        maintainAspectRatio: false
+    };
+
+    if (chartInstance) {
+        chartInstance.options.plugins.tooltip = opts.plugins.tooltip;
+        chartInstance.data = data;
+        chartInstance.update();
+    } else {
+        chartInstance = new Chart(ctx, { type: 'doughnut', data, options: opts });
+    }
+
+    const legendEl = document.getElementById('chartLegend');
+    legendEl.innerHTML = `
+    <div class="flex items-center justify-between">
+      <div class="flex items-center">
+        <div class="w-3 h-3 rounded-full mr-3" style="background:rgba(13,148,136,0.85)"></div>
+        <span class="text-sm text-slate-600 dark:text-slate-400">${label1}</span>
+      </div>
+      <span class="font-semibold text-slate-900 dark:text-white">₹${Number(val1).toLocaleString('en-IN')}</span>
+    </div>
+    <div class="flex items-center justify-between">
+      <div class="flex items-center">
+        <div class="w-3 h-3 rounded-full mr-3" style="background:rgba(8,145,178,0.75)"></div>
+        <span class="text-sm text-slate-600 dark:text-slate-400">${label2}</span>
+      </div>
+      <span class="font-semibold text-slate-900 dark:text-white">₹${Number(val2).toLocaleString('en-IN')}</span>
+    </div>
+  `;
+}\n\nimport { formatINR } from './util.js';
 import { calculateRetirementCorpus, calculateSIP } from './finance.js';
 
 function syncSlider(inputId, sliderId, displayId, formatter) {
@@ -6,14 +60,20 @@ function syncSlider(inputId, sliderId, displayId, formatter) {
     const slider = document.getElementById(sliderId);
     const display = document.getElementById(displayId);
     if (!input || !slider || !display) return;
+
     function update(val) {
         display.textContent = formatter(val);
-        const pct = ((+val - +slider.min) / (+slider.max - +slider.min)) * 100;
-        slider.style.background = `linear-gradient(to right, var(--slider-thumb) ${pct}%, var(--slider-track) ${pct}%)`;
+        const pct = ((val - slider.min) / (slider.max - slider.min)) * 100;
+        const thumbColor = '#0d9488';
+        const trackColor = document.documentElement.dataset.theme === 'dark' ? '#334155' : '#e2e8f0';
+        slider.style.background = `linear-gradient(to right, ${thumbColor} ${pct}%, ${trackColor} ${pct}%)`;
     }
     input.addEventListener('input', () => { slider.value = input.value; update(input.value); });
     slider.addEventListener('input', () => { input.value = slider.value; update(slider.value); });
     update(slider.value);
+    
+    const observer = new MutationObserver(() => update(slider.value));
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
 }
 
 syncSlider('currentAge', 'currentAgeSlider', 'currentAgeVal', v => `${v} yrs`);
@@ -23,7 +83,7 @@ syncSlider('postRetYears', 'postRetYearsSlider', 'postRetYearsVal', v => `${v} y
 syncSlider('retInflation', 'retInflationSlider', 'retInflationVal', v => `${parseFloat(v).toFixed(1)}%`);
 syncSlider('retReturn', 'retReturnSlider', 'retReturnVal', v => `${parseFloat(v).toFixed(1)}%`);
 
-let retChart = null;
+
 
 document.getElementById('calcBtn')?.addEventListener('click', () => {
     const currentAge = Number(document.getElementById('currentAge').value || 0);
@@ -44,58 +104,14 @@ document.getElementById('calcBtn')?.addEventListener('click', () => {
     document.getElementById('retExpenseOut').textContent = formatINR(retMonthlyExpense);
     document.getElementById('corpusOut').textContent = formatINR(corpusNeeded);
     document.getElementById('monthlySIPOut').textContent = formatINR(monthlySIPNeeded);
-    document.getElementById('resultsSection')?.removeAttribute('style');
+    document.getElementById('resultsSection')?.classList.remove('hidden');
 
-    // Chart: corpus build-up year by year
-    const labels = [], built = [];
-    const r = returnRate / 100 / 12;
-    for (let y = 1; y <= yearsToRetire; y++) {
-        const fv = calculateSIP(monthlySIPNeeded, returnRate, y * 12);
-        labels.push(`Age ${currentAge + y}`);
-        built.push(fv);
-    }
+    
+    const totalInvestment = monthlySIPNeeded * 12 * yearsToRetire;
+    const estReturns = corpusNeeded - totalInvestment;
+    document.getElementById('resultsSection').classList.remove('hidden');
+    updateDonutChart('Total Investment', totalInvestment, 'Estimated Returns', estReturns);
 
-    document.getElementById('chartSection').style.display = '';
-    const isDark = document.documentElement.dataset.theme === 'dark';
-    const ctx = document.getElementById('retChart').getContext('2d');
-    if (retChart) { retChart.destroy(); retChart = null; }
-    retChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels,
-            datasets: [
-                {
-                    label: 'Corpus Built',
-                    data: built,
-                    borderColor: 'rgba(13,148,136,0.9)',
-                    backgroundColor: 'rgba(13,148,136,0.12)',
-                    fill: true, tension: 0.4, borderWidth: 2.5, pointRadius: 2,
-                },
-                {
-                    label: 'Target Corpus',
-                    data: Array(labels.length).fill(corpusNeeded),
-                    borderColor: 'rgba(220,38,38,0.6)',
-                    backgroundColor: 'transparent',
-                    fill: false, tension: 0, borderWidth: 1.5, borderDash: [8, 4], pointRadius: 0,
-                }
-            ]
-        },
-        options: {
-            responsive: true, maintainAspectRatio: false,
-            plugins: {
-                legend: { labels: { color: isDark ? '#fafaf9' : '#1c1917', font: { family: "'Plus Jakarta Sans', sans-serif", size: 13 } } },
-                tooltip: { callbacks: { label: c => ` ${c.dataset.label}: ${formatINR(c.raw)}` } }
-            },
-            scales: {
-                x: { ticks: { color: isDark ? '#a8a29e' : '#57534e', font: { size: 11 }, maxRotation: 45 }, grid: { display: false } },
-                y: {
-                    ticks: { color: isDark ? '#a8a29e' : '#57534e', font: { size: 11 }, callback: v => v >= 1e7 ? `₹${(v / 1e7).toFixed(1)}Cr` : v >= 1e5 ? `₹${(v / 1e5).toFixed(0)}L` : `₹${v}` },
-                    grid: { color: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.04)' }
-                }
-            },
-            animation: { duration: 600 }
-        }
-    });
 });
 
 document.getElementById('resetBtn')?.addEventListener('click', () => {
@@ -103,6 +119,6 @@ document.getElementById('resetBtn')?.addEventListener('click', () => {
     ['yearsToRetOut', 'retExpenseOut', 'corpusOut', 'monthlySIPOut'].forEach(id => document.getElementById(id).textContent = '–');
     const rs = document.getElementById('resultsSection');
     if (rs) rs.style.display = 'none';
-    document.getElementById('chartSection').style.display = 'none';
-    if (retChart) { retChart.destroy(); retChart = null; }
+    
+    if (chartInstance) { chartInstance.destroy(); chartInstance = null; }
 });
