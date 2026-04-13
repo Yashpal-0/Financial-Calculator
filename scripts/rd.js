@@ -35,10 +35,7 @@ function updateDonutChart(label1, val1, label2, val2) {
         chartInstance.data = data;
         chartInstance.update();
     } else {
-        chartInstance = new Chart(ctx, { type: 'doughnut', data, options: opts 
-    document.getElementById('resultsSection').classList.remove('hidden');
-    updateDonutChart('Total Deposits', deposits, 'Total Interest', interest);
-});
+        chartInstance = new Chart(ctx, { type: 'doughnut', data, options: opts });
     }
 
     const legendEl = document.getElementById('chartLegend');

@@ -84,9 +84,3 @@ document.getElementById('resetBtn')?.addEventListener('click', () => {
     document.getElementById('wealthGainedOut').textContent = '-';
     document.getElementById('futureValueOut').textContent = '-';
 });
-ment.getElementById('annualRate').value = '7.1';
-    document.getElementById('tenureYears').value = '15';
-    document.getElementById('totalInvestedOut').textContent = '-';
-    document.getElementById('wealthGainedOut').textContent = '-';
-    document.getElementById('futureValueOut').textContent = '-';
-});

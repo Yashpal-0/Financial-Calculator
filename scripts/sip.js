@@ -97,7 +97,6 @@ document.getElementById('calcBtn')?.addEventListener('click', () => {
     document.getElementById('wealthGainedOut').textContent = formatINR(gained);
     document.getElementById('futureValueOut').textContent = formatINR(fv);
     document.getElementById('resultsSection').classList.remove('hidden');
-    document.getElementById('resultsSection').classList.remove('hidden');
     updateDonutChart('Invested Amount', invested, 'Estimated Returns', gained);
 });
 

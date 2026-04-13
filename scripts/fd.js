@@ -74,6 +74,8 @@ document.getElementById('calcBtn')?.addEventListener('click', () => {
     document.getElementById('principalOut').textContent = formatINR(P);
     document.getElementById('interestOut').textContent = formatINR(interest);
     document.getElementById('maturityOut').textContent = formatINR(maturity);
+    document.getElementById('resultsSection').classList.remove('hidden');
+    updateDonutChart('Principal Amount', P, 'Interest Earned', interest);
 });
 
 document.getElementById('resetBtn')?.addEventListener('click', () => {
@@ -83,10 +85,6 @@ document.getElementById('resetBtn')?.addEventListener('click', () => {
     document.getElementById('principalOut').textContent = '-';
     document.getElementById('interestOut').textContent = '-';
     document.getElementById('maturityOut').textContent = '-';
-});
-ocument.getElementById('annualRate').value = '';
-    document.getElementById('tenureMonths').value = '';
-    document.getElementById('principalOut').textContent = '-';
-    document.getElementById('interestOut').textContent = '-';
-    document.getElementById('maturityOut').textContent = '-';
+    document.getElementById('resultsSection').classList.add('hidden');
+    if (chartInstance) { chartInstance.destroy(); chartInstance = null; }
 });
