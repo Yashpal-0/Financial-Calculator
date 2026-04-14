@@ -74,6 +74,8 @@ document.getElementById('calcBtn')?.addEventListener('click', () => {
     document.getElementById('totalInvestedOut').textContent = formatINR(invested);
     document.getElementById('wealthGainedOut').textContent = formatINR(gained);
     document.getElementById('futureValueOut').textContent = formatINR(fv);
+    document.getElementById('resultsSection').classList.remove('hidden');
+    updateDonutChart('Total Invested', invested, 'Wealth Gained', gained);
 });
 
 document.getElementById('resetBtn')?.addEventListener('click', () => {
@@ -83,4 +85,6 @@ document.getElementById('resetBtn')?.addEventListener('click', () => {
     document.getElementById('totalInvestedOut').textContent = '-';
     document.getElementById('wealthGainedOut').textContent = '-';
     document.getElementById('futureValueOut').textContent = '-';
+    document.getElementById('resultsSection').classList.add('hidden');
+    if (chartInstance) { chartInstance.destroy(); chartInstance = null; }
 });

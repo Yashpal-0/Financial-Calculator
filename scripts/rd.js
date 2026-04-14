@@ -86,4 +86,6 @@ document.getElementById('resetBtn')?.addEventListener('click', () => {
     document.getElementById('principalOut').textContent = '-';
     document.getElementById('interestOut').textContent = '-';
     document.getElementById('maturityOut').textContent = '-';
+    document.getElementById('resultsSection').classList.add('hidden');
+    if (chartInstance) { chartInstance.destroy(); chartInstance = null; }
 });

@@ -1,3 +1,5 @@
+import { calculateGST } from './finance.js';
+
 let chartInstance = null;
 function updateDonutChart(label1, val1, label2, val2) {
     const isDark = document.documentElement.dataset.theme === 'dark';
@@ -53,8 +55,6 @@ function updateDonutChart(label1, val1, label2, val2) {
     </div>
   `;
 }
-
-import { calculateGST } from './finance.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   const btn = document.getElementById('calcBtn');

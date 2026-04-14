@@ -1,3 +1,6 @@
+import { formatINR } from './util.js';
+import { calculateRetirementCorpus, calculateSIP } from './finance.js';
+
 let chartInstance = null;
 function updateDonutChart(label1, val1, label2, val2) {
     const isDark = document.documentElement.dataset.theme === 'dark';
@@ -53,9 +56,6 @@ function updateDonutChart(label1, val1, label2, val2) {
     </div>
   `;
 }
-
-import { formatINR } from './util.js';
-import { calculateRetirementCorpus, calculateSIP } from './finance.js';
 
 function syncSlider(inputId, sliderId, displayId, formatter) {
     const input = document.getElementById(inputId);
@@ -120,7 +120,7 @@ document.getElementById('resetBtn')?.addEventListener('click', () => {
     ['currentAge', 'retirementAge', 'monthlyExpense', 'postRetYears', 'retInflation', 'retReturn'].forEach(id => document.getElementById(id).value = '');
     ['yearsToRetOut', 'retExpenseOut', 'corpusOut', 'monthlySIPOut'].forEach(id => document.getElementById(id).textContent = '–');
     const rs = document.getElementById('resultsSection');
-    if (rs) rs.style.display = 'none';
+    if (rs) rs.classList.add('hidden');
     
     if (chartInstance) { chartInstance.destroy(); chartInstance = null; }
 });

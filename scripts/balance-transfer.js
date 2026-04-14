@@ -1,3 +1,6 @@
+import { formatINR } from './util.js';
+import { calculateEmi } from './finance.js';
+
 let chartInstance = null;
 function updateDonutChart(label1, val1, label2, val2) {
     const isDark = document.documentElement.dataset.theme === 'dark';
@@ -53,9 +56,6 @@ function updateDonutChart(label1, val1, label2, val2) {
     </div>
   `;
 }
-
-import { formatINR } from './util.js';
-import { calculateEmi } from './finance.js';
 
 document.getElementById('calcBtn').addEventListener('click', () => {
   const outstanding = Number(document.getElementById('currOutstanding').value || '0');

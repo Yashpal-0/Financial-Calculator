@@ -1,4 +1,4 @@
-const CACHE_NAME = 'loan-tools-v4';
+const CACHE_NAME = 'loan-tools-v5';
 const OFFLINE_URLS = [
   './index.html',
   './styles.css',
@@ -17,7 +17,37 @@ const OFFLINE_URLS = [
   './pages/balance-transfer.html',
   './scripts/balance-transfer.js',
   './pages/education.html',
-  './scripts/education.js'
+  './scripts/education.js',
+  './pages/sip.html',
+  './scripts/sip.js',
+  './pages/step-up-sip.html',
+  './scripts/step-up-sip.js',
+  './pages/mutual-fund.html',
+  './scripts/mutual-fund.js',
+  './pages/lumpsum.html',
+  './scripts/lumpsum.js',
+  './pages/fd.html',
+  './scripts/fd.js',
+  './pages/rd.html',
+  './scripts/rd.js',
+  './pages/ppf.html',
+  './scripts/ppf.js',
+  './pages/ssy.html',
+  './scripts/ssy.js',
+  './pages/pomis.html',
+  './scripts/pomis.js',
+  './pages/cagr.html',
+  './scripts/cagr.js',
+  './pages/retirement.html',
+  './scripts/retirement.js',
+  './pages/income-tax.html',
+  './scripts/income-tax.js',
+  './pages/inflation.html',
+  './scripts/inflation.js',
+  './pages/gst.html',
+  './scripts/gst.js',
+  './pages/gratuity.html',
+  './scripts/gratuity.js'
 ];
 
 self.addEventListener('install', event => {
