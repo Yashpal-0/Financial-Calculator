@@ -1,10 +1,13 @@
 import { toNumber, formatINR, formatNum } from './util.js';
-import { buildPrepayInstances, calculateLumpsum } from './finance.js';
+import { buildPrepayInstances } from './finance.js';
 
 let chartInstance = null;
 function updateDonutChart(label1, val1, label2, val2) {
+    if (typeof Chart === 'undefined') return;
     const isDark = document.documentElement.dataset.theme === 'dark';
-    const ctx = document.getElementById('donutChart').getContext('2d');
+    const canvas = document.getElementById('donutChart');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
     const data = {
         labels: [label1, label2],
         datasets: [{
@@ -117,12 +120,18 @@ function setEl(id, text) {
  * projected MF growth for the same amount at user-specified return.
  */
 export function renderPrepayVsInvest(schedule, interestSaved, loanRatePercent, monthsSaved) {
-  const totalPrepaid = schedule.reduce((sum, r) => sum + (r.prepayment || 0), 0);
+  const prepayRows = schedule.filter(r => (r.prepayment || 0) > 0);
+  const totalPrepaid = prepayRows.reduce((sum, r) => sum + (r.prepayment || 0), 0);
   const mfRateEl = document.getElementById('prepayVsInvestRate');
   const mfRate = mfRateEl ? parseFloat(mfRateEl.value) || 12 : 12;
-  const yearsSaved = monthsSaved / 12;
-  const mfFV = totalPrepaid > 0 && yearsSaved > 0
-    ? calculateLumpsum(totalPrepaid, mfRate, yearsSaved, 1)
+  const monthlyRate = mfRate / 100 / 12;
+  const lastMonth = schedule.length;
+
+  const mfFV = totalPrepaid > 0
+    ? prepayRows.reduce((sum, row) => {
+        const monthsToGrow = Math.max(0, lastMonth - row.index + 1);
+        return sum + row.prepayment * Math.pow(1 + monthlyRate, monthsToGrow);
+      }, 0)
     : 0;
 
   setEl('prepayTotalPrepaid', formatINR(totalPrepaid));

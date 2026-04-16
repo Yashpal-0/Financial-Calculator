@@ -7,7 +7,7 @@ function onCalculate() {
   if (errors.length) { alert(errors.join('\n')); return; }
 
   const base = baselineSchedule(P, rate, tenure);
-  const { schedule, totalInterest, strategyEmi } = generateSchedule({
+  const { schedule, totalInterest, strategyEmi, strategyTenureMonths } = generateSchedule({
     principal: P,
     annualRatePercent: rate,
     tenureMonths: tenure,
@@ -16,12 +16,13 @@ function onCalculate() {
   });
 
   const interestSaved = base.totalInterest - totalInterest;
-  renderSummary(P, base, { totalInterest, strategyEmi }, tenure, schedule.length);
+  renderSummary(P, base, { totalInterest, strategyEmi }, tenure, strategyTenureMonths);
   renderSchedule(schedule);
-  renderPrepayVsInvest(schedule, interestSaved, rate, tenure - schedule.length);
+  renderPrepayVsInvest(schedule, interestSaved, rate, Math.max(0, tenure - strategyTenureMonths));
   window.__lastSchedule = schedule;
   window.__lastInterestSaved = interestSaved;
   window.__lastLoanRate = rate;
+  window.__lastStrategyTenure = strategyTenureMonths;
 }
 
 function onExportCsv() {
@@ -48,6 +49,10 @@ document.getElementById('resetBtn').addEventListener('click', () => {
   if (window.chartInstance) { window.chartInstance.destroy(); window.chartInstance = null; }
   renderSchedule([]);
   if (typeof renderPrepayVsInvest === 'function') renderPrepayVsInvest([], 0, 0, 0);
+  window.__lastSchedule = [];
+  window.__lastInterestSaved = 0;
+  window.__lastLoanRate = 0;
+  window.__lastStrategyTenure = 0;
 });
 document.getElementById('addPrepayBtn').addEventListener('click', () => addPrepaymentUI());
 document.getElementById('clearPrepayBtn').addEventListener('click', () => { document.getElementById('prepayList').innerHTML = ''; });
@@ -57,8 +62,14 @@ if (mfRateInput) {
   mfRateInput.addEventListener('input', () => {
     const sched = window.__lastSchedule || [];
     if (sched.length && typeof renderPrepayVsInvest === 'function') {
-      const tenure = parseInt(document.getElementById('tenureMonths').value, 10) || 0;
-      renderPrepayVsInvest(sched, window.__lastInterestSaved ?? 0, window.__lastLoanRate ?? 0, tenure - sched.length);
+      const strategyTenure = Number(window.__lastStrategyTenure) || sched.length;
+      const tenure = parseInt(document.getElementById('tenureMonths').value, 10) || strategyTenure;
+      renderPrepayVsInvest(
+        sched,
+        window.__lastInterestSaved ?? 0,
+        window.__lastLoanRate ?? 0,
+        Math.max(0, tenure - strategyTenure)
+      );
     }
   });
 }

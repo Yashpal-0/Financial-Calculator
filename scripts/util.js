@@ -8,12 +8,14 @@ export function clamp(num, min, max) { return Math.min(Math.max(num, min), max);
 export function daysInMonth(year, monthIndex) { return new Date(year, monthIndex + 1, 0).getDate(); }
 
 export function addMonths(date, months, dayOfMonth) {
-  const d = new Date(date.getTime());
-  d.setMonth(d.getMonth() + months);
-  if (typeof dayOfMonth === "number") {
-    d.setDate(Math.min(dayOfMonth, daysInMonth(d.getFullYear(), d.getMonth())));
-  }
-  return d;
+  const base = new Date(date.getTime());
+  const targetYear = base.getFullYear();
+  const targetMonthIndex = base.getMonth() + months;
+  const normalized = new Date(targetYear, targetMonthIndex, 1);
+
+  const requestedDay = typeof dayOfMonth === "number" ? dayOfMonth : base.getDate();
+  normalized.setDate(Math.min(requestedDay, daysInMonth(normalized.getFullYear(), normalized.getMonth())));
+  return normalized;
 }
 
 export function alignToEmiDay(date, emiDay) {

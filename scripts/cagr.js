@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
       
       const cagr = calculateCAGR(startValue, endValue, years);
       document.getElementById('resultOut').textContent = (cagr * 100).toFixed(2) + '%';
+      document.getElementById('resultsSection')?.classList.remove('hidden');
     });
   }
 });

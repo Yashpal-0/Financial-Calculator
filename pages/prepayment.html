@@ -149,7 +149,31 @@
       </div>
     </div>
   </div>
-  
+
+  <div class="card p-6 md:p-8 mb-8">
+    <h3 class="text-xl font-bold mb-4">Prepay vs Invest</h3>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+      <div>
+        <label for="prepayVsInvestRate" class="label-text flex items-center mb-1">Assumed MF Return (% p.a.)</label>
+        <input id="prepayVsInvestRate" type="number" inputmode="decimal" min="0" step="0.1" value="12" class="input-field mb-4 w-full">
+      </div>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-4">
+      <div>
+        <div class="text-sm font-medium text-slate-500 dark:text-slate-400">Total Prepaid</div>
+        <div class="text-2xl font-bold text-slate-900 dark:text-white" id="prepayTotalPrepaid">-</div>
+      </div>
+      <div>
+        <div class="text-sm font-medium text-slate-500 dark:text-slate-400">Interest Saved</div>
+        <div class="text-2xl font-bold text-slate-900 dark:text-white" id="prepayInterestSaved">-</div>
+      </div>
+      <div>
+        <div class="text-sm font-medium text-slate-500 dark:text-slate-400">MF Projected Value</div>
+        <div class="text-2xl font-bold text-slate-900 dark:text-white" id="prepayMfProjected">-</div>
+      </div>
+    </div>
+    <p class="text-sm text-slate-600 dark:text-slate-400" id="prepayVsInvestNote">Add prepayments and calculate to compare.</p>
+  </div>
 </div>
 
 

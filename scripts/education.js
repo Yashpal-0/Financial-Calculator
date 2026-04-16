@@ -47,12 +47,9 @@ function generateEducationLoanSchedule(params) {
 
   // Moratorium period
   for (let month = 1; month <= moratoriumMonths; month++) {
-    const interest = currentPrincipal * monthlyRate;
-    let payment = 0;
-    let principalPayment = 0;
     let prepaymentApplied = 0;
 
-    // Apply prepayments
+    // Apply prepayments at the start of the month
     while (prepayQueue.length && prepayQueue[0].monthOffset + 1 === month) {
       const pp = prepayQueue.shift();
       const amount = Math.min(pp.amount, currentPrincipal);
@@ -62,28 +59,29 @@ function generateEducationLoanSchedule(params) {
       }
     }
 
+    const opening = currentPrincipal;
+    const interest = opening * monthlyRate;
+    let payment = 0;
+    let principalPayment = 0;
+
     if (moratoriumInterest === 'pay') {
       payment = Math.min(interest, moratoriumPayment || interest);
-      principalPayment = 0;
     } else if (moratoriumInterest === 'partial') {
       payment = Math.min(interest * 0.5, moratoriumPayment || interest * 0.5);
-      principalPayment = 0;
-    } else {
-      // capitalize
-      payment = 0;
-      principalPayment = 0;
-      currentPrincipal += interest;
+    }
+
+    const unpaidInterest = Math.max(0, interest - payment);
+    if (unpaidInterest > 0) {
+      currentPrincipal += unpaidInterest;
+      moratoriumInterestAccrued += unpaidInterest;
     }
 
     totalInterest += interest;
-    if (moratoriumInterest === 'capitalize') {
-      moratoriumInterestAccrued += interest;
-    }
 
     schedule.push({
       index: month,
       periodLabel: `Moratorium ${month}`,
-      opening: currentPrincipal - (moratoriumInterest === 'capitalize' ? interest : 0),
+      opening,
       payment,
       interest,
       principal: principalPayment,
@@ -95,27 +93,25 @@ function generateEducationLoanSchedule(params) {
   // Repayment period
   const emi = calculateEmi(currentPrincipal, annualRatePercent, repaymentMonths);
   let remainingPrincipal = currentPrincipal;
-  let remainingMonths = repaymentMonths;
 
   for (let month = 1; month <= repaymentMonths && remainingPrincipal > 0; month++) {
-    const interest = remainingPrincipal * monthlyRate;
-    let principalPayment = Math.min(emi - interest, remainingPrincipal);
+    const opening = remainingPrincipal;
+    const interest = opening * monthlyRate;
+    let principalPayment = Math.min(emi - interest, opening);
     if (principalPayment < 0) principalPayment = 0;
     let prepaymentApplied = 0;
 
-    // Apply prepayments
+    // Apply prepayments after EMI principal adjustment
     while (prepayQueue.length && prepayQueue[0].monthOffset + 1 === (moratoriumMonths + month)) {
       const pp = prepayQueue.shift();
-      const amount = Math.min(pp.amount, remainingPrincipal - principalPayment);
+      const amount = Math.min(pp.amount, Math.max(0, opening - principalPayment - prepaymentApplied));
       if (amount > 0) {
         prepaymentApplied += amount;
-        remainingPrincipal -= amount;
       }
     }
 
+    remainingPrincipal = Math.max(0, opening - principalPayment - prepaymentApplied);
     const actualPayment = remainingPrincipal === 0 ? (principalPayment + interest) : emi;
-    const opening = remainingPrincipal;
-    remainingPrincipal = Math.max(0, remainingPrincipal - principalPayment);
     totalInterest += interest;
 
     schedule.push({

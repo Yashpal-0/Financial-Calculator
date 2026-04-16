@@ -16,12 +16,22 @@ function setText(id, text) {
 
 function showSection(id, show) {
   const el = getEl(id);
-  if (el) el.style.display = show ? '' : 'none';
+  if (!el) return;
+  if (show) {
+    el.classList.remove('hidden');
+    el.style.display = '';
+  } else {
+    el.classList.add('hidden');
+    el.style.display = 'none';
+  }
 }
 
 function onCalculate() {
   const mode = getEl('mfCalcMode')?.value || 'both';
   const holdingYears = parseFloat(getEl('mfHoldingYears')?.value || '') || null;
+
+  hideSipResults();
+  hideLumpResults();
 
   let totalInvested = 0;
   let totalFV = 0;
@@ -74,10 +84,14 @@ function calcSIP(holdingYearsOverride) {
   const tax = holdingYears >= 1 ? equityLTCGTax(gains, holdingYears) : equitySTCGTax(gains);
   const postTax = fv - tax;
 
-  setText('mfSipInvested', formatINR(invested));
-  setText('mfSipFV', formatINR(fv));
-  setText('mfSipGains', formatINR(gains));
-  setText('mfSipCAGR', formatNum(rate, 2) + '% (expected)');
+      const cagrPct = invested > 0 && years > 0
+        ? calculateCAGR(invested, fv, years) * 100
+        : 0;
+
+      setText('mfSipInvested', formatINR(invested));
+      setText('mfSipFV', formatINR(fv));
+      setText('mfSipGains', formatINR(gains));
+      setText('mfSipCAGR', formatNum(cagrPct, 2) + '%');
   setText('mfSipTax', formatINR(tax));
   setText('mfSipPostTax', formatINR(postTax));
   showSection('mfSipSection', true);
@@ -146,8 +160,11 @@ getEl('mfResetBtn')?.addEventListener('click', onReset);
 
 let chartInstance = null;
 function updateDonutChart(label1, val1, label2, val2) {
+    if (typeof Chart === 'undefined') return;
     const isDark = document.documentElement.dataset.theme === 'dark';
-    const ctx = document.getElementById('donutChart').getContext('2d');
+    const canvas = document.getElementById('donutChart');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
     const data = {
         labels: [label1, label2],
         datasets: [{

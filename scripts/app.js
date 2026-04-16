@@ -65,8 +65,12 @@ export function initApp() {
 }
 
 function showUpdateNotification() {
+  // Avoid duplicate notifications
+  if (document.getElementById('sw-update-notification')) return;
+
   // Create update notification
   const notification = document.createElement('div');
+  notification.id = 'sw-update-notification';
   notification.style.cssText = `
     position: fixed;
     top: 20px;

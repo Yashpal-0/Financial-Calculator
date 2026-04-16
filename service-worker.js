@@ -62,14 +62,23 @@ self.addEventListener('install', event => {
 self.addEventListener('activate', event => {
   event.waitUntil((async () => {
     const keys = await caches.keys();
-    await Promise.all(keys.map(k => { if (k !== CACHE_NAME) return caches.delete(k); }));
-    self.clients.claim();
-    
-    // Notify all clients about the update
-    const clients = await self.clients.matchAll();
-    clients.forEach(client => {
-      client.postMessage({ type: 'UPDATE_AVAILABLE' });
-    });
+    let removedOldCache = false;
+    await Promise.all(keys.map(async k => {
+      if (k !== CACHE_NAME) {
+        removedOldCache = true;
+        await caches.delete(k);
+      }
+    }));
+
+    await self.clients.claim();
+
+    // Notify clients only when this activation actually replaced an older cache
+    if (removedOldCache) {
+      const clients = await self.clients.matchAll();
+      clients.forEach(client => {
+        client.postMessage({ type: 'UPDATE_AVAILABLE' });
+      });
+    }
   })());
 });
 
@@ -81,8 +90,10 @@ self.addEventListener('fetch', event => {
     if (cached) return cached;
     try {
       const res = await fetch(req);
-      const cache = await caches.open(CACHE_NAME);
-      cache.put(req, res.clone());
+      if (res && res.ok && (res.type === 'basic' || res.type === 'cors')) {
+        const cache = await caches.open(CACHE_NAME);
+        cache.put(req, res.clone());
+      }
       return res;
     } catch (e) {
       const url = new URL(req.url);

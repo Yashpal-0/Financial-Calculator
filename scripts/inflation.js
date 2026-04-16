@@ -49,11 +49,18 @@ document.getElementById('calcBtn')?.addEventListener('click', () => {
         data.push(val * Math.pow(1 + rate / 100, y));
     }
 
-    document.getElementById('chartSection').classList.remove('hidden');
+    const chartSection = document.getElementById('chartSection');
+    if (chartSection) {
+        chartSection.classList.remove('hidden');
+        chartSection.style.display = '';
+    }
     const isDark = document.documentElement.dataset.theme === 'dark';
-    const ctx = document.getElementById('inflationChart').getContext('2d');
+    const chartCanvas = document.getElementById('inflationChart');
+    if (!chartCanvas) return;
+    const ctx = chartCanvas.getContext('2d');
     if (infChart) { infChart.destroy(); infChart = null; }
-    infChart = new Chart(ctx, {
+    if (typeof Chart !== 'undefined') {
+        infChart = new Chart(ctx, {
         type: 'line',
         data: {
             labels,
@@ -89,11 +96,16 @@ document.getElementById('calcBtn')?.addEventListener('click', () => {
             animation: { duration: 600 }
         }
     });
+    }
 });
 
 document.getElementById('resetBtn')?.addEventListener('click', () => {
     ['currentValue', 'inflationRate', 'inflationYears'].forEach(id => document.getElementById(id).value = '');
     ['todayOut', 'futureCostOut', 'powerLostOut'].forEach(id => document.getElementById(id).textContent = '–');
-    document.getElementById('chartSection').classList.add('hidden');
+    const chartSection = document.getElementById('chartSection');
+    if (chartSection) {
+        chartSection.classList.add('hidden');
+        chartSection.style.display = 'none';
+    }
     if (infChart) { infChart.destroy(); infChart = null; }
 });

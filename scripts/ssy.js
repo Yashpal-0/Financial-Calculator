@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
       
       const maturity = calculateSSY(deposit, tenure, rate);
       document.getElementById('resultOut').textContent = maturity.toFixed(2);
+      document.getElementById('resultsSection')?.classList.remove('hidden');
     });
   }
 });

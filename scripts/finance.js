@@ -23,26 +23,28 @@ export function calculateInflation(currentValue, inflationPercent, years) {
  */
 export function calculateStepUpSIP(initialMonthly, stepUpPercent, annualReturn, years) {
   const r = annualReturn / 100 / 12;
+  const totalMonths = Math.max(1, Math.round(years * 12));
   let totalFV = 0;
   let totalInvested = 0;
   const yearlyData = [];
-  let currentMonthly = initialMonthly;
 
-  for (let y = 0; y < years; y++) {
-    // FV of 12 months of SIP at currentMonthly
-    const yearFVAtEndOfYear = r === 0
-      ? currentMonthly * 12
-      : currentMonthly * ((Math.pow(1 + r, 12) - 1) / r) * (1 + r);
-    
-    // Now, this year's end-of-year corpus will compound for the remaining (years - y - 1) years
-    const remainingMonths = (years - y - 1) * 12;
-    const finalValue = yearFVAtEndOfYear * Math.pow(1 + r, remainingMonths);
-    
-    totalFV += finalValue;
-    totalInvested += currentMonthly * 12;
-    yearlyData.push({ year: y + 1, monthly: currentMonthly, cumInvested: totalInvested });
-    currentMonthly = currentMonthly * (1 + stepUpPercent / 100);
+  for (let m = 0; m < totalMonths; m++) {
+    const yearIndex = Math.floor(m / 12);
+    const currentMonthly = initialMonthly * Math.pow(1 + stepUpPercent / 100, yearIndex);
+    const remainingMonths = totalMonths - m;
+
+    totalFV += currentMonthly * Math.pow(1 + r, remainingMonths);
+    totalInvested += currentMonthly;
+
+    if ((m + 1) % 12 === 0 || m === totalMonths - 1) {
+      yearlyData.push({
+        year: Number(((m + 1) / 12).toFixed(2)),
+        monthly: currentMonthly,
+        cumInvested: totalInvested
+      });
+    }
   }
+
   return { futureValue: totalFV, totalInvested, yearlyData };
 }
 
@@ -125,8 +127,14 @@ function computeOldRegimeTax(income) {
     { from: 1000000, to: Infinity, rate: 30 },
   ];
   let tax = applySlabs(income, slabs);
+  const rebateThreshold = 500000;
   // Rebate u/s 87A: full rebate up to ₹12,500 if income ≤ ₹5L
-  if (income <= 500000) tax = Math.max(0, tax - 12500);
+  if (income <= rebateThreshold) {
+    tax = Math.max(0, tax - 12500);
+  } else {
+    // Marginal relief near rebate threshold: tax cannot exceed income above threshold
+    tax = Math.min(tax, income - rebateThreshold);
+  }
   // Add 4% health & education cess
   return tax + tax * 0.04;
 }
@@ -141,8 +149,14 @@ function computeNewRegimeTax(income) {
     { from: 1500000, to: Infinity, rate: 30 },
   ];
   let tax = applySlabs(income, slabs);
+  const rebateThreshold = 700000;
   // Rebate u/s 87A: full rebate up to ₹25,000 if income ≤ ₹7L
-  if (income <= 700000) tax = Math.max(0, tax - 25000);
+  if (income <= rebateThreshold) {
+    tax = Math.max(0, tax - 25000);
+  } else {
+    // Marginal relief near rebate threshold: tax cannot exceed income above threshold
+    tax = Math.min(tax, income - rebateThreshold);
+  }
   return tax + tax * 0.04;
 }
 // No date utilities needed after simplifying to month-based schedule
@@ -182,7 +196,8 @@ export function calculateCAGR(startValue, endValue, years) {
  * @returns {number} Tax amount in INR
  */
 export function equityLTCGTax(gain, holdingYears, exemptionLimit = 125000) {
-  if (gain <= 0 || holdingYears < 1) return 0;
+  if (gain <= 0) return 0;
+  if (holdingYears < 1) return equitySTCGTax(gain);
   const taxableGain = Math.max(0, gain - exemptionLimit);
   return taxableGain * 0.125;
 }
@@ -321,13 +336,17 @@ export function generateSchedule(params) {
     strategy
   } = params;
 
+  const normalizedPrepayments = Array.isArray(prepayments)
+    ? [...prepayments].sort((a, b) => a.monthOffset - b.monthOffset)
+    : [];
+
   const monthlyRate = (annualRatePercent / 100) / 12;
   let remainingPrincipal = principal;
   let remainingMonths = tenureMonths;
   let currentEmi = calculateEmi(remainingPrincipal, annualRatePercent, remainingMonths);
   const schedule = [];
   let totalInterest = 0;
-  const prepayQueue = [...prepayments];
+  const prepayQueue = [...normalizedPrepayments];
 
   let installmentIndex = 0;
   while (remainingPrincipal > 0 && installmentIndex < 1200 && remainingMonths > 0) {
@@ -377,7 +396,7 @@ export function generateSchedule(params) {
     if (installmentIndex > 2400) break;
   }
 
-  return { schedule, totalInterest, strategyEmi: schedule.length ? schedule[0].emi : 0 };
+  return { schedule, totalInterest, strategyEmi: schedule.length ? schedule[0].emi : 0, strategyTenureMonths: schedule.length };
 }
 
 /**

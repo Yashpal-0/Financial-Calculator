@@ -85,8 +85,11 @@ function syncSlider(inputId, sliderId, displayId, formatter) {
 /** Chart.js donut chart */
 let emiChart = null;
 function updateDonutChart(principal, totalInterest) {
+  if (typeof Chart === 'undefined') return;
   const isDark = document.documentElement.dataset.theme === 'dark';
-  const ctx = document.getElementById('emiDonutChart').getContext('2d');
+  const canvas = document.getElementById('emiDonutChart');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
   const data = {
     labels: ['Principal', 'Total Interest'],
     datasets: [{

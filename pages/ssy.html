@@ -2,6 +2,8 @@
   <meta charset="utf-8">
   <title>SSY Calculator | FinCalc Suite</title>
   <link rel="stylesheet" href="../styles.css">
+
+    <link rel="icon" href="../favicon.svg" type="image/svg+xml">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body class="bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-50 font-sans antialiased transition-colors duration-300">
@@ -65,7 +67,7 @@
           <label for="deposit" class="label-text flex items-center">
             Yearly Deposit
           </label>
-          <input id="deposit" class="input-field mb-4" type="number" inputmode="decimal" min="undefined" max="150000" step="undefined" placeholder="e.g. 150000">
+          <input id="deposit" class="input-field mb-4" type="number" inputmode="decimal" min="250" max="150000" step="250" placeholder="e.g. 150000">
           
         </div>
 
@@ -73,7 +75,7 @@
           <label for="tenure" class="label-text flex items-center">
             Deposit Tenure (Years)
           </label>
-          <input id="tenure" class="input-field mb-4" type="number" inputmode="decimal" min="undefined" step="undefined" placeholder="undefined">
+          <input id="tenure" class="input-field mb-4" type="number" inputmode="decimal" min="1" max="15" step="1" placeholder="e.g. 15">
           
         </div>
 
@@ -81,7 +83,7 @@
           <label for="rate" class="label-text flex items-center">
             Interest Rate (%)
           </label>
-          <input id="rate" class="input-field mb-4" type="number" inputmode="decimal" min="undefined" step="0.1" placeholder="undefined">
+          <input id="rate" class="input-field mb-4" type="number" inputmode="decimal" min="0" step="0.1" placeholder="e.g. 8.2">
           
         </div>
       </div>
@@ -100,7 +102,10 @@
         <!-- KPIs -->
         <div class="card p-6 md:p-8 flex flex-col justify-center bg-gradient-to-br from-white to-slate-50 dark:from-slate-900 dark:to-slate-800/80">
           <div class="space-y-6">
-            
+            <div>
+              <div class="text-sm font-medium text-slate-500 dark:text-slate-400 mb-1">Maturity Amount</div>
+              <div class="text-4xl font-extrabold text-teal-600 dark:text-teal-400" id="resultOut">–</div>
+            </div>
           </div>
         </div>
 

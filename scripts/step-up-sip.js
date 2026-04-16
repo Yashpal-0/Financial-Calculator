@@ -31,8 +31,11 @@ syncSlider('sipYears', 'sipYearsSlider', 'sipYearsVal', v => `${v} yrs`);
 
 let chartInstance = null;
 function updateDonutChart(label1, val1, label2, val2) {
+    if (typeof Chart === 'undefined') return;
     const isDark = document.documentElement.dataset.theme === 'dark';
-    const ctx = document.getElementById('donutChart').getContext('2d');
+    const canvas = document.getElementById('donutChart');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
     const data = {
         labels: [label1, label2],
         datasets: [{
@@ -90,7 +93,7 @@ document.getElementById('calcBtn')?.addEventListener('click', () => {
     const step = Number(document.getElementById('stepUpPct').value || '0');
     const rate = Number(document.getElementById('returnRate').value || '0');
     const years = Number(document.getElementById('sipYears').value || '0');
-    if (!(init > 0 && step >= 0 && rate >= 0 && years > 0)) { alert('Please enter valid values.'); return; }
+    if (!(init > 0 && step >= 0 && rate >= 0 && Number.isInteger(years) && years > 0)) { alert('Please enter valid values. Years must be a whole number.'); return; }
 
     const { futureValue, totalInvested } = calculateStepUpSIP(init, step, rate, years);
     const wealthGained = futureValue - totalInvested;
@@ -117,45 +120,49 @@ document.getElementById('calcBtn')?.addEventListener('click', () => {
 
     document.getElementById('resultsSection').classList.remove('hidden');
     updateDonutChart('Invested Amount', totalInvested, 'Estimated Returns', wealthGained);
-    const isDark = document.documentElement.dataset.theme === 'dark';
-    const ctx = document.getElementById('stepUpChart').getContext('2d');
-    const datasets = [
-        {
-            label: 'Step-Up SIP Corpus',
-            data: stepUpData,
-            borderColor: 'rgba(13,148,136,0.9)',
-            backgroundColor: 'rgba(13,148,136,0.12)',
-            fill: true, tension: 0.4, borderWidth: 2.5, pointRadius: 3,
-        },
-        {
-            label: 'Flat SIP Corpus',
-            data: flatData,
-            borderColor: 'rgba(8,145,178,0.8)',
-            backgroundColor: 'rgba(8,145,178,0.06)',
-            fill: true, tension: 0.4, borderWidth: 2, pointRadius: 3, borderDash: [6, 3],
-        },
-    ];
+    if (typeof Chart !== 'undefined') {
+        const isDark = document.documentElement.dataset.theme === 'dark';
+        const lineCanvas = document.getElementById('stepUpChart');
+        if (!lineCanvas) return;
+        const ctx = lineCanvas.getContext('2d');
+        const datasets = [
+            {
+                label: 'Step-Up SIP Corpus',
+                data: stepUpData,
+                borderColor: 'rgba(13,148,136,0.9)',
+                backgroundColor: 'rgba(13,148,136,0.12)',
+                fill: true, tension: 0.4, borderWidth: 2.5, pointRadius: 3,
+            },
+            {
+                label: 'Flat SIP Corpus',
+                data: flatData,
+                borderColor: 'rgba(8,145,178,0.8)',
+                backgroundColor: 'rgba(8,145,178,0.06)',
+                fill: true, tension: 0.4, borderWidth: 2, pointRadius: 3, borderDash: [6, 3],
+            },
+        ];
 
-    if (window.stepChart) { window.stepChart.destroy(); }
-    window.stepChart = new Chart(ctx, {
-        type: 'line',
-        data: { labels, datasets },
-        options: {
-            responsive: true, maintainAspectRatio: false,
-            plugins: {
-                legend: { labels: { color: isDark ? '#fafaf9' : '#1c1917', font: { family: "'Plus Jakarta Sans', sans-serif", size: 13 } } },
-                tooltip: { callbacks: { label: c => ` ${c.dataset.label}: ${formatINR(c.raw)}` } }
-            },
-            scales: {
-                x: { ticks: { color: isDark ? '#a8a29e' : '#57534e', font: { size: 12 } }, grid: { display: false } },
-                y: {
-                    ticks: { color: isDark ? '#a8a29e' : '#57534e', font: { size: 12 }, callback: v => v >= 1e7 ? `₹${(v / 1e7).toFixed(1)}Cr` : v >= 1e5 ? `₹${(v / 1e5).toFixed(0)}L` : `₹${v}` },
-                    grid: { color: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.04)' }
-                }
-            },
-            animation: { duration: 600 }
-        }
-    });
+        if (window.stepChart) { window.stepChart.destroy(); }
+        window.stepChart = new Chart(ctx, {
+            type: 'line',
+            data: { labels, datasets },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                plugins: {
+                    legend: { labels: { color: isDark ? '#fafaf9' : '#1c1917', font: { family: "'Plus Jakarta Sans', sans-serif", size: 13 } } },
+                    tooltip: { callbacks: { label: c => ` ${c.dataset.label}: ${formatINR(c.raw)}` } }
+                },
+                scales: {
+                    x: { ticks: { color: isDark ? '#a8a29e' : '#57534e', font: { size: 12 } }, grid: { display: false } },
+                    y: {
+                        ticks: { color: isDark ? '#a8a29e' : '#57534e', font: { size: 12 }, callback: v => v >= 1e7 ? `₹${(v / 1e7).toFixed(1)}Cr` : v >= 1e5 ? `₹${(v / 1e5).toFixed(0)}L` : `₹${v}` },
+                        grid: { color: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.04)' }
+                    }
+                },
+                animation: { duration: 600 }
+            }
+        });
+    }
 });
 
 document.getElementById('resetBtn')?.addEventListener('click', () => {
@@ -163,4 +170,5 @@ document.getElementById('resetBtn')?.addEventListener('click', () => {
     ['totalInvestedOut', 'wealthGainedOut', 'futureValueOut'].forEach(id => document.getElementById(id).textContent = '–');
     document.getElementById('resultsSection').classList.add('hidden');
     if (chartInstance) { chartInstance.destroy(); chartInstance = null; }
+    if (window.stepChart) { window.stepChart.destroy(); window.stepChart = null; }
 });

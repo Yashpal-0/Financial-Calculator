@@ -49,7 +49,11 @@ document.getElementById('calcBtn')?.addEventListener('click', () => {
 
     document.getElementById('recommText').textContent = regimeName + ' saves you more';
     document.getElementById('savingsText').textContent = formatINR(savings) + '/yr';
-    document.getElementById('recommSection').classList.remove('hidden');
+    const recommSection = document.getElementById('recommSection');
+    if (recommSection) {
+        recommSection.classList.remove('hidden');
+        recommSection.style.display = '';
+    }
     document.getElementById('resultsSection')?.classList.remove('hidden');
 
     // Comparison table
@@ -93,11 +97,18 @@ document.getElementById('calcBtn')?.addEventListener('click', () => {
     }
 
     // Bar chart
-    document.getElementById('chartSection').classList.remove('hidden');
+    const chartSection = document.getElementById('chartSection');
+    if (chartSection) {
+        chartSection.classList.remove('hidden');
+        chartSection.style.display = '';
+    }
     const isDark = document.documentElement.dataset.theme === 'dark';
-    const ctx = document.getElementById('taxBarChart').getContext('2d');
+    const chartCanvas = document.getElementById('taxBarChart');
+    if (!chartCanvas) return;
+    const ctx = chartCanvas.getContext('2d');
     if (taxChart) { taxChart.destroy(); taxChart = null; }
-    taxChart = new Chart(ctx, {
+    if (typeof Chart !== 'undefined') {
+        taxChart = new Chart(ctx, {
         type: 'bar',
         data: {
             labels: ['Old Regime', 'New Regime'],
@@ -132,10 +143,21 @@ document.getElementById('calcBtn')?.addEventListener('click', () => {
             animation: { duration: 500 }
         }
     });
+    }
 });
 
 document.getElementById('resetBtn')?.addEventListener('click', () => {
     ['grossIncome', 'sec80C', 'hra', 'nps', 'otherDed'].forEach(id => document.getElementById(id).value = '');
-    ['recommSection', 'resultsSection', 'chartSection'].forEach(id => { const el = document.getElementById(id); if (el) el.classList.add('hidden'); });
+    const recommSection = document.getElementById('recommSection');
+    if (recommSection) {
+        recommSection.classList.add('hidden');
+        recommSection.style.display = 'none';
+    }
+    document.getElementById('resultsSection')?.classList.add('hidden');
+    const chartSection = document.getElementById('chartSection');
+    if (chartSection) {
+        chartSection.classList.add('hidden');
+        chartSection.style.display = 'none';
+    }
     if (taxChart) { taxChart.destroy(); taxChart = null; }
 });

@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
       
       const { monthlyIncome } = calculatePOMIS(deposit, rate);
       document.getElementById('resultOut').textContent = monthlyIncome.toFixed(2);
+      document.getElementById('resultsSection')?.classList.remove('hidden');
     });
   }
 });

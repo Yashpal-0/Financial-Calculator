@@ -3,8 +3,11 @@ import { calculateRetirementCorpus, calculateSIP } from './finance.js';
 
 let chartInstance = null;
 function updateDonutChart(label1, val1, label2, val2) {
+    if (typeof Chart === 'undefined') return;
     const isDark = document.documentElement.dataset.theme === 'dark';
-    const ctx = document.getElementById('donutChart').getContext('2d');
+    const canvas = document.getElementById('donutChart');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
     const data = {
         labels: [label1, label2],
         datasets: [{
