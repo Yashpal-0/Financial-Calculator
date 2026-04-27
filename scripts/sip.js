@@ -1,113 +1,193 @@
-import { formatINR } from './util.js';
+import { h, render } from 'https://esm.sh/preact';
+import { useState, useEffect, useMemo } from 'https://esm.sh/preact/hooks';
+import htm from 'https://esm.sh/htm';
 import { calculateSIP } from './finance.js';
+import { formatINR, saveCalculation } from './util.js';
+import { syncUrlState, getUrlState, debounce } from './state.js';
+import { GlassCard, Slider, ResultSummary, VisualChart } from './components/UI.js';
+import { Layout } from './components/Layout.js';
 
-function syncSlider(inputId, sliderId, displayId, formatter) {
-    const input = document.getElementById(inputId);
-    const slider = document.getElementById(sliderId);
-    const display = document.getElementById(displayId);
-    if (!input || !slider || !display) return;
+const html = htm.bind(h);
 
-    function update(val) {
-        display.textContent = formatter(val);
-        const pct = ((val - slider.min) / (slider.max - slider.min)) * 100;
-        const thumbColor = '#0d9488';
-        const trackColor = document.documentElement.dataset.theme === 'dark' ? '#334155' : '#e2e8f0';
-        slider.style.background = `linear-gradient(to right, ${thumbColor} ${pct}%, ${trackColor} ${pct}%)`;
-    }
-    input.addEventListener('input', () => { slider.value = input.value; update(input.value); });
-    slider.addEventListener('input', () => { input.value = slider.value; update(slider.value); });
-    update(slider.value);
-    
-    const observer = new MutationObserver(() => update(slider.value));
-    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
-}
+const SIPApp = () => {
+  const initialState = getUrlState();
+  
+  const [monthlyInv, setMonthlyInv] = useState(Number(initialState.monthlyInv) || 5000);
+  const [annualRate, setAnnualRate] = useState(Number(initialState.annualRate) || 12);
+  const [tenureYears, setTenureYears] = useState(Number(initialState.tenureYears) || 10);
 
-syncSlider('monthlyInv', 'monthlyInvSlider', 'monthlyInvVal', v => `₹${Number(v).toLocaleString('en-IN')}`);
-syncSlider('annualRate', 'annualRateSlider', 'annualRateVal', v => `${parseFloat(v).toFixed(1)}%`);
-syncSlider('tenureYears', 'tenureYearsSlider', 'tenureYearsVal', v => `${v} yrs`);
+  // Sync to URL and localStorage
+  useEffect(() => {
+    const debouncedSync = debounce(() => {
+      syncUrlState({ monthlyInv, annualRate, tenureYears });
+      
+      const months = tenureYears * 12;
+      const fv = calculateSIP(monthlyInv, annualRate, months);
+      saveCalculation({
+        id: 'sip',
+        name: 'SIP Calculator',
+        summary: `Maturity: ${formatINR(fv)} for ${formatINR(monthlyInv)}/mo`,
+        link: window.location.href
+      });
+    }, 1000);
+    debouncedSync();
+  }, [monthlyInv, annualRate, tenureYears]);
 
-let chartInstance = null;
-function updateDonutChart(label1, val1, label2, val2) {
-    if (typeof Chart === 'undefined') return;
-    const isDark = document.documentElement.dataset.theme === 'dark';
-    const canvas = document.getElementById('donutChart');
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    const data = {
-        labels: [label1, label2],
-        datasets: [{
-            data: [val1, val2],
-            backgroundColor: ['rgba(13,148,136,0.85)', 'rgba(8,145,178,0.75)'],
-            hoverBackgroundColor: ['rgba(13,148,136,1)', 'rgba(8,145,178,1)'],
-            borderColor: isDark ? '#0f172a' : '#ffffff',
-            borderWidth: 3,
-            hoverOffset: 8,
-        }]
-    };
-    const opts = {
-        cutout: '70%',
-        plugins: {
-            legend: { display: false },
-            tooltip: {
-                callbacks: {
-                    label: ctx => ` ${ctx.label}: ${formatINR(ctx.raw)}`
-                }
-            }
-        },
-        animation: { animateRotate: true, duration: 600 },
-        maintainAspectRatio: false
-    };
-
-    if (chartInstance) {
-        chartInstance.options.plugins.tooltip = opts.plugins.tooltip;
-        chartInstance.data = data;
-        chartInstance.update();
-    } else {
-        chartInstance = new Chart(ctx, { type: 'doughnut', data, options: opts });
-    }
-
-    const legendEl = document.getElementById('chartLegend');
-    legendEl.innerHTML = `
-    <div class="flex items-center justify-between">
-      <div class="flex items-center">
-        <div class="w-3 h-3 rounded-full mr-3" style="background:rgba(13,148,136,0.85)"></div>
-        <span class="text-sm text-slate-600 dark:text-slate-400">${label1}</span>
-      </div>
-      <span class="font-semibold text-slate-900 dark:text-white">${formatINR(val1)}</span>
-    </div>
-    <div class="flex items-center justify-between">
-      <div class="flex items-center">
-        <div class="w-3 h-3 rounded-full mr-3" style="background:rgba(8,145,178,0.75)"></div>
-        <span class="text-sm text-slate-600 dark:text-slate-400">${label2}</span>
-      </div>
-      <span class="font-semibold text-slate-900 dark:text-white">${formatINR(val2)}</span>
-    </div>
-  `;
-}
-
-document.getElementById('calcBtn')?.addEventListener('click', () => {
-    const P = Number(document.getElementById('monthlyInv').value || '0');
-    const r = Number(document.getElementById('annualRate').value || '0');
-    const years = Number(document.getElementById('tenureYears').value || '0');
-    if (!(P > 0 && r >= 0 && Number.isInteger(years) && years > 0)) {
-        alert('Please enter valid monthly investment, rate, and total years.'); return;
-    }
-    const months = years * 12;
-    const fv = calculateSIP(P, r, months);
-    const invested = P * months;
+  const results = useMemo(() => {
+    const months = tenureYears * 12;
+    const fv = calculateSIP(monthlyInv, annualRate, months);
+    const invested = monthlyInv * months;
     const gained = fv - invested;
-    document.getElementById('totalInvestedOut').textContent = formatINR(invested);
-    document.getElementById('wealthGainedOut').textContent = formatINR(gained);
-    document.getElementById('futureValueOut').textContent = formatINR(fv);
-    document.getElementById('resultsSection').classList.remove('hidden');
-    updateDonutChart('Invested Amount', invested, 'Estimated Returns', gained);
-});
+    
+    // Generate yearly data for the table
+    const yearlyData = [];
+    for (let y = 1; y <= tenureYears; y++) {
+      const currentMonths = y * 12;
+      const currentFV = calculateSIP(monthlyInv, annualRate, currentMonths);
+      const currentInvested = monthlyInv * currentMonths;
+      const currentGained = currentFV - currentInvested;
+      yearlyData.push({
+        year: y,
+        invested: currentInvested,
+        gained: currentGained,
+        total: currentFV
+      });
+    }
 
-document.getElementById('resetBtn')?.addEventListener('click', () => {
-    ['monthlyInv', 'annualRate', 'tenureYears'].forEach(id => document.getElementById(id).value = '');
-    document.getElementById('totalInvestedOut').textContent = '–';
-    document.getElementById('wealthGainedOut').textContent = '–';
-    document.getElementById('futureValueOut').textContent = '–';
-    document.getElementById('resultsSection').classList.add('hidden');
-    if (chartInstance) { chartInstance.destroy(); chartInstance = null; }
-});
+    return { invested, gained, fv, yearlyData };
+  }, [monthlyInv, annualRate, tenureYears]);
+
+  const chartData = {
+    labels: ['Invested Amount', 'Estimated Returns'],
+    datasets: [{
+      data: [results.invested, results.gained],
+      backgroundColor: ['rgba(13,148,136,0.85)', 'rgba(8,145,178,0.75)'],
+      hoverBackgroundColor: ['rgba(13,148,136,1)', 'rgba(8,145,178,1)'],
+      borderWidth: 0,
+    }]
+  };
+
+  return html`
+    <${Layout}>
+      <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-24">
+        <header class="py-12 text-center">
+          <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight mb-4 bg-gradient-to-r from-teal-600 to-cyan-600 bg-clip-text text-transparent">
+            SIP Calculator
+          </h1>
+          <p class="text-lg text-slate-600 dark:text-slate-400">
+            Estimate wealth creation through regular monthly investments.
+          </p>
+        </header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div class="lg:col-span-1">
+            <${GlassCard}>
+              <${Slider} 
+                label="Monthly Investment" 
+                value=${monthlyInv} 
+                min=${500} 
+                max=${100000} 
+                step=${500} 
+                suffix="₹"
+                onChange=${setMonthlyInv} 
+              />
+              <${Slider} 
+                label="Expected Return (p.a)" 
+                value=${annualRate} 
+                min=${1} 
+                max=${30} 
+                step=${0.5} 
+                suffix="%"
+                onChange=${setAnnualRate} 
+              />
+              <${Slider} 
+                label="Time Period" 
+                value=${tenureYears} 
+                min=${1} 
+                max=${40} 
+                step=${1} 
+                suffix="Yrs"
+                onChange=${setTenureYears} 
+              />
+            <//>
+          </div>
+
+          <div class="lg:col-span-2">
+            <${ResultSummary} 
+              items=${[
+                { label: 'Invested', value: results.invested, suffix: '' },
+                { label: 'Returns', value: results.gained, suffix: '' },
+                { label: 'Total Value', value: results.fv, suffix: '' }
+              ]} 
+            />
+
+            <${GlassCard} className="mb-8">
+              <div class="flex flex-col md:flex-row items-center gap-8">
+                <div class="w-full md:w-1/2">
+                  <${VisualChart} 
+                    type="doughnut" 
+                    data=${chartData} 
+                    options=${{
+                      cutout: '70%',
+                      plugins: {
+                        legend: { display: false }
+                      }
+                    }} 
+                  />
+                </div>
+                <div class="w-full md:w-1/2 space-y-4">
+                  <div class="flex justify-between items-center">
+                    <div class="flex items-center">
+                      <div class="w-3 h-3 rounded-full bg-teal-600 mr-2"></div>
+                      <span class="text-sm text-slate-600 dark:text-slate-400">Invested Amount</span>
+                    </div>
+                    <span class="font-bold">${formatINR(results.invested)}</span>
+                  </div>
+                  <div class="flex justify-between items-center">
+                    <div class="flex items-center">
+                      <div class="w-3 h-3 rounded-full bg-cyan-500 mr-2"></div>
+                      <span class="text-sm text-slate-600 dark:text-slate-400">Estimated Returns</span>
+                    </div>
+                    <span class="font-bold">${formatINR(results.gained)}</span>
+                  </div>
+                  <div class="pt-4 border-t border-slate-100 dark:border-slate-800 flex justify-between items-center">
+                    <span class="font-bold text-slate-900 dark:text-white">Total Value</span>
+                    <span class="text-xl font-extrabold text-teal-600 dark:text-teal-400">${formatINR(results.fv)}</span>
+                  </div>
+                </div>
+              </div>
+            <//>
+
+            <${GlassCard}>
+              <h3 class="text-lg font-bold mb-4">Yearly Growth</h3>
+              <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                  <thead>
+                    <tr class="text-slate-500 border-b border-slate-100 dark:border-slate-800">
+                      <th class="text-left py-3 font-medium">Year</th>
+                      <th class="text-right py-3 font-medium">Invested</th>
+                      <th class="text-right py-3 font-medium">Returns</th>
+                      <th class="text-right py-3 font-medium">Total Value</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    ${results.yearlyData.map(row => html`
+                      <tr class="border-b border-slate-50 dark:border-slate-800/50 hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors">
+                        <td class="py-3 text-slate-600 dark:text-slate-400">Year ${row.year}</td>
+                        <td class="text-right py-3">${formatINR(row.invested, 0)}</td>
+                        <td class="text-right py-3 text-teal-600 dark:text-teal-400">+${formatINR(row.gained, 0)}</td>
+                        <td class="text-right py-3 font-semibold">${formatINR(row.total, 0)}</td>
+                      </tr>
+                    `)}
+                  </tbody>
+                </table>
+              </div>
+            <//>
+          </div>
+        </div>
+      </div>
+    <//>
+  `;
+};
+
+render(html`<${SIPApp} />`, document.getElementById('app'));

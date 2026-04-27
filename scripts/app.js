@@ -1,16 +1,28 @@
 export function initApp() {
+  let deferredPrompt = null;
+
   // Theme persistence
   const saved = localStorage.getItem('theme');
   if (saved) document.documentElement.dataset.theme = saved;
 
-  const toggle = document.getElementById('themeToggle');
-  if (toggle) {
-    toggle.addEventListener('click', () => {
+  // Use event delegation for dynamic elements (Preact)
+  document.addEventListener('click', (e) => {
+    const themeToggle = e.target.closest('#themeToggle');
+    if (themeToggle) {
       const current = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
       document.documentElement.dataset.theme = current;
       localStorage.setItem('theme', current);
-    });
-  }
+    }
+
+    const installBtn = e.target.closest('#installBtn');
+    if (installBtn && deferredPrompt) {
+      deferredPrompt.prompt();
+      deferredPrompt.userChoice.then(() => {
+        deferredPrompt = null;
+        installBtn.style.display = 'none';
+      });
+    }
+  });
 
   // Service worker with auto-update
   if ('serviceWorker' in navigator) {
@@ -45,23 +57,12 @@ export function initApp() {
   }
 
   // Install prompt
-  let deferredPrompt = null;
   window.addEventListener('beforeinstallprompt', (e) => {
     e.preventDefault();
     deferredPrompt = e;
     const btn = document.getElementById('installBtn');
     if (btn) btn.style.display = 'inline-flex';
   });
-  const installBtn = document.getElementById('installBtn');
-  if (installBtn) {
-    installBtn.addEventListener('click', async () => {
-      if (!deferredPrompt) return;
-      deferredPrompt.prompt();
-      await deferredPrompt.userChoice;
-      deferredPrompt = null;
-      installBtn.style.display = 'none';
-    });
-  }
 }
 
 function showUpdateNotification() {

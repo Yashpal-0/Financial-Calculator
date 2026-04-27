@@ -54,3 +54,30 @@ export function formatDate(d) {
   }
 }
 
+/**
+ * Saves a calculation snapshot to localStorage for the dashboard.
+ * @param {Object} calc - { id, name, summary, link }
+ */
+export function saveCalculation(calc) {
+  try {
+    const saved = localStorage.getItem('recent_calculations');
+    let list = saved ? JSON.parse(saved) : [];
+    
+    // Remove existing entry for this calculator if it exists
+    list = list.filter(item => item.id !== calc.id);
+    
+    // Add new entry at the beginning
+    list.unshift({
+      ...calc,
+      timestamp: Date.now()
+    });
+    
+    // Keep only last 6
+    list = list.slice(0, 6);
+    
+    localStorage.setItem('recent_calculations', JSON.stringify(list));
+  } catch (e) {
+    console.error('Failed to save calculation', e);
+  }
+}
+

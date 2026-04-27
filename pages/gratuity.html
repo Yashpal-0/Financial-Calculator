@@ -1,8 +1,28 @@
 <!DOCTYPE html><html lang="en"><head>
   <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Gratuity Calculator | FinCalc Suite</title>
+  <meta name="description" content="Estimate your gratuity amount based on the latest salary and total years of service under the Gratuity Act.">
+  <meta name="theme-color" content="#0d9488">
+  <link rel="manifest" href="../manifest.webmanifest">
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="../styles.css">
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="canonical" href="https://yashpal-0.github.io/Financial-Calculator/pages/gratuity.html">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Gratuity Calculator | FinCalc Suite">
+  <meta property="og:description" content="Estimate your gratuity amount based on the latest salary and total years of service under the Gratuity Act.">
+  <meta property="og:url" content="https://yashpal-0.github.io/Financial-Calculator/pages/gratuity.html">
+  <meta property="og:image" content="https://yashpal-0.github.io/Financial-Calculator/favicon.svg">
+
+  <script>
+    (function() {
+      const saved = localStorage.getItem('theme');
+      if (saved) document.documentElement.dataset.theme = saved;
+      else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.documentElement.dataset.theme = 'dark';
+      }
+    })();
+  </script>
 </head>
 <body class="bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-50 font-sans antialiased transition-colors duration-300">
   <nav class="sticky top-0 z-40 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800">
@@ -39,33 +59,14 @@
       </div>
     </div>
   </nav>
-  <header class="py-12 md:py-16 text-center px-4 sm:px-6 lg:px-8"><div class="max-w-3xl mx-auto">
-    <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight mb-4 bg-gradient-to-r from-teal-600 to-cyan-600 bg-clip-text text-transparent">Gratuity Calculator</h1>
-  </div></header>
-  <main class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-24">
-    <section class="card p-6 md:p-8 mb-8">
-      <div class="row-3 grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <div>
-          <label class="label-text flex items-center mb-1">Last Drawn Salary (Basic + DA)</label>
-          <input id="salary" type="number" placeholder="e.g. 50000" class="input-field mb-4 w-full">
-        </div>
-        <div>
-          <label class="label-text flex items-center mb-1">Tenure (Years)</label>
-          <input id="tenure" type="number" placeholder="e.g. 5" class="input-field mb-4 w-full">
-        </div>
-      </div>
-      <div class="flex flex-wrap items-center gap-4 pt-6 border-t border-slate-100 dark:border-slate-800">
-        <button id="calcBtn">Calculate</button>
-      </div>
-    </section>
-    <section class="">
-      <h2>Result</h2>
-      <div style="font-size: 24px; font-weight: bold;">Gratuity Amount: ₹<span id="resultOut">–</span></div>
-    </section>
-  </main>
-  <script type="module" src="../scripts/gratuity.js"></script>
+
+  <div id="gratuity-app"></div>
+
   <script type="module">
     import { initApp } from '../scripts/app.js';
+    import { renderGratuityApp } from '../scripts/gratuity.js';
+    
     initApp();
+    renderGratuityApp(document.getElementById('gratuity-app'));
   </script>
 </body></html>

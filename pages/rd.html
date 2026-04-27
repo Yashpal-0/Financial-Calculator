@@ -1,13 +1,30 @@
 <!DOCTYPE html><html lang="en"><head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Recurring Deposit Calculator | FinCalc</title>
-    <meta name="description" content="Calculate maturity value of Recurring Deposits.">
-    <meta name="theme-color" content="#4f46e5">
+    <title>Recurring Deposit (RD) Calculator | FinCalc Suite</title>
+  <link rel="canonical" href="https://yashpal-0.github.io/Financial-Calculator/pages/rd.html">
+    <meta name="description" content="Calculate the maturity value of your regular monthly deposits in a Recurring Deposit account.">
+    <meta name="theme-color" content="#0d9488">
     <link rel="manifest" href="../manifest.webmanifest">
     <link rel="icon" href="../favicon.svg" type="image/svg+xml">
     <link rel="stylesheet" href="../styles.css">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Recurring Deposit (RD) Calculator | FinCalc Suite">
+  <meta property="og:description" content="Calculate the maturity value of your regular monthly deposits in a Recurring Deposit account.">
+  <meta property="og:url" content="https://yashpal-0.github.io/Financial-Calculator/pages/rd.html">
+  <meta property="og:image" content="https://yashpal-0.github.io/Financial-Calculator/favicon.svg">
+
+  <script>
+    (function() {
+      const saved = localStorage.getItem('theme');
+      if (saved) document.documentElement.dataset.theme = saved;
+      else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.documentElement.dataset.theme = 'dark';
+      }
+    })();
+  </script>
 </head>
 
 <body class="bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-50 font-sans antialiased transition-colors duration-300">
@@ -63,80 +80,13 @@
     </div>
   </header>
 
-  <main class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-24">
-    <section class="card p-6 md:p-8 mb-8">
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        
-        <div>
-          <label for="monthlyDeposit" class="label-text flex items-center">
-            Monthly Deposit
-          </label>
-          <input id="monthlyDeposit" class="input-field mb-4" type="number" inputmode="decimal" min="500" step="100" placeholder="e.g. 5000">
-          
+  <main id="rd-app">
+    <!-- Preact App Mounts Here -->
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-24">
+        <div class="animate-pulse space-y-8">
+            <div class="h-64 bg-slate-200 dark:bg-slate-800 rounded-xl"></div>
+            <div class="h-96 bg-slate-200 dark:bg-slate-800 rounded-xl"></div>
         </div>
-
-        <div>
-          <label for="annualRate" class="label-text flex items-center">
-            Interest Rate (p.a) %
-          </label>
-          <input id="annualRate" class="input-field mb-4" type="number" inputmode="decimal" min="1" step="0.1" placeholder="e.g. 6.5">
-          
-        </div>
-
-        <div>
-          <label for="tenureMonths" class="label-text flex items-center">
-            Tenure (Months)
-          </label>
-          <input id="tenureMonths" class="input-field mb-4" type="number" inputmode="numeric" min="6" step="1" placeholder="e.g. 60">
-          
-        </div>
-      </div>
-
-      <div class="flex flex-wrap items-center gap-4 pt-6 border-t border-slate-100 dark:border-slate-800">
-        <button id="calcBtn" class="btn-primary flex-1 sm:flex-none">Calculate Maturity ✨</button>
-        <button id="resetBtn" class="btn-secondary flex-1 sm:flex-none">Reset</button>
-      </div>
-    </section>
-
-    <!-- Summary & Chart Section -->
-    <div id="resultsSection" class="hidden">
-      <h2 class="text-2xl font-bold mb-6">Overview</h2>
-      
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-10">
-        <!-- KPIs -->
-        <div class="card p-6 md:p-8 flex flex-col justify-center bg-gradient-to-br from-white to-slate-50 dark:from-slate-900 dark:to-slate-800/80">
-          <div class="space-y-6">
-            
-            <div>
-              <div class="text-sm font-medium text-slate-500 dark:text-slate-400 mb-1">Total Amount Deposited</div>
-              <div class="text-2xl font-bold text-slate-900 dark:text-white" id="principalOut">–</div>
-            </div>
-            <div class="w-full h-px bg-slate-200 dark:bg-slate-700"></div>
-
-            <div>
-              <div class="text-sm font-medium text-slate-500 dark:text-slate-400 mb-1">Total Interest Earned</div>
-              <div class="text-2xl font-bold text-slate-900 dark:text-white" id="interestOut">–</div>
-            </div>
-
-            <div>
-              <div class="text-sm font-medium text-slate-500 dark:text-slate-400 mb-1">Maturity Value</div>
-              <div class="text-4xl font-extrabold text-teal-600 dark:text-teal-400" id="maturityOut">–</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Donut Chart -->
-        <div class="card p-6 md:p-8 flex flex-col sm:flex-row items-center gap-8">
-          <div class="w-48 h-48 sm:w-56 sm:h-56 relative flex-shrink-0">
-            <canvas id="donutChart"></canvas>
-          </div>
-          <div id="chartLegend" class="flex-1 w-full space-y-3">
-            <!-- Legend items will be injected here via JS -->
-          </div>
-        </div>
-      </div>
-
-      
     </div>
   </main>
 

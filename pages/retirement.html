@@ -2,13 +2,29 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Retirement Planner | FinCalc Suite</title>
-    <meta name="description" content="Calculate retirement corpus needed and monthly SIP required to retire comfortably. Plan with inflation and return rates.">
+    <meta name="description" content="Find out how much corpus you need to retire comfortably and the monthly SIP required to reach that goal.">
     <meta name="theme-color" content="#0d9488">
     <link rel="manifest" href="../manifest.webmanifest">
     <link rel="icon" href="../favicon.svg" type="image/svg+xml">
     <link rel="stylesheet" href="../styles.css">
     <link rel="canonical" href="https://yashpal-0.github.io/Financial-Calculator/pages/retirement.html">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Retirement Planner | FinCalc Suite">
+  <meta property="og:description" content="Find out how much corpus you need to retire comfortably and the monthly SIP required to reach that goal.">
+  <meta property="og:url" content="https://yashpal-0.github.io/Financial-Calculator/pages/retirement.html">
+  <meta property="og:image" content="https://yashpal-0.github.io/Financial-Calculator/favicon.svg">
+
+  <script>
+    (function() {
+      const saved = localStorage.getItem('theme');
+      if (saved) document.documentElement.dataset.theme = saved;
+      else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.documentElement.dataset.theme = 'dark';
+      }
+    })();
+  </script>
 </head>
 
 <body class="bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-50 font-sans antialiased transition-colors duration-300">
@@ -59,142 +75,14 @@
         <p class="text-lg text-slate-600 dark:text-slate-400">Find out how much corpus you need to retire and how much to SIP monthly to get there.</p>
     </div></header>
 
-    <main class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-24">
-        <section class="card p-6 md:p-8 mb-8">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                <div>
-                    <label for="currentAge" class="label-text flex items-center mb-1">Current Age (Years)</label>
-                    <input id="currentAge" type="number" min="18" max="70" step="1" placeholder="e.g. 30" class="input-field mb-4 w-full">
-                    
-      <div class="flex items-center space-x-4">
-        <input type="range" id="currentAgeSlider" min="18" max="65" step="1" value="30" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer dark:bg-slate-700 accent-teal-600">
-        <span class="text-sm font-semibold text-teal-700 dark:text-teal-400 min-w-[3rem] text-right" id="currentAgeVal">30 yrs</span>
-      </div>
-                </div>
-                <div>
-                    <label for="retirementAge" class="label-text flex items-center mb-1">Retirement Age (Years)</label>
-                    <input id="retirementAge" type="number" min="40" max="80" step="1" placeholder="e.g. 60" class="input-field mb-4 w-full">
-                    
-      <div class="flex items-center space-x-4">
-        <input type="range" id="retirementAgeSlider" min="40" max="80" step="1" value="60" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer dark:bg-slate-700 accent-teal-600">
-        <span class="text-sm font-semibold text-teal-700 dark:text-teal-400 min-w-[3rem] text-right" id="retirementAgeVal">60 yrs</span>
-      </div>
-                </div>
-                <div>
-                    <label for="monthlyExpense" class="label-text flex items-center mb-1">Monthly Expense at Retirement (₹ today's value)
-                        
-      <div class="group relative ml-2 cursor-help">
-        <span class="inline-flex items-center justify-center w-4 h-4 rounded-full bg-slate-200 dark:bg-slate-700 text-xs text-slate-500 dark:text-slate-400">?</span>
-        <div class="hidden group-hover:block absolute z-10 w-48 p-2 mt-1 text-xs text-white bg-slate-800 rounded shadow-lg -left-2 top-full">
-          How much would you spend per month
-                                if you retired today?
-        </div>
-      </div>
-                    </label>
-                    <input id="monthlyExpense" type="number" inputmode="decimal" min="5000" step="5000" placeholder="e.g. 50000" class="input-field mb-4 w-full">
-                    
-      <div class="flex items-center space-x-4">
-        <input type="range" id="monthlyExpenseSlider" min="10000" max="500000" step="5000" value="50000" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer dark:bg-slate-700 accent-teal-600">
-        <span class="text-sm font-semibold text-teal-700 dark:text-teal-400 min-w-[3rem] text-right" id="monthlyExpenseVal">₹50,000</span>
-      </div>
-                </div>
-                <div>
-                    <label for="postRetYears" class="label-text flex items-center mb-1">Post-Retirement Life (Years)
-                        
-      <div class="group relative ml-2 cursor-help">
-        <span class="inline-flex items-center justify-center w-4 h-4 rounded-full bg-slate-200 dark:bg-slate-700 text-xs text-slate-500 dark:text-slate-400">?</span>
-        <div class="hidden group-hover:block absolute z-10 w-48 p-2 mt-1 text-xs text-white bg-slate-800 rounded shadow-lg -left-2 top-full">
-          How many years to fund after
-                                retirement?
-        </div>
-      </div>
-                    </label>
-                    <input id="postRetYears" type="number" min="5" max="50" step="1" placeholder="e.g. 25" class="input-field mb-4 w-full">
-                    
-      <div class="flex items-center space-x-4">
-        <input type="range" id="postRetYearsSlider" min="5" max="50" step="1" value="25" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer dark:bg-slate-700 accent-teal-600">
-        <span class="text-sm font-semibold text-teal-700 dark:text-teal-400 min-w-[3rem] text-right" id="postRetYearsVal">25 yrs</span>
-      </div>
-                </div>
-                <div>
-                    <label for="retInflation" class="label-text flex items-center mb-1">Inflation Rate (% p.a.)
-                        
-      <div class="group relative ml-2 cursor-help">
-        <span class="inline-flex items-center justify-center w-4 h-4 rounded-full bg-slate-200 dark:bg-slate-700 text-xs text-slate-500 dark:text-slate-400">?</span>
-        <div class="hidden group-hover:block absolute z-10 w-48 p-2 mt-1 text-xs text-white bg-slate-800 rounded shadow-lg -left-2 top-full">
-          Expected annual inflation
-                                rate
-        </div>
-      </div>
-                    </label>
-                    <input id="retInflation" type="number" inputmode="decimal" min="1" max="15" step="0.5" placeholder="e.g. 6" class="input-field mb-4 w-full">
-                    
-      <div class="flex items-center space-x-4">
-        <input type="range" id="retInflationSlider" min="1" max="15" step="0.5" value="6" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer dark:bg-slate-700 accent-teal-600">
-        <span class="text-sm font-semibold text-teal-700 dark:text-teal-400 min-w-[3rem] text-right" id="retInflationVal">6.0%</span>
-      </div>
-                </div>
-                <div>
-                    <label for="retReturn" class="label-text flex items-center mb-1">Expected Return (% p.a.)
-                        
-      <div class="group relative ml-2 cursor-help">
-        <span class="inline-flex items-center justify-center w-4 h-4 rounded-full bg-slate-200 dark:bg-slate-700 text-xs text-slate-500 dark:text-slate-400">?</span>
-        <div class="hidden group-hover:block absolute z-10 w-48 p-2 mt-1 text-xs text-white bg-slate-800 rounded shadow-lg -left-2 top-full">
-          Expected investment return during
-                                accumulation
-        </div>
-      </div>
-                    </label>
-                    <input id="retReturn" type="number" inputmode="decimal" min="1" max="25" step="0.5" placeholder="e.g. 12" class="input-field mb-4 w-full">
-                    
-      <div class="flex items-center space-x-4">
-        <input type="range" id="retReturnSlider" min="4" max="20" step="0.5" value="12" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer dark:bg-slate-700 accent-teal-600">
-        <span class="text-sm font-semibold text-teal-700 dark:text-teal-400 min-w-[3rem] text-right" id="retReturnVal">12.0%</span>
-      </div>
-                </div>
+    <main id="retirement-app">
+        <!-- Preact App Mounts Here -->
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-24">
+            <div class="animate-pulse space-y-8">
+                <div class="h-64 bg-slate-200 dark:bg-slate-800 rounded-xl"></div>
+                <div class="h-96 bg-slate-200 dark:bg-slate-800 rounded-xl"></div>
             </div>
-            <div class="flex flex-wrap items-center gap-4 pt-6 border-t border-slate-100 dark:border-slate-800">
-                <button id="calcBtn">Plan My Retirement ✨</button>
-                <button id="resetBtn" class="ghost">Reset</button>
-            </div>
-        </section>
-
-        
-<div id="resultsSection" class="hidden mt-8">
-  <h2 class="text-2xl font-bold mb-6">Overview</h2>
-  <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-10">
-    <div class="card p-6 md:p-8 flex flex-col justify-center bg-gradient-to-br from-white to-slate-50 dark:from-slate-900 dark:to-slate-800/80">
-      <div class="space-y-6">
-        <div class="flex flex-col space-y-1">
-                    <div class="text-sm font-medium text-slate-500 dark:text-slate-400">Years to Retirement</div>
-                    <div class="text-2xl font-bold text-slate-900 dark:text-white" id="yearsToRetOut">–</div>
-                </div>
-                <div class="flex flex-col space-y-1">
-                    <div class="text-sm font-medium text-slate-500 dark:text-slate-400">Monthly Expense at Retirement</div>
-                    <div class="text-2xl font-bold text-slate-900 dark:text-white" id="retExpenseOut">–</div>
-                </div>
-                <div class="flex flex-col space-y-1">
-                    <div class="text-sm font-medium text-slate-500 dark:text-slate-400">Corpus Needed at Retirement</div>
-                    <div class="text-3xl sm:text-4xl font-extrabold text-teal-600 dark:text-teal-400" id="corpusOut">–</div>
-                </div>
-                <div class="flex flex-col space-y-1">
-                    <div class="text-sm font-medium text-slate-500 dark:text-slate-400">Monthly SIP Required Now</div>
-                    <div class="text-3xl sm:text-4xl font-extrabold text-teal-600 dark:text-teal-400" id="monthlySIPOut">–</div>
-                </div>
-      </div>
-    </div>
-    <div class="card p-6 md:p-8 flex flex-col sm:flex-row items-center gap-8">
-      <div class="w-48 h-48 sm:w-56 sm:h-56 relative flex-shrink-0">
-        <canvas id="donutChart"></canvas>
-      </div>
-      <div id="chartLegend" class="flex-1 w-full space-y-3">
-      </div>
-    </div>
-  </div>
-</div>
-
-
-        
+        </div>
     </main>
 
     <footer class="bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 py-8">
@@ -206,9 +94,12 @@
   </footer>
 
     <script type="module">
+        import { h, render } from 'https://esm.sh/preact@10.19.2';
         import { initApp } from '../scripts/app.js';
-        import '../scripts/retirement.js';
+        import RetirementCalculator from '../scripts/components/RetirementCalculator.js';
+        
         initApp();
+        render(h(RetirementCalculator), document.getElementById('retirement-app'));
     </script>
 
 

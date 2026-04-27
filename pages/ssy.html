@@ -1,140 +1,47 @@
-<!DOCTYPE html><html lang="en"><head>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
   <meta charset="utf-8">
-  <title>SSY Calculator | FinCalc Suite</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sukanya Samriddhi Yojana (SSY) Calculator | FinCalc Suite</title>
+  <meta name="description"
+    content="Sukanya Samriddhi Yojana (SSY) calculator with 21-year growth projection, interactive sliders, and visual charts.">
+  <meta name="theme-color" content="#0d9488">
+  <link rel="manifest" href="../manifest.webmanifest">
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="../styles.css">
+  <link rel="canonical" href="https://yashpal-0.github.io/Financial-Calculator/pages/ssy.html">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Sukanya Samriddhi Yojana (SSY) Calculator | FinCalc Suite">
+  <meta property="og:description"
+    content="Calculate SSY maturity with interactive sliders and 21-year visual growth projection.">
+  <meta property="og:url" content="https://yashpal-0.github.io/Financial-Calculator/pages/ssy.html">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <meta property="og:image" content="https://yashpal-0.github.io/Financial-Calculator/favicon.svg">
 
-    <link rel="icon" href="../favicon.svg" type="image/svg+xml">
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    (function() {
+      const saved = localStorage.getItem('theme');
+      if (saved) document.documentElement.dataset.theme = saved;
+      else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.documentElement.dataset.theme = 'dark';
+      }
+    })();
+  </script>
 </head>
+
 <body class="bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-50 font-sans antialiased transition-colors duration-300">
-  <!-- Controls -->
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-end gap-3 pt-3 relative z-50">
-    <button id="installBtn" class="hidden px-3 py-1.5 text-sm rounded-full hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors">Install App</button>
-    <button id="themeToggle" class="px-3 py-1.5 text-base rounded-full hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors" title="Toggle dark mode">🌓</button>
-  </div>
-
-  <nav class="sticky top-0 z-40 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex items-center justify-between h-16">
-        <a href="../index.html" class="flex-shrink-0 flex items-center font-bold text-xl tracking-tight text-teal-700 dark:text-teal-400 text-slate-600 hover:text-slate-900 hover:bg-slate-50 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800">
-          <span class="mr-2 text-2xl">💹</span> FinCalc Suite
-        </a>
-        <div class="flex items-center">
-          <button class="md:hidden p-2 rounded-md text-slate-600 hover:text-slate-900 hover:bg-slate-100 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800 focus:outline-none" aria-label="Toggle menu" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')">
-            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-            </svg>
-          </button>
-        </div>
-        <div class="hidden md:flex space-x-1 overflow-x-auto pb-2 -mb-2 no-scrollbar">
-          <a href="../index.html" class="px-3 py-2 rounded-md text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800">Home</a>
-          <a href="./emi.html" class="px-3 py-2 rounded-md text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800">EMI</a>
-          <a href="./prepayment.html" class="px-3 py-2 rounded-md text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800">Prepay</a>
-          <a href="./sip.html" class="px-3 py-2 rounded-md text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800">SIP</a>
-          <a href="./step-up-sip.html" class="px-3 py-2 rounded-md text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800">Step-Up SIP</a>
-          <a href="./mutual-fund.html" class="px-3 py-2 rounded-md text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800">Mutual Fund</a>
-          <a href="./fd.html" class="px-3 py-2 rounded-md text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800">FD</a>
-        </div>
-      </div>
-    </div>
-    <!-- Mobile menu -->
-    <div class="hidden md:hidden bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800" id="mobile-menu">
-      <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3 grid grid-cols-2 gap-2">
-        <a href="../index.html" class="block px-3 py-2 rounded-md text-base font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800">Home</a>
-        <a href="./emi.html" class="block px-3 py-2 rounded-md text-base font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800">EMI</a>
-        <a href="./prepayment.html" class="block px-3 py-2 rounded-md text-base font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800">Prepay</a>
-        <a href="./sip.html" class="block px-3 py-2 rounded-md text-base font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800">SIP</a>
-      </div>
-    </div>
-  </nav>
-
-  <header class="py-12 md:py-16 text-center px-4 sm:px-6 lg:px-8">
-    <div class="max-w-3xl mx-auto">
-      <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight mb-4 bg-gradient-to-r from-teal-600 to-cyan-600 bg-clip-text text-transparent">
-        Sukanya Samriddhi Yojana Calculator
-      </h1>
-      <p class="text-lg text-slate-600 dark:text-slate-400">
-        
-      </p>
-    </div>
-  </header>
-
-  <main class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-24">
-    <section class="card p-6 md:p-8 mb-8">
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        
-        <div>
-          <label for="deposit" class="label-text flex items-center">
-            Yearly Deposit
-          </label>
-          <input id="deposit" class="input-field mb-4" type="number" inputmode="decimal" min="250" max="150000" step="250" placeholder="e.g. 150000">
-          
-        </div>
-
-        <div>
-          <label for="tenure" class="label-text flex items-center">
-            Deposit Tenure (Years)
-          </label>
-          <input id="tenure" class="input-field mb-4" type="number" inputmode="decimal" min="1" max="15" step="1" placeholder="e.g. 15">
-          
-        </div>
-
-        <div>
-          <label for="rate" class="label-text flex items-center">
-            Interest Rate (%)
-          </label>
-          <input id="rate" class="input-field mb-4" type="number" inputmode="decimal" min="0" step="0.1" placeholder="e.g. 8.2">
-          
-        </div>
-      </div>
-
-      <div class="flex flex-wrap items-center gap-4 pt-6 border-t border-slate-100 dark:border-slate-800">
-        <button id="calcBtn" class="btn-primary flex-1 sm:flex-none">Calculate</button>
-        <button id="resetBtn" class="btn-secondary flex-1 sm:flex-none">Reset</button>
-      </div>
-    </section>
-
-    <!-- Summary & Chart Section -->
-    <div id="resultsSection" class="hidden">
-      <h2 class="text-2xl font-bold mb-6">Overview</h2>
-      
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-10">
-        <!-- KPIs -->
-        <div class="card p-6 md:p-8 flex flex-col justify-center bg-gradient-to-br from-white to-slate-50 dark:from-slate-900 dark:to-slate-800/80">
-          <div class="space-y-6">
-            <div>
-              <div class="text-sm font-medium text-slate-500 dark:text-slate-400 mb-1">Maturity Amount</div>
-              <div class="text-4xl font-extrabold text-teal-600 dark:text-teal-400" id="resultOut">–</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Donut Chart -->
-        <div class="card p-6 md:p-8 flex flex-col sm:flex-row items-center gap-8">
-          <div class="w-48 h-48 sm:w-56 sm:h-56 relative flex-shrink-0">
-            <canvas id="donutChart"></canvas>
-          </div>
-          <div id="chartLegend" class="flex-1 w-full space-y-3">
-            <!-- Legend items will be injected here via JS -->
-          </div>
-        </div>
-      </div>
-
-      
-    </div>
-  </main>
-
-  <footer class="bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 py-8">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-sm text-slate-500 dark:text-slate-400">
-      <div class="mb-2">✨ Built for everyone. Works offline. No data collection, tracking, or ads.</div>
-      <div>Crafted with passion. Connect on <a href="https://www.linkedin.com/in/yashpal-yadav-990278221/" target="_blank" rel="me noopener" class="text-teal-600 dark:text-teal-400 font-medium hover:underline">LinkedIn</a>
-      </div>
-    </div>
-  </footer>
+  
+  <div id="app"></div>
 
   <script type="module">
     import { initApp } from '../scripts/app.js';
-    import '../scripts/ssy.js';
+    import { renderSSYApp } from '../scripts/ssy.js';
+    
     initApp();
+    renderSSYApp(document.getElementById('app'));
   </script>
-</body></html>
+</body>
+
+</html>

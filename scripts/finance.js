@@ -58,7 +58,7 @@ export function calculateStepUpSIP(initialMonthly, stepUpPercent, annualReturn, 
  * @param {number} postRetirementYears - Expected years in retirement (default 25)
  */
 export function calculateRetirementCorpus(currentAge, retirementAge, monthlyExpense, inflationPercent, returnPercent, postRetirementYears = 25) {
-  const yearsToRetire = retirementAge - currentAge;
+  const yearsToRetire = Math.max(0, retirementAge - currentAge);
   const r = inflationPercent / 100;
   const retMonthlyExpense = monthlyExpense * Math.pow(1 + r, yearsToRetire);
   const retAnnualExpense = retMonthlyExpense * 12;
@@ -75,18 +75,20 @@ export function calculateRetirementCorpus(currentAge, retirementAge, monthlyExpe
   // Monthly SIP to reach corpusNeeded in yearsToRetire at returnPercent
   const monthlyRate = returnPercent / 100 / 12;
   const n = yearsToRetire * 12;
-  let monthlySIPNeeded;
-  if (monthlyRate === 0) {
-    monthlySIPNeeded = corpusNeeded / n;
-  } else {
-    monthlySIPNeeded = corpusNeeded * monthlyRate / ((Math.pow(1 + monthlyRate, n) - 1) * (1 + monthlyRate));
+  let monthlySIPNeeded = 0;
+  if (n > 0) {
+    if (monthlyRate === 0) {
+      monthlySIPNeeded = corpusNeeded / n;
+    } else {
+      monthlySIPNeeded = corpusNeeded * monthlyRate / ((Math.pow(1 + monthlyRate, n) - 1) * (1 + monthlyRate));
+    }
   }
 
   return { corpusNeeded, monthlySIPNeeded, retMonthlyExpense, yearsToRetire };
 }
 
 /**
- * Calculates India Income Tax for FY 2024-25
+ * Calculates India Income Tax for FY 2025-26
  * @param {number} grossIncome - Gross annual salary
  * @param {{ section80C, hra, nps, otherDeductions }} oldRegimeDeductions
  * @returns {{ oldRegimeTax, newRegimeTax, recommendation, oldTaxableIncome, newTaxableIncome }}
@@ -99,8 +101,8 @@ export function calculateIncomeTax(grossIncome, oldRegimeDeductions = {}) {
   const oldTaxableIncome = Math.max(0, grossIncome - totalDeductions);
   const oldRegimeTax = computeOldRegimeTax(oldTaxableIncome);
 
-  // ===== NEW REGIME (FY 2024-25) =====
-  const standardDeductionNew = 75000; // Budget 2024 increased to 75,000
+  // ===== NEW REGIME (FY 2025-26) =====
+  const standardDeductionNew = 75000; 
   const newTaxableIncome = Math.max(0, grossIncome - standardDeductionNew);
   const newRegimeTax = computeNewRegimeTax(newTaxableIncome);
 
@@ -140,21 +142,21 @@ function computeOldRegimeTax(income) {
 }
 
 function computeNewRegimeTax(income) {
-  if (income <= 300000) return 0;
+  if (income <= 400000) return 0;
   const slabs = [
-    { from: 300000, to: 700000, rate: 5 },
-    { from: 700000, to: 1000000, rate: 10 },
-    { from: 1000000, to: 1200000, rate: 15 },
-    { from: 1200000, to: 1500000, rate: 20 },
-    { from: 1500000, to: Infinity, rate: 30 },
+    { from: 400000, to: 800000, rate: 5 },
+    { from: 800000, to: 1200000, rate: 10 },
+    { from: 1200000, to: 1600000, rate: 15 },
+    { from: 1600000, to: 2000000, rate: 20 },
+    { from: 2000000, to: Infinity, rate: 30 },
   ];
   let tax = applySlabs(income, slabs);
-  const rebateThreshold = 700000;
-  // Rebate u/s 87A: full rebate up to ₹25,000 if income ≤ ₹7L
+  const rebateThreshold = 1200000;
+  // Rebate u/s 87A: full rebate up to ₹60,000 if income ≤ ₹12L (FY 2025-26)
   if (income <= rebateThreshold) {
-    tax = Math.max(0, tax - 25000);
+    tax = Math.max(0, tax - 60000);
   } else {
-    // Marginal relief near rebate threshold: tax cannot exceed income above threshold
+    // Marginal relief near rebate threshold
     tax = Math.min(tax, income - rebateThreshold);
   }
   return tax + tax * 0.04;
@@ -183,7 +185,7 @@ export function calculateLumpsum(principal, annualRatePercent, years, compoundsP
  * @returns {number} CAGR as decimal (e.g. 0.12 for 12%)
  */
 export function calculateCAGR(startValue, endValue, years) {
-  if (!startValue || startValue <= 0 || years <= 0) return 0;
+  if (!startValue || startValue <= 0 || years <= 0 || endValue < 0) return 0;
   return Math.pow(endValue / startValue, 1 / years) - 1;
 }
 
@@ -226,6 +228,21 @@ export function calculateSIP(monthlyInvestment, annualRatePercent, tenureMonths)
 }
 
 /**
+ * Calculates monthly SIP needed to reach a target amount
+ * @param {number} targetAmount
+ * @param {number} annualRatePercent
+ * @param {number} tenureMonths
+ */
+export function calculateSIPNeeded(targetAmount, annualRatePercent, tenureMonths) {
+  if (tenureMonths <= 0) return 0;
+  const r = (annualRatePercent / 100) / 12;
+  if (r === 0) return targetAmount / tenureMonths;
+  // Target = SIP * ((1+r)^n - 1)/r * (1+r)
+  // SIP = Target / [((1+r)^n - 1)/r * (1+r)]
+  return targetAmount / (((Math.pow(1 + r, tenureMonths) - 1) / r) * (1 + r));
+}
+
+/**
  * Calculates Future Value of a Recurring Deposit (RD)
  * @param {number} monthlyDeposit - Monthly RD amount
  * @param {number} annualRatePercent - Annual interest rate
@@ -264,16 +281,33 @@ export function calculateFD(principal, annualRatePercent, tenureMonths, compound
  * Calculates PPF (Public Provident Fund)
  * PPF interest is calculated monthly on the lowest balance between the 5th and end of the month,
  * but compounded annually.
- * Assuming yearly investment at start of year for simplicity here.
  */
 export function calculatePPF(yearlyInvestment, annualRatePercent, tenureYears) {
   let balance = 0;
-  const r = annualRatePercent / 100;
-  for (let i = 0; i < tenureYears; i++) {
-    balance += yearlyInvestment;
-    balance += balance * r; // Compounded annually
+  const monthlyRate = (annualRatePercent / 100) / 12;
+  let annualInterestAccrued = 0;
+  const yearlyData = [];
+
+  for (let month = 1; month <= tenureYears * 12; month++) {
+    // Assume monthly investment at start of month for precision
+    balance += yearlyInvestment / 12;
+
+    // Interest on lowest balance between 5th and end of month
+    const interestThisMonth = Math.floor(balance * monthlyRate);
+    annualInterestAccrued += interestThisMonth;
+
+    // Credit interest annually
+    if (month % 12 === 0) {
+      balance += annualInterestAccrued;
+      annualInterestAccrued = 0;
+      yearlyData.push({
+        year: month / 12,
+        invested: (yearlyInvestment / 12) * month,
+        total: balance
+      });
+    }
   }
-  return balance;
+  return { futureValue: balance, yearlyData };
 }
 
 export function calculateEmi(principal, annualRatePercent, tenureMonths) {
@@ -351,6 +385,9 @@ export function generateSchedule(params) {
   let installmentIndex = 0;
   while (remainingPrincipal > 0 && installmentIndex < 1200 && remainingMonths > 0) {
     installmentIndex += 1;
+    const opening = remainingPrincipal;
+    const actualInterest = opening * monthlyRate; // Interest calculated on opening balance (Interest-First)
+    
     let prepaymentApplied = 0;
 
     // Apply any prepayment configured for this installment index
@@ -371,11 +408,9 @@ export function generateSchedule(params) {
       }
     }
 
-    const actualInterest = remainingPrincipal * monthlyRate;
     let actualPrincipalPay = Math.min(currentEmi - actualInterest, remainingPrincipal);
     if (actualPrincipalPay < 0) actualPrincipalPay = 0;
 
-    const opening = remainingPrincipal;
     remainingPrincipal = Math.max(0, remainingPrincipal - actualPrincipalPay);
     totalInterest += actualInterest;
 
@@ -436,18 +471,42 @@ export function calculateGratuity(lastDrawnSalary, tenureYears) {
  * @param {number} yearlyDeposit
  * @param {number} tenureYears - Years of deposit (usually 15)
  * @param {number} rate - Annual interest rate
- * @returns {number} Maturity amount (usually matures at 21 years)
+ * @returns {{ maturity: number, totalInvested: number, totalInterest: number, yearlyData: Array }}
  */
 export function calculateSSY(yearlyDeposit, tenureYears, rate) {
   let balance = 0;
-  const r = rate / 100;
-  for (let i = 0; i < 21; i++) {
-    if (i < tenureYears) {
-      balance += yearlyDeposit;
+  let totalInvested = 0;
+  const monthlyRate = (rate / 100) / 12;
+  let annualInterestAccrued = 0;
+  const yearlyData = [];
+  
+  for (let month = 1; month <= 21 * 12; month++) {
+    if (month <= tenureYears * 12) {
+      const monthlyDeposit = yearlyDeposit / 12;
+      balance += monthlyDeposit;
+      totalInvested += monthlyDeposit;
     }
-    balance += balance * r; // Compounded annually
+    
+    const interestThisMonth = Math.floor(balance * monthlyRate);
+    annualInterestAccrued += interestThisMonth;
+    
+    if (month % 12 === 0) {
+      balance += annualInterestAccrued;
+      annualInterestAccrued = 0;
+      yearlyData.push({
+        year: month / 12,
+        balance: balance,
+        cumInvested: totalInvested
+      });
+    }
   }
-  return balance;
+  
+  return {
+    maturity: balance,
+    totalInvested,
+    totalInterest: balance - totalInvested,
+    yearlyData
+  };
 }
 
 /**
@@ -459,5 +518,120 @@ export function calculateSSY(yearlyDeposit, tenureYears, rate) {
 export function calculatePOMIS(deposit, rate) {
   const monthlyIncome = deposit * (rate / 100) / 12;
   return { monthlyIncome };
+}
+
+/**
+ * Calculates Education Loan Schedule with Moratorium Period
+ * @param {Object} params
+ * @returns {Object}
+ */
+export function generateEducationLoanSchedule(params) {
+  const {
+    principal,
+    annualRatePercent,
+    moratoriumMonths,
+    repaymentMonths,
+    moratoriumInterest,
+    moratoriumPayment,
+    prepayments
+  } = params;
+
+  const monthlyRate = (annualRatePercent / 100) / 12;
+  let currentPrincipal = principal;
+  let totalInterest = 0;
+  let moratoriumInterestAccrued = 0;
+  const schedule = [];
+  const prepayQueue = Array.isArray(prepayments) ? [...prepayments] : [];
+
+  // Moratorium period
+  for (let month = 1; month <= moratoriumMonths; month++) {
+    let prepaymentApplied = 0;
+
+    // Apply prepayments at the start of the month
+    while (prepayQueue.length && prepayQueue[0].monthOffset + 1 === month) {
+      const pp = prepayQueue.shift();
+      const amount = Math.min(pp.amount, currentPrincipal);
+      if (amount > 0) {
+        prepaymentApplied += amount;
+        currentPrincipal -= amount;
+      }
+    }
+
+    const opening = currentPrincipal;
+    const interest = opening * monthlyRate;
+    let payment = 0;
+
+    if (moratoriumInterest === 'pay') {
+      payment = Math.min(interest, moratoriumPayment || interest);
+    } else if (moratoriumInterest === 'partial') {
+      payment = Math.min(interest * 0.5, moratoriumPayment || interest * 0.5);
+    }
+
+    const unpaidInterest = Math.max(0, interest - payment);
+    if (unpaidInterest > 0) {
+      currentPrincipal += unpaidInterest;
+      moratoriumInterestAccrued += unpaidInterest;
+    }
+
+    totalInterest += interest;
+
+    schedule.push({
+      index: month,
+      periodLabel: `Moratorium ${month}`,
+      opening,
+      payment,
+      interest,
+      principal: 0,
+      prepayment: prepaymentApplied,
+      closing: currentPrincipal
+    });
+  }
+
+  // Repayment period
+  const emi = calculateEmi(currentPrincipal, annualRatePercent, repaymentMonths);
+  let remainingPrincipal = currentPrincipal;
+
+  for (let month = 1; month <= repaymentMonths && remainingPrincipal > 0; month++) {
+    const opening = remainingPrincipal;
+    const interest = opening * monthlyRate;
+    let principalPayment = Math.min(emi - interest, opening);
+    if (principalPayment < 0) principalPayment = 0;
+    let prepaymentApplied = 0;
+
+    // Apply prepayments after EMI principal adjustment
+    while (prepayQueue.length && prepayQueue[0].monthOffset + 1 === (moratoriumMonths + month)) {
+      const pp = prepayQueue.shift();
+      const amount = Math.min(pp.amount, Math.max(0, opening - principalPayment - prepaymentApplied));
+      if (amount > 0) {
+        prepaymentApplied += amount;
+      }
+    }
+
+    remainingPrincipal = Math.max(0, opening - principalPayment - prepaymentApplied);
+    const actualPayment = remainingPrincipal === 0 ? (principalPayment + interest) : emi;
+    totalInterest += interest;
+
+    schedule.push({
+      index: moratoriumMonths + month,
+      periodLabel: `Repayment ${month}`,
+      opening,
+      payment: actualPayment,
+      interest,
+      principal: principalPayment,
+      prepayment: prepaymentApplied,
+      closing: remainingPrincipal
+    });
+
+    if (remainingPrincipal <= 0.01) break;
+  }
+
+  return {
+    schedule,
+    totalInterest,
+    moratoriumInterestAccrued,
+    emi,
+    principalAtStart: principal,
+    totalTenure: moratoriumMonths + repaymentMonths
+  };
 }
 

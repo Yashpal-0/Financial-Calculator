@@ -4,393 +4,41 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>FinCalc Suite – Premium Financial Calculators</title>
+  <title>FinCalc Suite – Premium Financial Calculators | FinCalc Suite</title>
   <meta name="description"
-    content="14 premium financial calculators: EMI, SIP, Step-Up SIP, FD, RD, PPF, Inflation, Retirement Planner, Income Tax, and more. Mobile-friendly, works offline, no ads.">
+    content="20 premium financial calculators: EMI, SIP, Step-Up SIP, FD, RD, PPF, Inflation, Retirement Planner, Income Tax, and more. Mobile-friendly, works offline, no ads.">
   <meta name="theme-color" content="#0d9488">
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="styles.css">
   <link rel="canonical" href="https://yashpal-0.github.io/Financial-Calculator/">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="FinCalc Suite – Premium Financial Calculators">
+  <meta property="og:title" content="FinCalc Suite – Premium Financial Calculators | FinCalc Suite">
   <meta property="og:description"
     content="Free premium calculators: EMI, SIP, Step-Up SIP, FD, RD, PPF, Retirement, Tax. Detailed charts and gorgeous UI.">
   <meta property="og:url" content="https://yashpal-0.github.io/Financial-Calculator/">
   <meta property="og:image" content="https://yashpal-0.github.io/Financial-Calculator/favicon.svg">
+  <script>
+    (function() {
+      const saved = localStorage.getItem('theme');
+      if (saved) document.documentElement.dataset.theme = saved;
+      else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.documentElement.dataset.theme = 'dark';
+      }
+    })();
+  </script>
 </head>
 
 <body class="bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-50 font-sans antialiased transition-colors duration-300">
-  <!-- Controls -->
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-end gap-3 pt-3 relative z-50">
-    <button id="installBtn" class="hidden px-3 py-1.5 text-sm rounded-full hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors">Install App</button>
-    <button id="themeToggle" class="px-3 py-1.5 text-base rounded-full hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors" title="Toggle dark mode">🌓</button>
-  </div>
+  
+  <div id="app"></div>
 
-  <nav class="sticky top-0 z-40 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex items-center justify-between h-16">
-        <div class="flex-shrink-0 flex items-center font-bold text-xl tracking-tight text-teal-700 dark:text-teal-400">
-          <span class="mr-2 text-2xl">💹</span> FinCalc Suite
-        </div>
-        <div class="flex items-center">
-          <button class="md:hidden p-2 rounded-md text-slate-600 hover:text-slate-900 hover:bg-slate-100 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800 focus:outline-none" aria-label="Toggle menu" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')">
-            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-            </svg>
-          </button>
-        </div>
-        <div class="hidden md:flex space-x-1 overflow-x-auto pb-2 -mb-2 no-scrollbar">
-          <!-- Desktop Nav Links -->
-          <a href="index.html" class="px-3 py-2 rounded-md text-sm font-medium bg-slate-100 text-slate-900 dark:bg-slate-800 dark:text-white" aria-current="page">Home</a>
-          <a href="pages/emi.html" class="px-3 py-2 rounded-md text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800">EMI</a>
-          <a href="pages/prepayment.html" class="px-3 py-2 rounded-md text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800">Prepay</a>
-          <a href="pages/sip.html" class="px-3 py-2 rounded-md text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800">SIP</a>
-          <a href="pages/step-up-sip.html" class="px-3 py-2 rounded-md text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800">Step-Up SIP</a>
-          <a href="pages/mutual-fund.html" class="px-3 py-2 rounded-md text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800">Mutual Fund</a>
-          <a href="pages/fd.html" class="px-3 py-2 rounded-md text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800">FD</a>
-        </div>
-      </div>
-    </div>
-    <!-- Mobile menu -->
-    <div class="hidden md:hidden bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800" id="mobile-menu">
-      <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3 grid grid-cols-2 gap-2">
-        <a href="index.html" class="block px-3 py-2 rounded-md text-base font-medium bg-slate-100 text-slate-900 dark:bg-slate-800 dark:text-white">Home</a>
-        <a href="pages/emi.html" class="block px-3 py-2 rounded-md text-base font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800">EMI</a>
-        <a href="pages/prepayment.html" class="block px-3 py-2 rounded-md text-base font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800">Prepay</a>
-        <a href="pages/sip.html" class="block px-3 py-2 rounded-md text-base font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800">SIP</a>
-        <a href="pages/step-up-sip.html" class="block px-3 py-2 rounded-md text-base font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800">Step-Up SIP</a>
-        <a href="pages/mutual-fund.html" class="block px-3 py-2 rounded-md text-base font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800">Mutual Fund</a>
-        <a href="pages/fd.html" class="block px-3 py-2 rounded-md text-base font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800">FD</a>
-        <a href="pages/rd.html" class="block px-3 py-2 rounded-md text-base font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800">RD</a>
-        <a href="pages/ppf.html" class="block px-3 py-2 rounded-md text-base font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800">PPF</a>
-        <a href="pages/inflation.html" class="block px-3 py-2 rounded-md text-base font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800">Inflation</a>
-        <a href="pages/retirement.html" class="block px-3 py-2 rounded-md text-base font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800">Retirement</a>
-        <a href="pages/income-tax.html" class="block px-3 py-2 rounded-md text-base font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800">Tax</a>
-        <a href="pages/cagr.html" class="block px-3 py-2 rounded-md text-base font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800">CAGR</a>
-        <a href="pages/gst.html" class="block px-3 py-2 rounded-md text-base font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800">GST</a>
-        <a href="pages/gratuity.html" class="block px-3 py-2 rounded-md text-base font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800">Gratuity</a>
-        <a href="pages/ssy.html" class="block px-3 py-2 rounded-md text-base font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800">SSY</a>
-        <a href="pages/pomis.html" class="block px-3 py-2 rounded-md text-base font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800">POMIS</a>
-      </div>
-    </div>
-  </nav>
-
-  <header class="py-16 md:py-24 text-center relative z-10 px-4 sm:px-6 lg:px-8">
-    <div class="max-w-4xl mx-auto">
-      <h1 class="text-5xl md:text-6xl font-extrabold tracking-tight mb-6 bg-gradient-to-r from-teal-600 to-cyan-600 bg-clip-text text-transparent">Master Your Finances</h1>
-      <p class="text-xl md:text-2xl text-slate-600 dark:text-slate-400 mb-10 max-w-3xl mx-auto">
-        A beautiful, precision-engineered suite of tools for EMIs, investments, tax planning, and retirement.
-        Completely free. Works offline.
-      </p>
-      <div class="flex flex-wrap justify-center gap-4">
-        <span class="inline-flex items-center px-4 py-2 rounded-full bg-white dark:bg-slate-800 shadow-sm border border-slate-200 dark:border-slate-700 text-sm font-medium">
-          <span class="mr-2 text-lg">🧮</span> <span class="font-bold mr-1 text-teal-600 dark:text-teal-400">14</span> Calculators
-        </span>
-        <span class="inline-flex items-center px-4 py-2 rounded-full bg-white dark:bg-slate-800 shadow-sm border border-slate-200 dark:border-slate-700 text-sm font-medium">
-          <span class="mr-2 text-lg">📶</span> Works <span class="font-bold ml-1 text-teal-600 dark:text-teal-400">Offline</span>
-        </span>
-        <span class="inline-flex items-center px-4 py-2 rounded-full bg-white dark:bg-slate-800 shadow-sm border border-slate-200 dark:border-slate-700 text-sm font-medium">
-          <span class="mr-2 text-lg">🔒</span> <span class="font-bold mr-1 text-teal-600 dark:text-teal-400">Zero</span> Data Collection
-        </span>
-        <span class="inline-flex items-center px-4 py-2 rounded-full bg-white dark:bg-slate-800 shadow-sm border border-slate-200 dark:border-slate-700 text-sm font-medium">
-          <span class="mr-2 text-lg">💸</span> <span class="font-bold mr-1 text-teal-600 dark:text-teal-400">Free</span> Forever
-        </span>
-        <span class="inline-flex items-center px-4 py-2 rounded-full bg-white dark:bg-slate-800 shadow-sm border border-slate-200 dark:border-slate-700 text-sm font-medium">
-          <span class="mr-2 text-lg">📱</span> Mobile <span class="font-bold ml-1 text-teal-600 dark:text-teal-400">Friendly</span>
-        </span>
-      </div>
-    </div>
-  </header>
-
-  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
-    
-    <!-- Feature Row -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-20">
-      <div class="text-center">
-        <div class="w-16 h-16 mx-auto bg-teal-100 dark:bg-teal-900/30 rounded-2xl flex items-center justify-center text-3xl mb-4 shadow-sm">📊</div>
-        <h3 class="text-lg font-bold mb-2">Visual Charts</h3>
-        <p class="text-slate-600 dark:text-slate-400 text-sm">Interactive donut & bar charts show exactly how your money works</p>
-      </div>
-      <div class="text-center">
-        <div class="w-16 h-16 mx-auto bg-teal-100 dark:bg-teal-900/30 rounded-2xl flex items-center justify-center text-3xl mb-4 shadow-sm">🎚️</div>
-        <h3 class="text-lg font-bold mb-2">Live Sliders</h3>
-        <p class="text-slate-600 dark:text-slate-400 text-sm">Drag sliders to instantly see how changing inputs affects your results</p>
-      </div>
-      <div class="text-center">
-        <div class="w-16 h-16 mx-auto bg-teal-100 dark:bg-teal-900/30 rounded-2xl flex items-center justify-center text-3xl mb-4 shadow-sm">🇮🇳</div>
-        <h3 class="text-lg font-bold mb-2">India-Specific</h3>
-        <p class="text-slate-600 dark:text-slate-400 text-sm">Accurate Indian tax slabs, PPF rules, LTCG, and RD compounding</p>
-      </div>
-      <div class="text-center">
-        <div class="w-16 h-16 mx-auto bg-teal-100 dark:bg-teal-900/30 rounded-2xl flex items-center justify-center text-3xl mb-4 shadow-sm">⚡</div>
-        <h3 class="text-lg font-bold mb-2">Instant Results</h3>
-        <p class="text-slate-600 dark:text-slate-400 text-sm">Lightning-fast calculations with no server round-trips ever needed</p>
-      </div>
-    </div>
-
-    <!-- Loan Calculators -->
-    <div class="mb-16">
-      <div class="text-sm font-semibold text-teal-600 dark:text-teal-400 uppercase tracking-wider mb-2">Loans & Repayment</div>
-      <h2 class="text-3xl font-bold mb-8">Loan Calculators</h2>
-      
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        <a class="card p-6 flex flex-col items-start hover:-translate-y-1 transition-transform hover:shadow-lg group" href="pages/emi.html">
-          <div class="text-4xl mb-4">🏠</div>
-          <h2 class="text-xl font-bold mb-2 group-hover:text-teal-600 transition-colors">EMI Calculator</h2>
-          <p class="text-slate-600 dark:text-slate-400 text-sm mb-4 flex-grow">Calculate monthly EMI with interactive sliders, amortization schedule, and visual interest breakdown chart.</p>
-          <div class="text-teal-600 dark:text-teal-400 font-semibold text-sm mt-auto">Explore &rarr;</div>
-        </a>
-        <a class="card p-6 flex flex-col items-start hover:-translate-y-1 transition-transform hover:shadow-lg group" href="pages/prepayment.html">
-          <div class="text-4xl mb-4">⚡</div>
-          <h2 class="text-xl font-bold mb-2 group-hover:text-teal-600 transition-colors">Prepayment</h2>
-          <p class="text-slate-600 dark:text-slate-400 text-sm mb-4 flex-grow">Optimize your loan with reduced tenure or EMI strategies using one-time or recurring prepayments.</p>
-          <div class="text-teal-600 dark:text-teal-400 font-semibold text-sm mt-auto">Explore &rarr;</div>
-        </a>
-        <a class="card p-6 flex flex-col items-start hover:-translate-y-1 transition-transform hover:shadow-lg group" href="pages/affordability.html">
-          <div class="text-4xl mb-4">📊</div>
-          <h2 class="text-xl font-bold mb-2 group-hover:text-teal-600 transition-colors">Affordability</h2>
-          <p class="text-slate-600 dark:text-slate-400 text-sm mb-4 flex-grow">Determine maximum eligible loan based on income, existing EMIs, and FOIR ratios.</p>
-          <div class="text-teal-600 dark:text-teal-400 font-semibold text-sm mt-auto">Explore &rarr;</div>
-        </a>
-        <a class="card p-6 flex flex-col items-start hover:-translate-y-1 transition-transform hover:shadow-lg group" href="pages/balance-transfer.html">
-          <div class="text-4xl mb-4">🔄</div>
-          <h2 class="text-xl font-bold mb-2 group-hover:text-teal-600 transition-colors">Balance Transfer</h2>
-          <p class="text-slate-600 dark:text-slate-400 text-sm mb-4 flex-grow">Compare current loan vs new lender to find savings and break-even points.</p>
-          <div class="text-teal-600 dark:text-teal-400 font-semibold text-sm mt-auto">Explore &rarr;</div>
-        </a>
-        <a class="card p-6 flex flex-col items-start hover:-translate-y-1 transition-transform hover:shadow-lg group" href="pages/education.html">
-          <div class="text-4xl mb-4">🎓</div>
-          <h2 class="text-xl font-bold mb-2 group-hover:text-teal-600 transition-colors">Education Loan</h2>
-          <p class="text-slate-600 dark:text-slate-400 text-sm mb-4 flex-grow">Plan education loan EMIs with moratorium period and grace period calculations.</p>
-          <div class="text-teal-600 dark:text-teal-400 font-semibold text-sm mt-auto">Explore &rarr;</div>
-        </a>
-      </div>
-    </div>
-
-    <!-- Investment Calculators -->
-    <div class="mb-16">
-      <div class="text-sm font-semibold text-teal-600 dark:text-teal-400 uppercase tracking-wider mb-2">Wealth & Investing</div>
-      <h2 class="text-3xl font-bold mb-8">Investment & Savings</h2>
-      
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        <a class="card p-6 flex flex-col items-start hover:-translate-y-1 transition-transform hover:shadow-lg group" href="pages/sip.html">
-          <div class="text-4xl mb-4">📈</div>
-          <h2 class="text-xl font-bold mb-2 group-hover:text-teal-600 transition-colors">SIP Calculator</h2>
-          <p class="text-slate-600 dark:text-slate-400 text-sm mb-4 flex-grow">Calculate SIP future value with year-by-year bar chart and wealth gained vs invested breakdown.</p>
-          <div class="text-teal-600 dark:text-teal-400 font-semibold text-sm mt-auto">Explore &rarr;</div>
-        </a>
-        <a class="card p-6 flex flex-col items-start hover:-translate-y-1 transition-transform hover:shadow-lg group" href="pages/step-up-sip.html">
-          <div class="text-4xl mb-4">🚀</div>
-          <h2 class="text-xl font-bold mb-2 group-hover:text-teal-600 transition-colors">Step-Up SIP</h2>
-          <p class="text-slate-600 dark:text-slate-400 text-sm mb-4 flex-grow">Model SIP with annual step-up increments. Compare vs flat SIP and see exponential wealth growth.</p>
-          <div class="text-teal-600 dark:text-teal-400 font-semibold text-sm mt-auto">Explore &rarr;</div>
-        </a>
-        <a class="card p-6 flex flex-col items-start hover:-translate-y-1 transition-transform hover:shadow-lg group" href="pages/mutual-fund.html">
-          <div class="text-4xl mb-4">💼</div>
-          <h2 class="text-xl font-bold mb-2 group-hover:text-teal-600 transition-colors">Mutual Fund Returns</h2>
-          <p class="text-slate-600 dark:text-slate-400 text-sm mb-4 flex-grow">SIP & lumpsum returns with CAGR, LTCG/STCG tax estimates, and post-tax wealth projection.</p>
-          <div class="text-teal-600 dark:text-teal-400 font-semibold text-sm mt-auto">Explore &rarr;</div>
-        </a>
-        <a class="card p-6 flex flex-col items-start hover:-translate-y-1 transition-transform hover:shadow-lg group" href="pages/lumpsum.html">
-          <div class="text-4xl mb-4">💰</div>
-          <h2 class="text-xl font-bold mb-2 group-hover:text-teal-600 transition-colors">Lumpsum</h2>
-          <p class="text-slate-600 dark:text-slate-400 text-sm mb-4 flex-grow">Project the compound growth of a one-time investment over your chosen time horizon.</p>
-          <div class="text-teal-600 dark:text-teal-400 font-semibold text-sm mt-auto">Explore &rarr;</div>
-        </a>
-        <a class="card p-6 flex flex-col items-start hover:-translate-y-1 transition-transform hover:shadow-lg group" href="pages/fd.html">
-          <div class="text-4xl mb-4">🏦</div>
-          <h2 class="text-xl font-bold mb-2 group-hover:text-teal-600 transition-colors">Fixed Deposit (FD)</h2>
-          <p class="text-slate-600 dark:text-slate-400 text-sm mb-4 flex-grow">Plan secure investments with various compounding frequencies (monthly, quarterly, yearly).</p>
-          <div class="text-teal-600 dark:text-teal-400 font-semibold text-sm mt-auto">Explore &rarr;</div>
-        </a>
-        <a class="card p-6 flex flex-col items-start hover:-translate-y-1 transition-transform hover:shadow-lg group" href="pages/rd.html">
-          <div class="text-4xl mb-4">📅</div>
-          <h2 class="text-xl font-bold mb-2 group-hover:text-teal-600 transition-colors">Recurring Deposit (RD)</h2>
-          <p class="text-slate-600 dark:text-slate-400 text-sm mb-4 flex-grow">Calculate maturity value for regular monthly deposits with quarterly compounding.</p>
-          <div class="text-teal-600 dark:text-teal-400 font-semibold text-sm mt-auto">Explore &rarr;</div>
-        </a>
-        <a class="card p-6 flex flex-col items-start hover:-translate-y-1 transition-transform hover:shadow-lg group" href="pages/ppf.html">
-          <div class="text-4xl mb-4">🏛️</div>
-          <h2 class="text-xl font-bold mb-2 group-hover:text-teal-600 transition-colors">PPF Calculator</h2>
-          <p class="text-slate-600 dark:text-slate-400 text-sm mb-4 flex-grow">Estimate tax-free returns on Public Provident Fund with yearly compounding over 15+ years.</p>
-          <div class="text-teal-600 dark:text-teal-400 font-semibold text-sm mt-auto">Explore &rarr;</div>
-        </a>
-        <a class="card p-6 flex flex-col items-start hover:-translate-y-1 transition-transform hover:shadow-lg group" href="pages/cagr.html">
-          <div class="text-4xl mb-4">📈</div>
-          <h2 class="text-xl font-bold mb-2 group-hover:text-teal-600 transition-colors">CAGR Calculator</h2>
-          <p class="text-slate-600 dark:text-slate-400 text-sm mb-4 flex-grow">Calculate the Compound Annual Growth Rate for your investments over a specific period.</p>
-          <div class="text-teal-600 dark:text-teal-400 font-semibold text-sm mt-auto">Explore &rarr;</div>
-        </a>
-        <a class="card p-6 flex flex-col items-start hover:-translate-y-1 transition-transform hover:shadow-lg group" href="pages/ssy.html">
-          <div class="text-4xl mb-4">👧</div>
-          <h2 class="text-xl font-bold mb-2 group-hover:text-teal-600 transition-colors">SSY Calculator</h2>
-          <p class="text-slate-600 dark:text-slate-400 text-sm mb-4 flex-grow">Estimate maturity amount for Sukanya Samriddhi Yojana with annual compounding.</p>
-          <div class="text-teal-600 dark:text-teal-400 font-semibold text-sm mt-auto">Explore &rarr;</div>
-        </a>
-        <a class="card p-6 flex flex-col items-start hover:-translate-y-1 transition-transform hover:shadow-lg group" href="pages/pomis.html">
-          <div class="text-4xl mb-4">📮</div>
-          <h2 class="text-xl font-bold mb-2 group-hover:text-teal-600 transition-colors">POMIS Calculator</h2>
-          <p class="text-slate-600 dark:text-slate-400 text-sm mb-4 flex-grow">Calculate your guaranteed monthly income from the Post Office Monthly Income Scheme.</p>
-          <div class="text-teal-600 dark:text-teal-400 font-semibold text-sm mt-auto">Explore &rarr;</div>
-        </a>
-      </div>
-    </div>
-
-    <!-- Planning Calculators -->
-    <div class="mb-16">
-      <div class="text-sm font-semibold text-teal-600 dark:text-teal-400 uppercase tracking-wider mb-2">Future Planning</div>
-      <h2 class="text-3xl font-bold mb-8">Financial Planning</h2>
-      
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        <a class="card p-6 flex flex-col items-start hover:-translate-y-1 transition-transform hover:shadow-lg group" href="pages/retirement.html">
-          <div class="text-4xl mb-4">🏖️</div>
-          <h2 class="text-xl font-bold mb-2 group-hover:text-teal-600 transition-colors">Retirement Planner</h2>
-          <p class="text-slate-600 dark:text-slate-400 text-sm mb-4 flex-grow">Calculate the corpus needed to retire and the exact monthly SIP required to get there, inflation-adjusted.</p>
-          <div class="text-teal-600 dark:text-teal-400 font-semibold text-sm mt-auto">Explore &rarr;</div>
-        </a>
-        <a class="card p-6 flex flex-col items-start hover:-translate-y-1 transition-transform hover:shadow-lg group" href="pages/inflation.html">
-          <div class="text-4xl mb-4">📉</div>
-          <h2 class="text-xl font-bold mb-2 group-hover:text-teal-600 transition-colors">Inflation Calculator</h2>
-          <p class="text-slate-600 dark:text-slate-400 text-sm mb-4 flex-grow">See how inflation erodes purchasing power and what goods/services will cost in the future.</p>
-          <div class="text-teal-600 dark:text-teal-400 font-semibold text-sm mt-auto">Explore &rarr;</div>
-        </a>
-        <a class="card p-6 flex flex-col items-start hover:-translate-y-1 transition-transform hover:shadow-lg group" href="pages/income-tax.html">
-          <div class="text-4xl mb-4">🧾</div>
-          <h2 class="text-xl font-bold mb-2 group-hover:text-teal-600 transition-colors">Income Tax (FY 2024-25)</h2>
-          <p class="text-slate-600 dark:text-slate-400 text-sm mb-4 flex-grow">Compare Old vs New Regime with all deductions. Instantly see which tax regime saves you more.</p>
-          <div class="text-teal-600 dark:text-teal-400 font-semibold text-sm mt-auto">Explore &rarr;</div>
-        </a>
-        <a class="card p-6 flex flex-col items-start hover:-translate-y-1 transition-transform hover:shadow-lg group" href="pages/gst.html">
-          <div class="text-4xl mb-4">🛍️</div>
-          <h2 class="text-xl font-bold mb-2 group-hover:text-teal-600 transition-colors">GST Calculator</h2>
-          <p class="text-slate-600 dark:text-slate-400 text-sm mb-4 flex-grow">Calculate exclusive and inclusive Goods and Services Tax amounts instantly.</p>
-          <div class="text-teal-600 dark:text-teal-400 font-semibold text-sm mt-auto">Explore &rarr;</div>
-        </a>
-        <a class="card p-6 flex flex-col items-start hover:-translate-y-1 transition-transform hover:shadow-lg group" href="pages/gratuity.html">
-          <div class="text-4xl mb-4">🎁</div>
-          <h2 class="text-xl font-bold mb-2 group-hover:text-teal-600 transition-colors">Gratuity Calculator</h2>
-          <p class="text-slate-600 dark:text-slate-400 text-sm mb-4 flex-grow">Determine your gratuity amount based on last drawn salary and years of service.</p>
-          <div class="text-teal-600 dark:text-teal-400 font-semibold text-sm mt-auto">Explore &rarr;</div>
-        </a>
-      </div>
-    </div>
-
-    <!-- FAQ Section -->
-    <section class="max-w-4xl mx-auto">
-      <div class="text-center mb-10">
-        <div class="text-sm font-semibold text-teal-600 dark:text-teal-400 uppercase tracking-wider mb-2">Got Questions?</div>
-        <h2 class="text-3xl font-bold">Frequently Asked Questions</h2>
-      </div>
-      
-      <div class="space-y-4">
-        <div class="card bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden group faq-item">
-          <button class="w-full text-left px-6 py-4 flex justify-between items-center focus:outline-none faq-question" onclick="toggleFaq(this)">
-            <span class="font-bold text-lg group-hover:text-teal-600 transition-colors">What is compound interest and how does the EMI calculator use it?</span>
-            <span class="text-slate-400 faq-chevron transform transition-transform duration-200">
-              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-            </span>
-          </button>
-          <div class="px-6 pb-4 hidden faq-answer text-slate-600 dark:text-slate-400">
-            <p>Compound interest is interest calculated on both the principal and accumulated interest. The EMI
-              calculator uses the standard reducing-balance formula: <strong>EMI = P × r × (1+r)ⁿ / ((1+r)ⁿ -
-                1)</strong>, where P = principal, r = monthly rate, n = tenure in months. Each month, interest is
-              charged only on the outstanding balance, which reduces as you pay EMIs.</p>
-          </div>
-        </div>
-        
-        <div class="card bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden group faq-item">
-          <button class="w-full text-left px-6 py-4 flex justify-between items-center focus:outline-none faq-question" onclick="toggleFaq(this)">
-            <span class="font-bold text-lg group-hover:text-teal-600 transition-colors">Is a Step-Up SIP really better than a regular SIP?</span>
-            <span class="text-slate-400 faq-chevron transform transition-transform duration-200">
-              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-            </span>
-          </button>
-          <div class="px-6 pb-4 hidden faq-answer text-slate-600 dark:text-slate-400">
-            <p>Yes, significantly! With a 10% annual step-up on a ₹5,000/month SIP at 12% return over 20 years, you
-              accumulate <strong>₹2.6 Cr vs ₹1.0 Cr</strong> with a flat SIP — nearly 2.6× more wealth! Since salaries
-              typically rise every year, a step-up SIP aligns your investments with your income growth.</p>
-          </div>
-        </div>
-        
-        <div class="card bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden group faq-item">
-          <button class="w-full text-left px-6 py-4 flex justify-between items-center focus:outline-none faq-question" onclick="toggleFaq(this)">
-            <span class="font-bold text-lg group-hover:text-teal-600 transition-colors">Which tax regime should I choose — Old or New?</span>
-            <span class="text-slate-400 faq-chevron transform transition-transform duration-200">
-              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-            </span>
-          </button>
-          <div class="px-6 pb-4 hidden faq-answer text-slate-600 dark:text-slate-400">
-            <p>It depends on your deductions. If you have large 80C investments (₹1.5L), HRA, and NPS (₹50K), the Old
-              Regime is usually better for income above ₹7.5L. If you have minimal deductions or income under ₹7L, the
-              New Regime with its rebate makes sense. Use our <a href="pages/income-tax.html"
-                class="text-teal-600 dark:text-teal-400 font-semibold hover:underline">Income Tax Calculator</a> to see your exact numbers.</p>
-          </div>
-        </div>
-        
-        <div class="card bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden group faq-item">
-          <button class="w-full text-left px-6 py-4 flex justify-between items-center focus:outline-none faq-question" onclick="toggleFaq(this)">
-            <span class="font-bold text-lg group-hover:text-teal-600 transition-colors">How much retirement corpus do I need?</span>
-            <span class="text-slate-400 faq-chevron transform transition-transform duration-200">
-              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-            </span>
-          </button>
-          <div class="px-6 pb-4 hidden faq-answer text-slate-600 dark:text-slate-400">
-            <p>A common rule is the <strong>25x Rule</strong>: multiply your annual expenses at retirement by 25. So if
-              you need ₹60,000/month (₹7.2L/year), you need a corpus of ~₹1.8 Cr. But our <a
-                href="pages/retirement.html" class="text-teal-600 dark:text-teal-400 font-semibold hover:underline">Retirement Planner</a> factors
-              in inflation, post-retirement years, and investment returns for a more precise estimate.</p>
-          </div>
-        </div>
-        
-        <div class="card bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden group faq-item">
-          <button class="w-full text-left px-6 py-4 flex justify-between items-center focus:outline-none faq-question" onclick="toggleFaq(this)">
-            <span class="font-bold text-lg group-hover:text-teal-600 transition-colors">Does this app store any of my data?</span>
-            <span class="text-slate-400 faq-chevron transform transition-transform duration-200">
-              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-            </span>
-          </button>
-          <div class="px-6 pb-4 hidden faq-answer text-slate-600 dark:text-slate-400">
-            <p>Absolutely not. All calculations happen 100% in your browser. We store <strong>only your theme
-                preference</strong> (dark/light mode) in localStorage. There are no analytics, no tracking pixels, no
-              ads, and no servers involved. Your financial data never leaves your device.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-  </main>
-
-  <footer class="bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 py-8">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-sm text-slate-500 dark:text-slate-400">
-      <div class="mb-2">✨ Built for everyone. Works offline. No data collection, tracking, or ads.</div>
-      <div>Crafted with passion. Connect on <a
-          href="https://www.linkedin.com/in/yashpal-yadav-990278221/" target="_blank" rel="me noopener" class="text-teal-600 dark:text-teal-400 font-medium hover:underline">LinkedIn</a>
-      </div>
-    </div>
-  </footer>
-
-  <script>
-    function toggleFaq(btn) {
-      const item = btn.closest('.faq-item');
-      const answer = item.querySelector('.faq-answer');
-      const chevron = item.querySelector('.faq-chevron');
-      
-      const isOpen = !answer.classList.contains('hidden');
-      
-      // Close all others
-      document.querySelectorAll('.faq-answer').forEach(el => el.classList.add('hidden'));
-      document.querySelectorAll('.faq-chevron').forEach(el => el.classList.remove('rotate-180'));
-      
-      if (!isOpen) {
-        answer.classList.remove('hidden');
-        chevron.classList.add('rotate-180');
-      }
-    }
-  </script>
   <script type="module">
     import { initApp } from './scripts/app.js';
+    import { renderDashboard } from './scripts/dashboard.js';
+    
     initApp();
+    renderDashboard(document.getElementById('app'));
   </script>
 </body>
 

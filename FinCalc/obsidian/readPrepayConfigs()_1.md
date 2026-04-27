@@ -1,0 +1,18 @@
+---
+source_file: "scripts/ui.js"
+type: "code"
+community: "ui.js"
+location: "L172"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/ui.js
+---
+
+# readPrepayConfigs()
+
+## Connections
+- [[collectInputs()]] - `calls` [EXTRACTED]
+- [[ui.js_1]] - `contains` [EXTRACTED]
+
+#graphify/code #graphify/EXTRACTED #community/ui.js

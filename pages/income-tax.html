@@ -1,14 +1,30 @@
 <!DOCTYPE html><html lang="en"><head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Income Tax Calculator | FinCalc Suite</title>
-    <meta name="description" content="Compare income tax under Old vs New Regime for FY 2024-25 with Section 80C, HRA, and NPS deductions. Find which regime saves you more.">
+    <title>Income Tax Calculator (FY 2025-26) | FinCalc Suite</title>
+    <meta name="description" content="Compare Old vs New Tax Regime for FY 2025-26 (AY 2026-27) with deductions like 80C, HRA, and NPS.">
     <meta name="theme-color" content="#0d9488">
     <link rel="manifest" href="../manifest.webmanifest">
     <link rel="icon" href="../favicon.svg" type="image/svg+xml">
     <link rel="stylesheet" href="../styles.css">
     <link rel="canonical" href="https://yashpal-0.github.io/Financial-Calculator/pages/income-tax.html">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Income Tax Calculator (FY 2025-26) | FinCalc Suite">
+  <meta property="og:description" content="Compare Old vs New Tax Regime for FY 2025-26 (AY 2026-27) with deductions like 80C, HRA, and NPS.">
+  <meta property="og:url" content="https://yashpal-0.github.io/Financial-Calculator/pages/income-tax.html">
+  <meta property="og:image" content="https://yashpal-0.github.io/Financial-Calculator/favicon.svg">
+
+  <script>
+    (function() {
+      const saved = localStorage.getItem('theme');
+      if (saved) document.documentElement.dataset.theme = saved;
+      else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.documentElement.dataset.theme = 'dark';
+      }
+    })();
+  </script>
 </head>
 
 <body class="bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-50 font-sans antialiased transition-colors duration-300">
@@ -56,159 +72,17 @@
     <header class="py-12 md:py-16 text-center px-4 sm:px-6 lg:px-8"><div class="max-w-3xl mx-auto">
         <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight mb-4 bg-gradient-to-r from-teal-600 to-cyan-600 bg-clip-text text-transparent">
             Income Tax Calculator</h1>
-        <p class="text-lg text-slate-600 dark:text-slate-400">Compare Old vs New Tax Regime for FY 2024-25 and find which saves you more money.</p>
+        <p class="text-lg text-slate-600 dark:text-slate-400">Compare Old vs New Tax Regime for FY 2025-26 and find which saves you more money.</p>
     </div></header>
 
-    <main class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-24">
-        <section class="card p-6 md:p-8 mb-8">
-            <h3 style="font-size:17px;font-weight:700;margin-bottom:20px;color:var(--text);">Income Details</h3>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                <div>
-                    <label for="grossIncome" class="label-text flex items-center mb-1">Gross Annual Income (₹)
-                        
-      <div class="group relative ml-2 cursor-help">
-        <span class="inline-flex items-center justify-center w-4 h-4 rounded-full bg-slate-200 dark:bg-slate-700 text-xs text-slate-500 dark:text-slate-400">?</span>
-        <div class="hidden group-hover:block absolute z-10 w-48 p-2 mt-1 text-xs text-white bg-slate-800 rounded shadow-lg -left-2 top-full">
-          Total CTC or annual income before
-                                tax
-        </div>
-      </div>
-                    </label>
-                    <input id="grossIncome" type="number" inputmode="decimal" min="0" step="10000" placeholder="e.g. 1200000" class="input-field mb-4 w-full">
-                    
-      <div class="flex items-center space-x-4">
-        <input type="range" id="grossIncomeSlider" min="200000" max="5000000" step="50000" value="1200000" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer dark:bg-slate-700 accent-teal-600">
-        <span class="text-sm font-semibold text-teal-700 dark:text-teal-400 min-w-[3rem] text-right" id="grossIncomeVal">₹12L</span>
-      </div>
-                </div>
-                <div>
-                    <label for="sec80C" class="label-text flex items-center mb-1">Section 80C Investments (₹)
-                        
-      <div class="group relative ml-2 cursor-help">
-        <span class="inline-flex items-center justify-center w-4 h-4 rounded-full bg-slate-200 dark:bg-slate-700 text-xs text-slate-500 dark:text-slate-400">?</span>
-        <div class="hidden group-hover:block absolute z-10 w-48 p-2 mt-1 text-xs text-white bg-slate-800 rounded shadow-lg -left-2 top-full">
-          ELSS, PPF, LIC, EPF – max ₹1.5L
-                                allowed
-        </div>
-      </div>
-                    </label>
-                    <input id="sec80C" type="number" inputmode="decimal" min="0" max="150000" step="5000" placeholder="e.g. 150000" class="input-field mb-4 w-full">
-                    
-      <div class="flex items-center space-x-4">
-        <input type="range" id="sec80CSlider" min="0" max="150000" step="5000" value="150000" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer dark:bg-slate-700 accent-teal-600">
-        <span class="text-sm font-semibold text-teal-700 dark:text-teal-400 min-w-[3rem] text-right" id="sec80CVal">₹1.5L</span>
-      </div>
-                </div>
-                <div>
-                    <label for="hra" class="label-text flex items-center mb-1">HRA Exemption (₹)
-                        
-      <div class="group relative ml-2 cursor-help">
-        <span class="inline-flex items-center justify-center w-4 h-4 rounded-full bg-slate-200 dark:bg-slate-700 text-xs text-slate-500 dark:text-slate-400">?</span>
-        <div class="hidden group-hover:block absolute z-10 w-48 p-2 mt-1 text-xs text-white bg-slate-800 rounded shadow-lg -left-2 top-full">
-          HRA exempted amount for salaried
-                                employees
-        </div>
-      </div>
-                    </label>
-                    <input id="hra" type="number" inputmode="decimal" min="0" step="5000" placeholder="e.g. 60000" class="input-field mb-4 w-full">
-                    
-      <div class="flex items-center space-x-4">
-        <input type="range" id="hraSlider" min="0" max="500000" step="5000" value="60000" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer dark:bg-slate-700 accent-teal-600">
-        <span class="text-sm font-semibold text-teal-700 dark:text-teal-400 min-w-[3rem] text-right" id="hraVal">₹60,000</span>
-      </div>
-                </div>
-                <div>
-                    <label for="nps" class="label-text flex items-center mb-1">NPS Contribution 80CCD(1B) (₹)
-                        
-      <div class="group relative ml-2 cursor-help">
-        <span class="inline-flex items-center justify-center w-4 h-4 rounded-full bg-slate-200 dark:bg-slate-700 text-xs text-slate-500 dark:text-slate-400">?</span>
-        <div class="hidden group-hover:block absolute z-10 w-48 p-2 mt-1 text-xs text-white bg-slate-800 rounded shadow-lg -left-2 top-full">
-          Additional NPS deduction up to
-                                ₹50,000
-        </div>
-      </div>
-                    </label>
-                    <input id="nps" type="number" inputmode="decimal" min="0" max="50000" step="5000" placeholder="e.g. 50000" class="input-field mb-4 w-full">
-                    
-      <div class="flex items-center space-x-4">
-        <input type="range" id="npsSlider" min="0" max="50000" step="5000" value="50000" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer dark:bg-slate-700 accent-teal-600">
-        <span class="text-sm font-semibold text-teal-700 dark:text-teal-400 min-w-[3rem] text-right" id="npsVal">₹50,000</span>
-      </div>
-                </div>
-                <div class="row-2" style="grid-column:1/-1;">
-                    <div>
-                        <label for="otherDed" class="label-text flex items-center mb-1">Other Deductions (₹)
-                            
-      <div class="group relative ml-2 cursor-help">
-        <span class="inline-flex items-center justify-center w-4 h-4 rounded-full bg-slate-200 dark:bg-slate-700 text-xs text-slate-500 dark:text-slate-400">?</span>
-        <div class="hidden group-hover:block absolute z-10 w-48 p-2 mt-1 text-xs text-white bg-slate-800 rounded shadow-lg -left-2 top-full">
-          80D medical, 80E education loan
-                                    interest, etc.
-        </div>
-      </div>
-                        </label>
-                        <input id="otherDed" type="number" inputmode="decimal" min="0" step="5000" placeholder="e.g. 25000" class="input-field mb-4 w-full">
-                    </div>
-                </div>
+    <main id="income-tax-app">
+        <!-- Preact App Mounts Here -->
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-24">
+            <div class="animate-pulse space-y-8">
+                <div class="h-64 bg-slate-200 dark:bg-slate-800 rounded-xl"></div>
+                <div class="h-96 bg-slate-200 dark:bg-slate-800 rounded-xl"></div>
             </div>
-            <div class="flex flex-wrap items-center gap-4 pt-6 border-t border-slate-100 dark:border-slate-800">
-                <button id="calcBtn">Calculate Tax ✨</button>
-                <button id="resetBtn" class="ghost">Reset</button>
-            </div>
-        </section>
-
-        <!-- Result: Recommendation Banner -->
-        <section class="" id="recommSection" style="display:none;margin-top:24px;">
-            <div id="recommBanner" class="bg-gradient-to-r from-teal-600 to-cyan-600 rounded-xl p-6 md:p-8 flex items-center gap-6 flex-wrap shadow-lg text-white mb-8">
-                <div style="font-size:40px;">🏆</div>
-                <div>
-                    <div style="color:rgba(255,255,255,0.85);font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:1px;">
-                        Recommended Regime</div>
-                    <div id="recommText" class="text-2xl md:text-3xl font-extrabold mt-1">–</div>
-                </div>
-                <div style="margin-left:auto;text-align:right;">
-                    <div style="color:rgba(255,255,255,0.85);font-size:13px;font-weight:600;">You Save</div>
-                    <div id="savingsText" class="text-2xl md:text-3xl font-extrabold">–</div>
-                </div>
-            </div>
-        </section>
-
-        <section class="" style="margin-top:24px;" id="resultsSection">
-            <h2 class="section-heading">Regime Comparison</h2>
-            <div class="overflow-x-auto">
-                <table class="w-full text-left border-collapse">
-                    <thead>
-                        <tr>
-                            <th class="left px-4 py-3 text-sm font-medium text-slate-500 dark:text-slate-400 border-b border-slate-200 dark:border-slate-800">Parameter</th>
-                            <th class="px-4 py-3 text-sm font-medium text-slate-500 dark:text-slate-400 border-b border-slate-200 dark:border-slate-800">Old Regime</th>
-                            <th class="px-4 py-3 text-sm font-medium text-slate-500 dark:text-slate-400 border-b border-slate-200 dark:border-slate-800">New Regime (FY 2024-25)</th>
-                        </tr>
-                    </thead>
-                    <tbody id="compareTableBody"></tbody>
-                </table>
-            </div>
-        </section>
-
-        <section class="chart-section" id="chartSection" style="display:none;">
-            <div class="chart-container">
-                <div class="chart-title">Tax Comparison: Old vs New Regime</div>
-                <div class="chart-donut-wrap">
-                    <canvas id="taxBarChart" height="200" style="max-width:100%;flex:1;"></canvas>
-                </div>
-            </div>
-            
-      <div class="bg-teal-50 dark:bg-teal-900/20 border border-teal-100 dark:border-teal-800/30 rounded-xl p-5 mb-10 flex items-start gap-4">
-        <div class="text-2xl">📌</div>
-        <div>
-          <h4 class="font-bold text-teal-800 dark:text-teal-300 mb-1">Note on Tax Slabs (FY 2024-25)</h4>
-          <p class="text-sm text-teal-700 dark:text-teal-400/80">
-            The New Regime now offers a ₹75,000 standard deduction (up from ₹50,000) and a ₹25,000 rebate u/s
-                        87A for incomes up to ₹7L. Tax is calculated + 4% Health &amp; Education Cess. Values shown are
-                        <strong>estimates</strong>—consult a CA for exact liability.
-          </p>
         </div>
-      </div>
-        </section>
     </main>
 
     <footer class="bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 py-8">
@@ -220,9 +94,12 @@
   </footer>
 
     <script type="module">
+        import { h, render } from 'https://esm.sh/preact@10.19.2';
         import { initApp } from '../scripts/app.js';
-        import '../scripts/income-tax.js';
+        import IncomeTaxCalculator from '../scripts/components/IncomeTaxCalculator.js';
+        
         initApp();
+        render(h(IncomeTaxCalculator), document.getElementById('income-tax-app'));
     </script>
 
 

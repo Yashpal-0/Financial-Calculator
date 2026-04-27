@@ -1,253 +1,200 @@
-import { formatINR } from './util.js';
-import { calculateEmi } from './finance.js';
+import { h, render } from 'https://esm.sh/preact';
+import { useState, useEffect, useMemo } from 'https://esm.sh/preact/hooks';
+import htm from 'https://esm.sh/htm';
+import { 
+  GlassCard, 
+  Slider, 
+  ResultSummary, 
+  AmortizationTable, 
+  VisualChart 
+} from './components/UI.js';
+import { Layout } from './components/Layout.js';
+import { calculateEmi, baselineSchedule } from './finance.js';
+import { formatINR, saveCalculation } from './util.js';
+import { syncUrlState, getUrlState, debounce } from './state.js';
 
-/** Build amortization schedule */
-function buildSchedule(P, rAnnual, n) {
-  const r = (rAnnual / 100) / 12;
-  const emi = calculateEmi(P, rAnnual, n);
-  let principal = P;
-  let totalInterest = 0;
-  const schedule = [];
-  for (let i = 1; i <= n && principal > 0; i++) {
-    const interest = principal * r;
-    let principalPay = Math.min(emi - interest, principal);
-    if (principalPay < 0) principalPay = 0;
-    const opening = principal;
-    principal = Math.max(0, principal - principalPay);
-    totalInterest += interest;
-    schedule.push({ index: i, opening, emi, interest, principal: principalPay, closing: principal });
-  }
-  return { emi, schedule, totalInterest };
-}
+const html = htm.bind(h);
 
-function render(schedule) {
-  const tbody = document.getElementById('scheduleBody');
-  tbody.innerHTML = '';
-  const fragment = document.createDocumentFragment();
-  for (const row of schedule) {
-    const tr = document.createElement('tr');
-    appendTd(tr, `Month ${row.index}`, true);
-    appendTd(tr, formatINR(row.opening));
-    appendTd(tr, formatINR(row.emi));
-    appendTd(tr, formatINR(row.interest));
-    appendTd(tr, formatINR(row.principal));
-    appendTd(tr, formatINR(row.closing));
-    fragment.appendChild(tr);
-  }
-  tbody.appendChild(fragment);
-}
-
-function appendTd(tr, text, left) {
-  const td = document.createElement('td');
-  if (left) td.className = 'text-left font-medium';
-  td.textContent = text;
-  tr.appendChild(td);
-}
-
-function exportCsv(schedule) {
-  const header = ['Month', 'Opening Balance', 'EMI', 'Interest', 'Principal', 'Closing Balance'];
-  const lines = [header.join(',')];
-  for (const r of schedule) {
-    lines.push([r.index, r.opening.toFixed(2), r.emi.toFixed(2), r.interest.toFixed(2), r.principal.toFixed(2), r.closing.toFixed(2)].join(','));
-  }
-  const blob = new Blob(['\uFEFF' + lines.join('\n')], { type: 'text/csv;charset=utf-8;' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url; a.download = 'emi_schedule.csv';
-  document.body.appendChild(a); a.click();
-  setTimeout(() => { URL.revokeObjectURL(url); a.remove(); }, 0);
-}
-
-/** Slider ↔ Input sync */
-function syncSlider(inputId, sliderId, displayId, formatter) {
-  const input = document.getElementById(inputId);
-  const slider = document.getElementById(sliderId);
-  const display = document.getElementById(displayId);
-  if (!input || !slider || !display) return;
-
-  function update(val) {
-    display.textContent = formatter(val);
-    const pct = ((val - slider.min) / (slider.max - slider.min)) * 100;
-    // We can use a custom property for Tailwind if needed, but inline style works fine for gradient
-    const thumbColor = '#0d9488'; // teal-600
-    const trackColor = document.documentElement.dataset.theme === 'dark' ? '#334155' : '#e2e8f0'; // slate-700 / slate-200
-    slider.style.background = `linear-gradient(to right, ${thumbColor} ${pct}%, ${trackColor} ${pct}%)`;
-  }
-  input.addEventListener('input', () => { slider.value = input.value; update(input.value); });
-  slider.addEventListener('input', () => { input.value = slider.value; update(slider.value); });
-  update(slider.value);
+const EMICalculator = () => {
+  const initialState = getUrlState();
   
-  // Also observe theme changes to update track color
-  const observer = new MutationObserver(() => update(slider.value));
-  observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
-}
+  const [loanAmount, setLoanAmount] = useState(Number(initialState.p) || 5000000);
+  const [annualRate, setAnnualRate] = useState(Number(initialState.r) || 8.5);
+  const [tenureMonths, setTenureMonths] = useState(Number(initialState.n) || 240);
 
-/** Chart.js donut chart */
-let emiChart = null;
-function updateDonutChart(principal, totalInterest) {
-  if (typeof Chart === 'undefined') return;
-  const isDark = document.documentElement.dataset.theme === 'dark';
-  const canvas = document.getElementById('emiDonutChart');
-  if (!canvas) return;
-  const ctx = canvas.getContext('2d');
-  const data = {
-    labels: ['Principal', 'Total Interest'],
+  // Sync state to URL and localStorage
+  useEffect(() => {
+    const debouncedSync = debounce(() => {
+      syncUrlState({
+        p: loanAmount,
+        r: annualRate,
+        n: tenureMonths
+      });
+
+      const emi = calculateEmi(loanAmount, annualRate, tenureMonths);
+      saveCalculation({
+        id: 'emi',
+        name: 'EMI Calculator',
+        summary: `EMI: ${formatINR(emi)} for ${loanAmount.toLocaleString('en-IN')}`,
+        link: window.location.href
+      });
+    }, 1000);
+    debouncedSync();
+  }, [loanAmount, annualRate, tenureMonths]);
+
+  const results = useMemo(() => {
+    const emi = calculateEmi(loanAmount, annualRate, tenureMonths);
+    const { totalInterest } = baselineSchedule(loanAmount, annualRate, tenureMonths);
+    
+    // Build detailed schedule for the table
+    const r = (annualRate / 100) / 12;
+    let principal = loanAmount;
+    const schedule = [];
+    for (let i = 1; i <= tenureMonths && principal > 0; i++) {
+      const interest = principal * r;
+      let principalPay = Math.min(emi - interest, principal);
+      if (principalPay < 0) principalPay = 0;
+      const opening = principal;
+      principal = Math.max(0, principal - principalPay);
+      schedule.push({ 
+        month: `Month ${i}`, 
+        principal: principalPay, 
+        interest, 
+        total: emi, 
+        balance: principal 
+      });
+    }
+
+    return { emi, totalInterest, totalPayment: loanAmount + totalInterest, schedule };
+  }, [loanAmount, annualRate, tenureMonths]);
+
+  const kpiItems = [
+    { label: 'Monthly EMI', value: results.emi, suffix: '' },
+    { label: 'Total Interest', value: results.totalInterest, suffix: '' },
+    { label: 'Total Payment', value: results.totalPayment, suffix: '' },
+    { label: 'Tenure', value: tenureMonths, suffix: ' mo' }
+  ];
+
+  const chartData = {
+    labels: ['Principal', 'Interest'],
     datasets: [{
-      data: [principal, totalInterest],
-      backgroundColor: ['rgba(13,148,136,0.85)', 'rgba(8,145,178,0.75)'],
-      hoverBackgroundColor: ['rgba(13,148,136,1)', 'rgba(8,145,178,1)'],
-      borderColor: isDark ? '#0f172a' : '#ffffff', // slate-900 / white
-      borderWidth: 3,
-      hoverOffset: 8,
+      data: [loanAmount, results.totalInterest],
+      backgroundColor: ['#0d9488', '#0891b2'],
+      borderWidth: 0
     }]
   };
-  const opts = {
-    cutout: '70%',
+
+  const chartOptions = {
     plugins: {
-      legend: { display: false },
-      tooltip: {
-        callbacks: {
-          label: ctx => ` ${ctx.label}: ${formatINR(ctx.raw)}`
-        }
-      }
+      legend: { position: 'bottom' }
     },
-    animation: { animateRotate: true, duration: 600 },
-    maintainAspectRatio: false
+    cutout: '70%'
   };
 
-  if (emiChart) {
-    emiChart.options.plugins.tooltip = opts.plugins.tooltip;
-    emiChart.data = data;
-    emiChart.update();
-  } else {
-    emiChart = new Chart(ctx, { type: 'doughnut', data, options: opts });
-  }
+  const handleExportCSV = () => {
+    const header = ['Month', 'Principal', 'Interest', 'Total', 'Balance'];
+    const lines = [header.join(',')];
+    results.schedule.forEach(r => {
+      lines.push([r.month, r.principal.toFixed(2), r.interest.toFixed(2), r.total.toFixed(2), r.balance.toFixed(2)].join(','));
+    });
+    const blob = new Blob(['\uFEFF' + lines.join('\n')], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'emi_schedule.csv';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
 
-  // Update legend
-  const legendEl = document.getElementById('chartLegend');
-  legendEl.innerHTML = `
-    <div class="flex items-center justify-between">
-      <div class="flex items-center">
-        <div class="w-3 h-3 rounded-full mr-3" style="background:rgba(13,148,136,0.85)"></div>
-        <span class="text-sm text-slate-600 dark:text-slate-400">Principal</span>
+  return html`
+    <${Layout}>
+      <div class="max-w-6xl mx-auto px-4 py-8">
+        <header class="text-center mb-12">
+          <h1 class="text-4xl font-extrabold text-slate-900 dark:text-white mb-4">EMI Calculator</h1>
+          <p class="text-lg text-slate-600 dark:text-slate-400">Calculate your monthly loan repayments and see the total interest cost.</p>
+        </header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div class="lg:col-span-1">
+            <${GlassCard}>
+              <${Slider} 
+                label="Loan Amount" 
+                value=${loanAmount} 
+                min=${100000} 
+                max=${20000000} 
+                step=${50000} 
+                onChange=${setLoanAmount} 
+                suffix="₹" 
+              />
+              <${Slider} 
+                label="Interest Rate" 
+                value=${annualRate} 
+                min=${5} 
+                max=${20} 
+                step=${0.1} 
+                onChange=${setAnnualRate} 
+                suffix="%" 
+              />
+              <${Slider} 
+                label="Tenure" 
+                value=${tenureMonths} 
+                min=${12} 
+                max=${360} 
+                step=${12} 
+                onChange=${setTenureMonths} 
+                suffix="mo" 
+              />
+              
+              <div class="mt-8 p-4 bg-teal-50 dark:bg-teal-900/20 rounded-xl border border-teal-100 dark:border-teal-800/30">
+                <p class="text-sm text-teal-800 dark:text-teal-300">
+                  <strong>Tip:</strong> Increasing your EMI by just 5% every year can reduce your tenure by several years!
+                </p>
+              </div>
+            <//>
+          </div>
+
+          <div class="lg:col-span-2">
+            <${ResultSummary} items=${kpiItems} />
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+              <${GlassCard} className="flex flex-col items-center justify-center">
+                <h3 class="text-lg font-semibold mb-4">Breakdown</h3>
+                <${VisualChart} type="doughnut" data=${chartData} options=${chartOptions} height=${250} />
+              <//>
+              
+              <${GlassCard} className="flex flex-col justify-center">
+                <h3 class="text-lg font-semibold mb-4">Monthly Payment</h3>
+                <div class="text-5xl font-black text-teal-600 dark:text-teal-400 mb-2">
+                  ${formatINR(results.emi)}
+                </div>
+                <p class="text-slate-500 dark:text-slate-400">Your estimated monthly installment for this loan.</p>
+              <//>
+            </div>
+
+            <div class="flex justify-between items-center mb-4">
+              <h2 class="text-2xl font-bold text-slate-900 dark:text-white">Amortization Schedule</h2>
+              <button 
+                onClick=${handleExportCSV}
+                class="px-4 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-lg text-sm font-medium transition-colors flex items-center gap-2"
+              >
+                <span>Export CSV</span>
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+              </button>
+            </div>
+            
+            <${AmortizationTable} data=${results.schedule.slice(0, 120)} />
+            ${results.schedule.length > 120 && html`
+              <p class="text-center text-slate-500 mt-4 text-sm">Showing first 120 months of the schedule.</p>
+            `}
+          </div>
+        </div>
       </div>
-      <span class="font-semibold text-slate-900 dark:text-white">${formatINR(principal)}</span>
-    </div>
-    <div class="flex items-center justify-between">
-      <div class="flex items-center">
-        <div class="w-3 h-3 rounded-full mr-3" style="background:rgba(8,145,178,0.75)"></div>
-        <span class="text-sm text-slate-600 dark:text-slate-400">Total Interest</span>
-      </div>
-      <span class="font-semibold text-slate-900 dark:text-white">${formatINR(totalInterest)}</span>
-    </div>
-    <div class="mt-2 pt-3 border-t border-slate-200 dark:border-slate-700 flex items-center justify-between">
-      <span class="font-bold text-slate-900 dark:text-white">Interest Ratio</span>
-      <span class="font-bold text-teal-600 dark:text-teal-400">${((totalInterest / (principal + totalInterest)) * 100).toFixed(1)}%</span>
-    </div>
+    <//>
   `;
-}
+};
 
-/** Sticky bar logic */
-let stickyHidden = false;
-document.getElementById('stickyDismiss')?.addEventListener('click', () => {
-  const bar = document.getElementById('stickyResult');
-  bar.classList.remove('translate-y-0');
-  bar.classList.add('translate-y-full');
-  stickyHidden = true;
-});
-
-function showStickyBar(emi, interest) {
-  if (stickyHidden) return;
-  const bar = document.getElementById('stickyResult');
-  document.getElementById('stickyEmi').textContent = formatINR(emi);
-  document.getElementById('stickyInterest').textContent = formatINR(interest);
-  bar.classList.remove('translate-y-full');
-  bar.classList.add('translate-y-0');
-}
-
-function hideStickyBar() {
-  const bar = document.getElementById('stickyResult');
-  if(bar) {
-    bar.classList.remove('translate-y-0');
-    bar.classList.add('translate-y-full');
-  }
-}
-
-// Intersection observer to show sticky bar when results are offscreen
-const summaryObs = new IntersectionObserver(([entry]) => {
-  const bar = document.getElementById('stickyResult');
-  if (!bar) return;
-  if (!stickyHidden && !entry.isIntersecting && window.__emiResult) {
-    bar.classList.remove('translate-y-full');
-    bar.classList.add('translate-y-0');
-  } else {
-    bar.classList.remove('translate-y-0');
-    bar.classList.add('translate-y-full');
-  }
-}, { threshold: 0 });
-const summaryEl = document.getElementById('emiOut'); // We can observe the KPI number
-
-// Wire up
-syncSlider('loanAmount', 'loanAmountSlider', 'loanAmountVal', v => {
-  const lakh = v / 100000;
-  return lakh >= 100 ? `₹${(v / 10000000).toFixed(1)}Cr` : `₹${lakh.toFixed(0)}L`;
-});
-syncSlider('annualRate', 'annualRateSlider', 'annualRateVal', v => `${parseFloat(v).toFixed(1)}%`);
-syncSlider('tenureMonths', 'tenureMonthsSlider', 'tenureMonthsVal', v => `${v} mo`);
-
-document.getElementById('calcBtn').addEventListener('click', () => {
-  const P = Number(document.getElementById('loanAmount').value || '0');
-  const r = Number(document.getElementById('annualRate').value || '0');
-  const n = Number(document.getElementById('tenureMonths').value || '0');
-  if (!(P > 0 && r >= 0 && Number.isInteger(n) && n > 0)) {
-    alert('Please enter valid values.'); return;
-  }
-  const { emi, schedule, totalInterest } = buildSchedule(P, r, n);
-  document.getElementById('emiOut').textContent = formatINR(emi);
-  document.getElementById('totalInterestOut').textContent = formatINR(totalInterest);
-  document.getElementById('totalPaymentOut').textContent = formatINR(totalInterest + P);
-  render(schedule);
-  window.__emiSchedule = schedule;
-  window.__emiResult = { emi, totalInterest };
-
-  // Show results
-  document.getElementById('resultsSection').classList.remove('hidden');
-  updateDonutChart(P, totalInterest);
-  showStickyBar(emi, totalInterest);
-  stickyHidden = false;
-  
-  if (summaryEl) {
-    summaryObs.observe(summaryEl);
-  }
-});
-
-document.getElementById('resetBtn').addEventListener('click', () => {
-  ['loanAmount', 'annualRate', 'tenureMonths'].forEach(id => document.getElementById(id).value = '');
-  
-  // Re-sync sliders
-  const loanInput = document.getElementById('loanAmount');
-  if(loanInput) loanInput.dispatchEvent(new Event('input'));
-  const rateInput = document.getElementById('annualRate');
-  if(rateInput) rateInput.dispatchEvent(new Event('input'));
-  const tenureInput = document.getElementById('tenureMonths');
-  if(tenureInput) tenureInput.dispatchEvent(new Event('input'));
-
-  document.getElementById('emiOut').textContent = '–';
-  document.getElementById('totalInterestOut').textContent = '–';
-  document.getElementById('totalPaymentOut').textContent = '–';
-  document.getElementById('scheduleBody').innerHTML = '';
-  document.getElementById('resultsSection').classList.add('hidden');
-  
-  hideStickyBar();
-  stickyHidden = false;
-  if(summaryEl) summaryObs.unobserve(summaryEl);
-
-  window.__emiSchedule = null;
-  window.__emiResult = null;
-  if (emiChart) { emiChart.destroy(); emiChart = null; }
-});
-
-document.getElementById('exportCsvBtn').addEventListener('click', () => {
-  if (!window.__emiSchedule?.length) { alert('Please calculate first.'); return; }
-  exportCsv(window.__emiSchedule);
-});
+export const renderEmiApp = (container) => {
+  render(html`<${EMICalculator} />`, container);
+};
